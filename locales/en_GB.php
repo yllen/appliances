@@ -27,7 +27,7 @@ Purpose of file:
 ----------------------------------------------------------------------
  */
 //English
-$title = "Appliance";	
+$title = "Appliance";
 
 $LANG['plugin_applicatifs']['title'][1] = "".$title."";
 
