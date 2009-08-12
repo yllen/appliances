@@ -1,7 +1,7 @@
 <?php
 /*
-   ---------------------------------------------------------------------- 
- GLPI - Gestionnaire Libre de Parc Informatique 
+   ----------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2008 by the INDEPNET Development Team.
 
    http://indepnet.net/   http://glpi-project.org
@@ -46,9 +46,15 @@ function plugin_applicatifs_getTypes () {
 		if ($plugin->isActivated("rack")) {
 			$types[]=PLUGIN_RACK_TYPE;
 		}
-		
-	return $types;	
+		 foreach($types as $key=>$type) {
+    if(!haveTypeRight($type,'r')) {
+      unset($types[$key]);
+    }
+  }
+
+	return $types;
 }
+
 function plugin_applicatifs_dropdownapplicatifs($myname,$entity_restrict='',$used=array()) {
 
 	global $DB,$LANG,$CFG_GLPI;
@@ -57,21 +63,21 @@ function plugin_applicatifs_dropdownapplicatifs($myname,$entity_restrict='',$use
 
 	$where=" WHERE glpi_plugin_applicatifs.deleted='0' ";
 	$where.=getEntitiesRestrictRequest("AND","glpi_plugin_applicatifs",'',$entity_restrict,true);
-	
+
 	if (count($used)) {
 		$where .= " AND ID NOT IN (0";
 		foreach ($used as $ID)
 			$where .= ",$ID";
 		$where .= ")";
 	}
-	
-	$query="SELECT * 
-			FROM glpi_dropdown_plugin_applicatifs_type 
+
+	$query="SELECT *
+			FROM glpi_dropdown_plugin_applicatifs_type
 			WHERE ID IN (
-				SELECT DISTINCT type 
-				FROM glpi_plugin_applicatifs 
-				$where) 
-			GROUP BY name 
+				SELECT DISTINCT type
+				FROM glpi_plugin_applicatifs
+				$where)
+			GROUP BY name
 			ORDER BY name";
 	$result=$DB->query($query);
 
@@ -105,7 +111,7 @@ function plugin_applicatifs_dropdownapplicatifs($myname,$entity_restrict='',$use
 
 function plugin_applicatifs_dropdownrelationtype($myname,$value=0) {
 	global $LANG;
-	
+
 	dropdownArrayValues($myname,
 		array (0=>"---",
 			1=>$LANG['common'][15], // Location
@@ -117,7 +123,7 @@ function plugin_applicatifs_dropdownrelationtype($myname,$value=0) {
 
 function plugin_applicatifs_getrelationtypename($value=0) {
 	global $LANG;
-	
+
 	switch ($value) {
 		case 1: // Location
 			$name=$LANG['common'][15];
@@ -149,6 +155,6 @@ function plugin_applicatifs_getrelationtypetable ($value) {
 		default:
 			$name="";
 	}
-	return $name;	
+	return $name;
 }
 ?>
