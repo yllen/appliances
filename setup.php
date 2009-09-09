@@ -126,9 +126,9 @@ function plugin_version_applicatifs(){
 	
 	return array (
 		'name' => $LANG['plugin_applicatifs']['title'][1],
-		'version' => '1.5.1',
+		'version' => '1.5.2',
 		'author'=>'Remi Collet, Xavier Caillaud',
-		'homepage'=>'http://glpi-project.org/wiki/doku.php?id='.substr($_SESSION["glpilanguage"],0,2).':plugins:pluginslist',
+		'homepage'=>'https://forge.indepnet.net/projects/show/appliances',
 		'minGlpiVersion' => '0.72',// For compatibility / no install in version < 0.72
 	);
 }

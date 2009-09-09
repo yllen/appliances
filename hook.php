@@ -51,7 +51,7 @@ function plugin_applicatifs_install(){
 
 	if(!TableExists("glpi_plugin_applicatifs_profiles") ){
 
-		plugin_applicatifs_installing("1.5.0");
+		plugin_applicatifs_installing("1.5.1");
 
 	}elseif(TableExists("glpi_plugin_applicatifs") && !FieldExists("glpi_plugin_applicatifs","helpdesk_visible")) {
 
