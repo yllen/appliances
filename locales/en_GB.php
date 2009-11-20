@@ -29,32 +29,32 @@ Purpose of file:
 //English
 $title = "Appliance";
 
-$LANG['plugin_applicatifs']['title'][1] = "".$title."";
+$LANG['plugin_appliances']['title'][1] = "".$title."";
 
-$LANG['plugin_applicatifs'][2] = "Location";
-$LANG['plugin_applicatifs'][3] = "Environment";
-$LANG['plugin_applicatifs'][4] = "No ".$title." found";
-$LANG['plugin_applicatifs'][7] = "Associated items";
-$LANG['plugin_applicatifs'][8] = "Name";
-$LANG['plugin_applicatifs'][9] = "Associated ".$title."(s)";
-$LANG['plugin_applicatifs'][12] = "Comments";
-$LANG['plugin_applicatifs'][20] = "Type";
-$LANG['plugin_applicatifs'][21] = "Technical responsible";
-$LANG['plugin_applicatifs'][22] = "Item to link";
-$LANG['plugin_applicatifs'][23] = "Entity";
-$LANG['plugin_applicatifs'][24] = "User fields";
-$LANG['plugin_applicatifs'][25] = "Field";
-$LANG['plugin_applicatifs'][26] = "Default";
+$LANG['plugin_appliances'][2] = "Location";
+$LANG['plugin_appliances'][3] = "Environment";
+$LANG['plugin_appliances'][4] = "No ".$title." found";
+$LANG['plugin_appliances'][7] = "Associated items";
+$LANG['plugin_appliances'][8] = "Name";
+$LANG['plugin_appliances'][9] = "Associated ".$title."(s)";
+$LANG['plugin_appliances'][12] = "Comments";
+$LANG['plugin_appliances'][20] = "Type";
+$LANG['plugin_appliances'][21] = "Technical responsible";
+$LANG['plugin_appliances'][22] = "Item to link";
+$LANG['plugin_appliances'][23] = "Entity";
+$LANG['plugin_appliances'][24] = "User fields";
+$LANG['plugin_appliances'][25] = "Field";
+$LANG['plugin_appliances'][26] = "Default";
 
-$LANG['plugin_applicatifs'][30] = "Open tickets on associated equipments";
+$LANG['plugin_appliances'][30] = "Open tickets on associated equipments";
 
-$LANG['plugin_applicatifs']['profile'][0] = "Rights management";
-$LANG['plugin_applicatifs']['profile'][1] = "$title";
+$LANG['plugin_appliances']['profile'][0] = "Rights management";
+$LANG['plugin_appliances']['profile'][1] = "$title";
 
-$LANG['plugin_applicatifs']['setup'][2] = "Type of ".$title."";
-$LANG['plugin_applicatifs']['setup'][9] = "Associate";
-$LANG['plugin_applicatifs']['setup'][10] = "Dissociate";
-$LANG['plugin_applicatifs']['setup'][13] = "Associate to appliance";
-$LANG['plugin_applicatifs']['setup'][15] = "Nature des composants à relier";
+$LANG['plugin_appliances']['setup'][2] = "Type of ".$title."";
+$LANG['plugin_appliances']['setup'][9] = "Associate";
+$LANG['plugin_appliances']['setup'][10] = "Dissociate";
+$LANG['plugin_appliances']['setup'][13] = "Associate to appliance";
+$LANG['plugin_appliances']['setup'][15] = "Nature des composants à relier";
 
 ?>

@@ -32,30 +32,28 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array('computer', 'monitor', 'networking', 'peripheral', 'phone', 'printer', 'search',
-                      'software', 'tracking');
-
-define('GLPI_ROOT', '../..');
-include (GLPI_ROOT."/inc/includes.php");
-
-$plugin = new Plugin();
-
-if ($plugin->isActivated("environment")) {
-   commonHeader($LANG['plugin_appliances']['title'][1],$_SERVER['PHP_SELF'],"plugins","environment",
-                "appliances");
-} else {
-   commonHeader($LANG['plugin_appliances']['title'][1],$_SERVER['PHP_SELF'],"plugins","appliances");
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
 
-if (plugin_appliances_haveRight("appliance","r") || haveRight("config","w")) {
-   manageGetValuesInSearch(PLUGIN_APPLIANCES_TYPE);
-   searchForm(PLUGIN_APPLIANCES_TYPE,$_GET);
-   showList(PLUGIN_APPLIANCES_TYPE,$_GET);
-   commonFooter();
-} else {
-   echo "<div class='center'><br><br>".
-         "<img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt='warning'><br><br>".
-         "<b>".$LANG['login'][5]."</b></div>";
+
+class PluginAppliancesAppliance_Item extends CommonDBRelation {
+
+   // From CommonDBTM
+   public $table = 'glpi_plugin_appliances_appliances_items';
+   public $type  = PLUGIN_APPLIANCES_APPLIANCES_ITEMS;
+
+   // From CommonDBRelation
+   public $itemtype_1 = PLUGIN_APPLIANCES_TYPE;
+   public $items_id_1 = 'appliances_id';
+
+   public $itemtype_2 = 'itemtype';
+   public $items_id_2 = 'items_id';
+
+
+   function cleanDBonPurge() {
+      // TO DO
+   }
 }
 
 ?>

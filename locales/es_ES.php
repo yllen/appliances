@@ -29,32 +29,32 @@ Purpose of file:
 //Spanish
 $title = "Aplicativo";	
 
-$LANG['plugin_applicatifs']['title'][1] = "".$title."";
+$LANG['plugin_appliances']['title'][1] = "".$title."";
 
-$LANG['plugin_applicatifs'][2] = "Lugar";
-$LANG['plugin_applicatifs'][3] = "Entorno";
-$LANG['plugin_applicatifs'][4] = "No se encuentra el ".$title."";
-$LANG['plugin_applicatifs'][7] = "Elementos asociados";
-$LANG['plugin_applicatifs'][8] = "Nombre";
-$LANG['plugin_applicatifs'][9] = "".$title."(s) asociado(s)";
-$LANG['plugin_applicatifs'][12] = "Comentarios";
-$LANG['plugin_applicatifs'][20] = "Tipo";
-$LANG['plugin_applicatifs'][21] = "Responsable técnico";
-$LANG['plugin_applicatifs'][22] = "Item a vincular";
-$LANG['plugin_applicatifs'][23] = "Entidad";
-$LANG['plugin_applicatifs'][24] = "Campos de usuario";
-$LANG['plugin_applicatifs'][25] = "Campo";
-$LANG['plugin_applicatifs'][26] = "Defecto";
+$LANG['plugin_appliances'][2] = "Lugar";
+$LANG['plugin_appliances'][3] = "Entorno";
+$LANG['plugin_appliances'][4] = "No se encuentra el ".$title."";
+$LANG['plugin_appliances'][7] = "Elementos asociados";
+$LANG['plugin_appliances'][8] = "Nombre";
+$LANG['plugin_appliances'][9] = "".$title."(s) asociado(s)";
+$LANG['plugin_appliances'][12] = "Comentarios";
+$LANG['plugin_appliances'][20] = "Tipo";
+$LANG['plugin_appliances'][21] = "Responsable técnico";
+$LANG['plugin_appliances'][22] = "Item a vincular";
+$LANG['plugin_appliances'][23] = "Entidad";
+$LANG['plugin_appliances'][24] = "Campos de usuario";
+$LANG['plugin_appliances'][25] = "Campo";
+$LANG['plugin_appliances'][26] = "Defecto";
 
-$LANG['plugin_applicatifs'][30] = "Incidencias abiertas en equipos asociados";
+$LANG['plugin_appliances'][30] = "Incidencias abiertas en equipos asociados";
 
-$LANG['plugin_applicatifs']['profile'][0] = "Permisos de uso";
-$LANG['plugin_applicatifs']['profile'][1] = "$title";
+$LANG['plugin_appliances']['profile'][0] = "Permisos de uso";
+$LANG['plugin_appliances']['profile'][1] = "$title";
 
-$LANG['plugin_applicatifs']['setup'][2] = "Tipo de ".$title."";
-$LANG['plugin_applicatifs']['setup'][9] = "Asociar";
-$LANG['plugin_applicatifs']['setup'][10] = "Disociar";
-$LANG['plugin_applicatifs']['setup'][13] = "Asociado al aplicativo";
-$LANG['plugin_applicatifs']['setup'][15] = "Naturaleza de los componentes a vincular";
+$LANG['plugin_appliances']['setup'][2] = "Tipo de ".$title."";
+$LANG['plugin_appliances']['setup'][9] = "Asociar";
+$LANG['plugin_appliances']['setup'][10] = "Disociar";
+$LANG['plugin_appliances']['setup'][13] = "Asociado al aplicativo";
+$LANG['plugin_appliances']['setup'][15] = "Naturaleza de los componentes a vincular";
 
 ?>
