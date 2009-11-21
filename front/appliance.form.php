@@ -79,19 +79,22 @@ if (isset($_POST["add"])) {
 
 // delete a relation
 } else if (isset($_POST["dellieu"])) {
+   $relation = new PluginAppliancesRelation();
    if (isset($_POST['itemrelation'])) {
       foreach($_POST["itemrelation"] as $key => $val) {
-         plugin_appliances_delRelation($key);
+         $relation->delete(array('id'=>$key));
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 // add a relation
 } else if (isset($_POST["addlieu"])) {
+   $relation = new PluginAppliancesRelation();
    if ($_POST['tablekey'] >0) {
       foreach($_POST["tablekey"] as $key => $val) {
          if ($val > 0) {
-            plugin_appliances_addRelation($key,$val);
+            $relation->add(array('appliances_items_id' => $key,
+                                 'relations_id'        => $val));
          }
       }
    }
@@ -108,7 +111,7 @@ if (isset($_POST["add"])) {
    $PluginAppliances->check($_POST['appliances_id'],'r');
    $temp = new Commonitem();
    $temp->setType($_POST['itemtype'], true);
-   $temp->obj->check($_POST['itemtype'],'w');
+   $temp->obj->check($_POST['items_id'],'w');
 
    $OptvalueItem = new PluginAppliancesOptvalue_Item();
    $OptvalueItem->updateList($_POST);

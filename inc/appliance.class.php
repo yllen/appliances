@@ -212,47 +212,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    function cleanDBonPurge($ID) {
-      global $DB;
 
-      foreach ($DB->request("glpi_plugin_appliances_appliances_items",array("appliances_id"=>$ID)) as $data) {
-         plugin_appliances_deleteItem($data["id"]);
-      }
+      $temp = new PluginAppliancesAppliance_Item();
+      $temp->clean(array('appliances_id' => $ID));
 
-      $query = "DELETE
-                FROM `glpi_documents_items`
-                WHERE `items_id` = '$ID'
-                      AND ìtemtype`= '".PLUGIN_APPLIANCES_TYPE."' ";
-      $DB->query($query);
-
-      $query = "DELETE
-                FROM `glpi_plugin_appliances_optvalues`
-                WHERE `appliances_id` = '$ID'";
-      $DB->query($query);
-
-      $query = "DELETE
-                FROM `glpi_contract_items`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '".PLUGIN_APPLIANCES_TYPE."'";
-      $DB->query($query);
-
-      $query = "DELETE
-                FROM `glpi_infocoms`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '".PLUGIN_APPLIANCES_TYPE."')";
-      $result = $DB->query($query);
+      $temp = new PluginAppliancesOptvalue();
+      $temp->clean(array('appliances_id' => $ID));
    }
-
-
-   function cleanItems($ID,$type) {
-      global $DB;
-
-      $query = "DELETE
-                FROM `glpi_plugin_appliances_appliances_items`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '$type'";
-      $DB->query($query);
-   }
-
 
    function defineTabs($ID,$withtemplate) {
       global $LANG;

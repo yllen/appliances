@@ -83,6 +83,10 @@ function plugin_init_appliances() {
                       array('classname'              => 'PluginAppliancesOptvalue_Item',
                             'tablename'              => 'glpi_plugin_appliances_optvalues_items'));
 
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_RELATIONS', 1205,
+                      array('classname'              => 'PluginAppliancesRelation',
+                            'tablename'              => 'glpi_plugin_appliances_relations'));
+
    // Define the type for which we know how to generate PDF, need :
    // - plugin_appliances_prefPDF($type)
    // - plugin_appliances_generatePDF($type, $tab_id, $tab, $page=0)

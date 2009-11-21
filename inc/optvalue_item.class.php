@@ -43,10 +43,18 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
    public $table = 'glpi_plugin_appliances_optvalues_items';
    public $type  = PLUGIN_APPLIANCES_OPTVALUES_ITEMS;
 
-   function cleanDBonPurge($ID) {
-      // TO DO
-   }
+   /**
+    * Clean object veryfing criteria (when a relation is deleted)
+    *
+    * @param $crit array of criteria (should be an index)
+    */
+   public function clean ($crit) {
+      global $DB;
 
+      foreach ($DB->request($this->table, $crit) as $data) {
+         $this->delete($data);
+      }
+   }
    /**
     * Show the optional values for a item / applicatif
     *
@@ -115,6 +123,11 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
       }
    }
 
+   /**
+    * Update to optional values for an appliance / item
+    *
+    * @param $input array on input value (form)
+    */
    function updateList($input) {
       global $DB;
 

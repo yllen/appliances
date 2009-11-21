@@ -44,7 +44,21 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    public $type  = PLUGIN_APPLIANCES_OPTVALUES;
 
    function cleanDBonPurge($ID) {
-      // TO DO
+      $temp = new PluginAppliancesOptvalue_Item();
+      $temp->clean(array('optvalues_id' => $ID));
+   }
+
+   /**
+    * Clean object veryfing criteria (when a relation is deleted)
+    *
+    * @param $crit array of criteria (should be an index)
+    */
+   public function clean ($crit) {
+      global $DB;
+
+      foreach ($DB->request($this->table, $crit) as $data) {
+         $this->delete($data);
+      }
    }
 
    /**

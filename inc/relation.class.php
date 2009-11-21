@@ -37,18 +37,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-class PluginAppliancesAppliance_Item extends CommonDBRelation {
+class PluginAppliancesRelation extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_plugin_appliances_appliances_items';
-   public $type  = PLUGIN_APPLIANCES_APPLIANCES_ITEMS;
-
-   // From CommonDBRelation
-   public $itemtype_1 = PLUGIN_APPLIANCES_TYPE;
-   public $items_id_1 = 'appliances_id';
-
-   public $itemtype_2 = 'itemtype';
-   public $items_id_2 = 'items_id';
+   public $table = 'glpi_plugin_appliances_relations';
+   public $type  = PLUGIN_APPLIANCES_RELATIONS;
 
    /**
     * Clean object veryfing criteria (when a relation is deleted)
@@ -63,14 +56,6 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       }
    }
 
-   function cleanDBonPurge($ID) {
-      $temp = new PluginAppliancesOptvalue_Item();
-      $temp->clean(array('itemtype' => $this->fields['itemtype'],
-                         'items_id' => $this->fields['items_id']));
-
-      $temp = new PluginAppliancesRelation();
-      $temp->clean(array('appliances_items_id' => $ID));
-   }
 }
 
 ?>

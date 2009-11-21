@@ -404,7 +404,7 @@ function plugin_appliances_MassiveActionsProcess($data) {
          break;
 
       case "plugin_appliances_desinstall" :
-         if ($data['appliancetypes_id'] == PLUGIN_APPLIANCES_TYPE) {
+         if ($data['itemtype'] == PLUGIN_APPLIANCES_TYPE) {
             foreach ($data["items_id"] as $key => $val) {
                if ($val == 1) {
                   $query = "DELETE
@@ -419,7 +419,7 @@ function plugin_appliances_MassiveActionsProcess($data) {
          break;
 
       case "plugin_appliances_transfert" :
-         if ($data['appliancetypes_id'] == PLUGIN_APPLIANCES_TYPE) {
+         if ($data['itemtype'] == PLUGIN_APPLIANCES_TYPE) {
             foreach ($data["items_id"] as $key => $val) {
                if ($val == 1) {
                   $PluginAppliances = new PluginAppliancesAppliance;
@@ -463,10 +463,16 @@ function plugin_pre_item_delete_appliances($input) {
 
 function plugin_item_delete_appliances($parm) {
 
-   switch ($parm["appliancetypes_id"]) {
+   switch ($parm['type']) {
       case TRACKING_TYPE :
-         $PluginAppliances = new PluginAppliancesAppliance;
-         $PluginAppliances->cleanItems($parm['id'], $parm['appliancetypes_id']);
+         $temp = new PluginAppliancesAppliance_Item();
+         $temp->clean(array('itemtype' => $parm['type'],
+                            'items_id' => $parm['id']));
+
+         $temp = new PluginAppliancesOptvalue_Item();
+         $temp->clean(array('itemtype' => $parm['type'],
+                            'items_id' => $parm['id']));
+
          return true;
    }
    return false;
@@ -476,11 +482,16 @@ function plugin_item_delete_appliances($parm) {
 // Hook done on purge item case
 function plugin_item_purge_appliances($parm) {
 
-   if (in_array($parm["appliancetypes_id"], plugin_appliances_getTypes())
-       && $parm["appliancetypes_id"] != TRACKING_TYPE) { // TRACKING_TYPE handle in plugin_item_delete_appliances
+   if (in_array($parm['type'], plugin_appliances_getTypes())
+       && $parm['type'] != TRACKING_TYPE) { // TRACKING_TYPE handle in plugin_item_delete_appliances
 
-      $PluginAppliances =  new PluginAppliancesAppliance;
-      $PluginAppliances->cleanItems($parm["id"],$parm["appliancetypes_id"]);
+      $temp = new PluginAppliancesAppliance_Item();
+      $temp->clean(array('itemtype' => $parm['type'],
+                         'items_id' => $parm['id']));
+
+      $temp = new PluginAppliancesOptvalue_Item();
+      $temp->clean(array('itemtype' => $parm['type'],
+                         'items_id' => $parm['id']));
       return true;
    }
    return false;
