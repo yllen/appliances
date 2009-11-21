@@ -512,7 +512,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         $this->showRelation($this->fields["relationtypes_id"],
                                                        $data["IDD"], $ci->obj->fields["entities_id"],
                                                        false);
-                        plugin_appliances_showOptions($data["id"], $instID, false);
+                        PluginAppliancesOptvalue_Item::showList($type, $data["id"], $instID, false);
                         echo "</td>";
                      }
 
@@ -668,7 +668,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          }
 
          echo "<td class='center'>".$data["comment"];
-         plugin_appliances_showOptions($ID, $appliancesID, $canedit);
+         PluginAppliancesOptvalue_Item::showList($itemtype, $ID, $appliancesID, $canedit);
          echo "</td>";
 
          if ($canedit) {
