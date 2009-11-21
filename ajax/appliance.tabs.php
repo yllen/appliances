@@ -82,7 +82,6 @@ if ($_POST["id"] >0
 
       case 6 :
          showJobListForItem(PLUGIN_APPLIANCES_TYPE,$_POST["id"]);
-         plugin_appliances_showTickets($_POST["id"]);
          break;
 
       case 9 :

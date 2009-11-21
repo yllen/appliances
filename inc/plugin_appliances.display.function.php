@@ -156,61 +156,6 @@ function plugin_appliances_showDevice_PDF($pdf, $instID) {
 }
 
 
-function plugin_appliances_showTickets($ID) {
-   global $DB, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
-
-   $PluginAppliances = new PluginAppliancesAppliance();
-   if ($PluginAppliances->getFromDB($ID)){
-      echo "<div class='center'><br><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='10'>".$LANG['plugin_appliances'][30]."&nbsp;:</th></tr>\n";
-      commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"id=$ID","","",true);
-      initNavigateListItems(TRACKING_TYPE,
-                     $LANG['plugin_appliances']['title'][1]." = ".$PluginAppliances->fields['name']);
-
-      $sql = "SELECT DISTINCT `itemtype`
-              FROM `glpi_plugin_appliances_appliances_items`
-              WHERE `appliances_id` = '$ID'";
-      $nb = 0;
-      foreach ($DB->request($sql) as $data) {
-         $type = $data['itemtype'];
-         if (!haveTypeRight($type,"r")) {
-            continue;
-         }
-         if ($type == TRACKING_TYPE) {
-            continue;
-         }
-         $table = $LINK_ID_TABLE[$type];
-         $sql = "SELECT ".getCommonSelectForTrackingSearch()."
-                 FROM `glpi_tickets`
-                 LEFT JOIN $table ON (`glpi_tickets`.`items_id` = $table.`id`)".
-                 getCommonLeftJoinForTrackingSearch()."
-                 WHERE `glpi_tickets`.`itemtype` = '".$type."'
-                       AND `glpi_tickets`.`items_id`r IN (SELECT DISTINCT `items_id`
-                                                          FROM `glpi_plugin_appliances_appliances_items`
-                                                          WHERE `itemtype` = '".$type."'
-                                                                AND `appliances_id` = '$ID')
-                       AND `glpi_tickets`.`status` IN ('new','assign','plan','waiting')".
-                       getEntitiesRestrictRequest(" AND ",'glpi_tickets');
-
-         foreach ($DB->request($sql) AS $data) {
-            addToNavigateListItems(TRACKING_TYPE,$data["id"]);
-            showJobShort($data, 0);
-            $nb++;
-         } // each ticket
-      } // each type
-
-      if (!$nb) {
-         echo "<tr class='tab_bg_1'><td colspan='10' class='center'>".$LANG['joblist'][8]."</td>".
-               "</tr>\n";
-      }
-      echo "</table></div>";
-   }
-}
-
-
-
-
-
 /**
  * show for PDF the applicatif associated with a device
  *

@@ -243,6 +243,16 @@ class PluginAppliancesAppliance extends CommonDBTM {
       return $ong;
    }
 
+   /*
+    * Return the SQL command to retrieve linked object
+    *
+    * @return a SQL command which return a set of (itemtype, items_id)
+    */
+   function getSelectLinkedItem () {
+      return "SELECT `itemtype`, `items_id`
+              FROM `glpi_plugin_appliances_appliances_items`
+              WHERE `appliances_id`='" . $this->fields['id']."'";
+   }
 
    function showForm ($target,$ID,$withtemplate='') {
       global $CFG_GLPI, $LANG;
