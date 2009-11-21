@@ -51,7 +51,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    public $items_id_2 = 'items_id';
 
 
-   function cleanDBonPurge() {
+   function cleanDBonPurge($ID) {
       // TO DO
    }
 }

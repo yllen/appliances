@@ -44,7 +44,7 @@ function plugin_init_appliances() {
    registerPluginType('appliances', 'PLUGIN_APPLIANCES_TYPE', 1200,
                       array('classname'              => 'PluginAppliancesAppliance',
                             'tablename'              => 'glpi_plugin_appliances_appliances',
-                            'formpage'               => 'front/plugin_appliances.form.php',
+                            'formpage'               => 'front/appliance.form.php',
                             'searchpage'             => 'index.php',
                             'typename'               => $LANG['plugin_appliances']['title'][1],
                             'deleted_tables'         => true,
@@ -74,6 +74,11 @@ function plugin_init_appliances() {
    registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCES_ITEMS', 1203,
                       array('classname'              => 'PluginAppliancesAppliance_Item',
                             'tablename'              => 'glpi_plugin_appliances_appliances_items',
+                            'typename'               => ''));
+
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_OPTVALUES', 1204,
+                      array('classname'              => 'PluginAppliancesOptvalue',
+                            'tablename'              => 'glpi_plugin_appliances_optvalues',
                             'typename'               => ''));
 
    // Define the type for which we know how to generate PDF, need :

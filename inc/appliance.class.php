@@ -259,6 +259,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $ong[1] = $LANG['title'][26];
       if ($ID > 0) {
+         $ong[2] = $LANG['plugin_appliances'][24];
          if (haveRight("show_all_ticket","1")) {
             $ong[6] = $LANG['title'][28];
          }
@@ -299,7 +300,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       autocompletionTextField("name","glpi_plugin_appliances_appliances","name",
                               $this->fields["name"], 34, $this->fields["entities_id"]);
       echo "</td><td>".$LANG['common'][17]."&nbsp;:</td><td>";
-      dropdownValue("glpi_plugin_appliances_appliancetypes", "appliancetypes_id", 
+      dropdownValue("glpi_plugin_appliances_appliancetypes", "appliancetypes_id",
                     $this->fields["appliancetypes_id"],1,
                     $this->fields["entities_id"]);
       echo "</td></tr>";
@@ -313,7 +314,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       echo "</td>";
       echo "<td>".$LANG['plugin_appliances'][3]."&nbsp;:</td><td>";
-      dropdownValue("glpi_plugin_appliances_environments", "environments", $this->fields["environments_id"]);
+      dropdownValue("glpi_plugin_appliances_environments", "environments_id", $this->fields["environments_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -346,11 +347,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       // dropdown relationtype added
       echo "<td>".$LANG['plugin_appliances'][22]."&nbsp;:</td><td>";
-      if ($canedit 
-          && !($ID && countElementsInTable("glpi_plugin_appliances_relations, 
+      if ($canedit
+          && !($ID && countElementsInTable("glpi_plugin_appliances_relations,
                                             glpi_plugin_appliances_appliances_items",
                                            "glpi_plugin_appliances_relations.appliances_items_id
-                                                =glpi_plugin_appliances_appliances_items.id 
+                                                =glpi_plugin_appliances_appliances_items.id
                                              AND glpi_plugin_appliances_appliances_items.appliances_id
                                                    =$ID"))) {
          plugin_appliances_relationtypes("relationtypes_id",$this->fields["relationtypes_id"]);
@@ -463,7 +464,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
          $query_app = "SELECT `champ`
                        FROM g`lpi_plugin_appliances_optvalues`
-                       WHERE `appliances_id` = '".$input["ID"]."' 
+                       WHERE `appliances_id` = '".$input["ID"]."'
                              AND `vvalues` = '$i'";
          $result_app = $DB->query($query_app);
 
@@ -473,14 +474,14 @@ class PluginAppliancesAppliance extends CommonDBTM {
                // la valeur saisie est nulle -> on fait un delete
                $query_app_del = "DELETE
                                  FROM `glpi_plugin_appliances_optvalues`
-                                 WHERE `appliances_id` = '".$input["ID"]."' 
+                                 WHERE `appliances_id` = '".$input["ID"]."'
                                        AND `vvalues` = '$i'";
                $result_app_del = $DB->query($query_app_del);
             } else {
                // la valeur saisie est non nulle -> on fait un update
-               $query_app_upd = "UPDATE 
+               $query_app_upd = "UPDATE
                                  `glpi_plugin_appliances_optvalues`
-                                 SET `champ` = '".$input[$champ]."', 
+                                 SET `champ` = '".$input[$champ]."',
                                      `ddefault` = '".$input[$ddefault]."'
                                  WHERE `appliances_id` = '".$input["ID"]."'
                                        AND `vvalues` = '$i'";
@@ -490,7 +491,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
             // l'entrée n'existe pas
             if (!empty($input[$champ])) {
                // et la valeur saisie est non nulle -> on fait un insert
-               $query_app_ins = "INSERT INTO 
+               $query_app_ins = "INSERT INTO
                                  `glpi_plugin_appliances_optvalues`
                                  (`appliances_id`, `vvalues`, `champ`, `ddefault`)
                                  VALUES('".$input["ID"]."', '$i' , '".$input[$champ]."',
@@ -502,15 +503,15 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-   /** 
+   /**
     * Show the Device associated with an applicatif
-    * 
+    *
     * Called from the applicatif form
-    * 
+    *
     */
    function showItem() {
       global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
-   
+
       $instID = $this->fields['id'];
 
       if (!$this->can($instID,"r")) {
@@ -520,9 +521,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $canedit = $this->can($instID,'w');
 
-      $query = "SELECT DISTINCT `itemtype` 
-                FROM `glpi_plugin_appliances_appliances_items` 
-                WHERE `appliances_id` = '$instID' 
+      $query = "SELECT DISTINCT `itemtype`
+                FROM `glpi_plugin_appliances_appliances_items`
+                WHERE `appliances_id` = '$instID'
                 ORDER BY `itemtype`";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -569,17 +570,17 @@ class PluginAppliancesAppliance extends CommonDBTM {
                $column = "question";
             }
 
-            $query = "SELECT ".$LINK_ID_TABLE[$type].".*, 
-                             `glpi_plugin_appliances_appliances_items`.`id` AS IDD, 
+            $query = "SELECT ".$LINK_ID_TABLE[$type].".*,
+                             `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
                              `glpi_entities`.`id` AS entity
                       FROM `glpi_plugin_appliances_appliances_items`, ".$LINK_ID_TABLE[$type]."
-                      LEFT JOIN `glpi_entities` 
+                      LEFT JOIN `glpi_entities`
                            ON (`glpi_entities`.`id` = ".$LINK_ID_TABLE[$type].".`entities_id`)
-                      WHERE ".$LINK_ID_TABLE[$type].".`id` = `glpi_plugin_appliances_appliances_items`.`items_id` 
-                            AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type' 
-                            AND `glpi_plugin_appliances_appliances_items`.`appliances_id` = '$instID' ". 
+                      WHERE ".$LINK_ID_TABLE[$type].".`id` = `glpi_plugin_appliances_appliances_items`.`items_id`
+                            AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
+                            AND `glpi_plugin_appliances_appliances_items`.`appliances_id` = '$instID' ".
                             getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',
-                                                       isset($CFG_GLPI["recursive_type"][$type])); 
+                                                       isset($CFG_GLPI["recursive_type"][$type]));
 
             if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])) {
                $query .= " AND ".$LINK_ID_TABLE[$type].".`is_template` = '0'";
@@ -628,11 +629,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
                      }
 
                      if ($this->fields["relationtypes_id"]) {
-                        echo "<td class='center'>". 
+                        echo "<td class='center'>".
                            plugin_appliances_getrelationtypename($this->fields["relationtypes_id"]).
                            "&nbsp;:&nbsp;";
-                        $this->showRelation($this->fields["relationtypes_id"], 
-                                                       $data["IDD"], $ci->obj->fields["entities_id"], 
+                        $this->showRelation($this->fields["relationtypes_id"],
+                                                       $data["IDD"], $ci->obj->fields["entities_id"],
                                                        false);
                         plugin_appliances_showOptions($data["id"], $instID, false);
                         echo "</td>";
@@ -673,57 +674,57 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-   /** 
+   /**
     * Show the applicatif associated with a device
-    * 
+    *
     * Called from the device form (applicatif tab)
-    * 
+    *
     * @param $itemtype : type of the device
     * @param $ID of the device
     * @param $withtemplate : not used, always empty
-    * 
+    *
     */ //(CommonDBTM $item,$withtemplate='')
     // $ID = $item->getField('id') au lieu de $ci= new...
     // $ci->obj deviendra $item
    static function showAssociated($itemtype,$ID,$withtemplate='') {
       global $DB,$CFG_GLPI, $LANG;
-   
-      $ci = new CommonItem(); 
-      $ci->getFromDB($itemtype,$ID); 
-      $canread = $ci->obj->can($ID,'r'); 
+
+      $ci = new CommonItem();
+      $ci->getFromDB($itemtype,$ID);
+      $canread = $ci->obj->can($ID,'r');
       $canedit = $ci->obj->can($ID,'w');
-   
-      $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID, 
+
+      $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
                        `glpi_plugin_appliances_appliances`.*
-                FROM `glpi_plugin_appliances_appliances_items`, 
+                FROM `glpi_plugin_appliances_appliances_items`,
                      `glpi_plugin_appliances_appliances`
-                LEFT JOIN `glpi_entities` 
+                LEFT JOIN `glpi_entities`
                      ON (`glpi_entities`.`id` = `glpi_plugin_appliances_appliances`.`entities_id`)
-                WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '$ID' 
-                      AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype' 
-                      AND `glpi_plugin_appliances_appliances_items`.`appliances_id` 
+                WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '$ID'
+                      AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype'
+                      AND `glpi_plugin_appliances_appliances_items`.`appliances_id`
                            = `glpi_plugin_appliances_appliances`.`id`".
                       getEntitiesRestrictRequest(" AND ","glpi_plugin_appliances_appliances",'','',
                                                 isset($CFG_GLPI["recursive_type"][PLUGIN_APPLIANCES_TYPE]));
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-   
-      $query_app = "SELECT `ID` 
+
+      $query_app = "SELECT `ID`
                     FROM `glpi_plugin_appliances_appliances_items`
                     WHERE `items_id` = '$ID'";
       $result_app = $DB->query($query_app);
       $number_app = $DB->numrows($result_app);
-   
+
       if ($number_app >0) {
          $colsup = 1;
       } else {
          $colsup = 0;
       }
-   
+
       if (isMultiEntitiesMode()) {
          $colsup += 1;
       }
-   
+
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".(5+$colsup)."'>".$LANG['plugin_appliances'][9]." :</th></tr>";
       echo "<tr><th>".$LANG['common'][16]."</th>";
@@ -736,7 +737,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo "<th>".$LANG['plugin_appliances'][22]."</th>";
       }
       echo "<th>".$LANG['common'][25]."<br>".$LANG['plugin_appliances'][24]."</th>";
-   
+
       if ($canedit) {
          if ($withtemplate <2) {
             echo "<th>&nbsp;</th>";
@@ -747,13 +748,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
       while ($data = $DB->fetch_array($result)) {
          $appliancesID = $data["id"];
          $used[] = $appliancesID;
-   
+
          echo "<tr class='tab_bg_1".($data["is_deleted"]=='1'?"_2":"")."'>";
-         if ($withtemplate !=3 
-             && $canread 
+         if ($withtemplate !=3
+             && $canread
              && (in_array($data['entities_id'],
                           $_SESSION['glpiactiveentities']) || $data["is_recursive"])) {
-   
+
             echo "<td class='center'><a href='".
                   $CFG_GLPI["root_doc"]."/plugins/appliances/front/plugin_appliances.form.php?id=".
                   $data["id"]."'>".$data["name"];
@@ -779,7 +780,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo "<td class='center'>".getdropdownname("glpi_plugin_appliances_appliancetypes",
                                                     $data["appliancetypes_id"]).
                "</td>";
-   
+
          if ($number_app >0) {
             // add or delete a relation to an applicatifs
             echo "<td class='center'>";
@@ -788,11 +789,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
                                             $ci->obj->fields["entities_id"],$canedit);
             echo "</td>";
          }
-   
+
          echo "<td class='center'>".$data["comment"];
          plugin_appliances_showOptions($ID, $appliancesID, $canedit);
          echo "</td>";
-   
+
          if ($canedit) {
             echo "<td class='center tab_bg_2'><a href='".$CFG_GLPI["root_doc"].
                   "/plugins/appliances/front/plugin_appliances.form.php?deleteappliance=1".
@@ -800,42 +801,42 @@ class PluginAppliancesAppliance extends CommonDBTM {
          }
          echo "</tr>";
       }
-   
+
       if ($canedit){
          $ci = new CommonItem();
-         $entities = ""; 
+         $entities = "";
          if ($ci->getFromDB($itemtype,$ID) && isset($ci->obj->fields["entities_id"])) {
-            if (isset($ci->obj->fields["is_recursive"]) && $ci->obj->fields["is_recursive"]) { 
-               $entities = getEntitySons($ci->obj->fields["entities_id"]); 
-            } else { 
-               $entities = $ci->obj->fields["entities_id"]; 
-            } 
-         } 
+            if (isset($ci->obj->fields["is_recursive"]) && $ci->obj->fields["is_recursive"]) {
+               $entities = getEntitySons($ci->obj->fields["entities_id"]);
+            } else {
+               $entities = $ci->obj->fields["entities_id"];
+            }
+         }
          $limit = getEntitiesRestrictRequest(" AND ","glpi_plugin_appliances_appliances",'',$entities,
                                              true);
-   
-         $q = "SELECT count(*) 
+
+         $q = "SELECT count(*)
                FROM `glpi_plugin_appliances_appliances`
-               WHERE `is_deleted` = '0' 
+               WHERE `is_deleted` = '0'
                $limit";
-   
+
          $result = $DB->query($q);
          $nb = $DB->result($result,0,0);
-   
+
          if ($withtemplate<2 && $nb>count($used)) {
             echo "<tr class='tab_bg_1'>";
             echo "<td class='right' colspan=5>";
-   
+
             // needed to use the button "additem"
             echo "<form method='post' action=\"".$CFG_GLPI["root_doc"].
                   "/plugins/appliances/front/plugin_appliances.form.php\">";
             echo "<input type='hidden' name='item' value='$ID'>".
                   "<input type='hidden' name='itemtype' value='$itemtype'>";
             plugin_appliances_dropdownappliances("conID",$entities,$used);
-   
+
             echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</form>";
-   
+
             echo "</td>";
             echo "<td class='right' colspan='".($colsup)."'></td>";
             echo "</tr>";
@@ -845,57 +846,57 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-   /** 
+   /**
     * Show the relation for a device/applicatif
-    * 
+    *
     * Called from PluginAppliancesAppliance->showItem and PluginAppliancesAppliance::showAssociated
-    * 
+    *
     * @param $drelation_type : type of the relation
     * @param $relID ID of the relation
     * @param $entity, ID of the entity of the device
     * @param $canedit, if user is allowed to edit the relation
     *    - canedit the device if called from the device form
     *    - must be false if called from the applicatif form
-    * 
+    *
     */
    static private function showRelation ($relationtype, $relID, $entity, $canedit) {
       global $DB,$CFG_GLPI, $LANG;
-   
+
       if (!$relationtype) {
          return false;
       }
-   
+
       // selects all the attached relations
       $tablename = plugin_appliances_getrelationtypetable($relationtype);
       $title = plugin_appliances_getrelationtypename($relationtype);
-   
+
       if (in_array($tablename,$CFG_GLPI["dropdowntree_tables"])) {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`, 
+         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
                             `completename` AS dispname ";
       } else {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`, 
+         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
                             `name` AS dispname ";
       }
       $sql_loc .= "FROM `".$tablename."` ,
-                        `glpi_plugin_appliances_relations`, 
+                        `glpi_plugin_appliances_relations`,
                         `glpi_plugin_appliances_appliances_items`
-                        WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id` 
-                              AND `glpi_plugin_appliances_relations`.`appliances_items_id` 
-                                    = `glpi_plugin_appliances_appliances_items`.`id` 
+                        WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
+                              AND `glpi_plugin_appliances_relations`.`appliances_items_id`
+                                    = `glpi_plugin_appliances_appliances_items`.`id`
                               AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
-   
+
       $result_loc = $DB->query($sql_loc);
       $number_loc = $DB->numrows($result_loc);
-   
+
       if ($canedit) {
          echo "<form method='post' name='relation' action='".
-               $CFG_GLPI["root_doc"]."/plugins/appliances/front/plugin_appliances.form.php'>";  
+               $CFG_GLPI["root_doc"]."/plugins/appliances/front/plugin_appliances.form.php'>";
          echo "<br><input type='hidden' name='deviceID' value='$relID'>";
-   
+
          $i = 0;
          $itemlist = "";
          $used = array();
-   
+
          if ($number_loc >0) {
             echo "<table>";
             while ($i < $number_loc) {
@@ -911,9 +912,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
             echo "</table>";
             echo "<input type='submit' name='dellieu' value='".$LANG['buttons'][6]."' class='submit'><br><br>";
          }
-   
+
          echo "$title&nbsp;:&nbsp;";
-   
+
          dropdownValue($tablename,"tablekey[" . $relID . "]","",1,$entity,"",$used);
          echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value=\"".
                $LANG['buttons'][8]."\" class='submit'><br>&nbsp;";
