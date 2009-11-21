@@ -83,7 +83,7 @@ function plugin_init_appliances() {
                       array('classname'              => 'PluginAppliancesOptvalue_Item',
                             'tablename'              => 'glpi_plugin_appliances_optvalues_items'));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_RELATIONS', 1205,
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_RELATIONS', 1206,
                       array('classname'              => 'PluginAppliancesRelation',
                             'tablename'              => 'glpi_plugin_appliances_relations'));
 
