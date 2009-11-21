@@ -52,9 +52,9 @@ function plugin_appliances_showDevice_PDF($pdf, $instID) {
    $pdf->setColumnsSize(100);
    $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][7].'</b>');
 
-   $query = "SELECT DISTINCT `itemtype` 
-             FROM `glpi_plugin_appliances_appliances_items` 
-             WHERE `appliances_id` = '$instID' 
+   $query = "SELECT DISTINCT `itemtype`
+             FROM `glpi_plugin_appliances_appliances_items`
+             WHERE `appliances_id` = '$instID'
              ORDER BY `itemtype`";
    $result = $DB->query($query);
    $number = $DB->numrows($result);
@@ -77,7 +77,7 @@ function plugin_appliances_showDevice_PDF($pdf, $instID) {
    $ci = new CommonItem();
    if (!$number) {
       $pdf->displayLine($LANG['search'][15]);
-   } else { 
+   } else {
       for ($i=0 ; $i < $number ; $i++) {
          $type = $DB->result($result, $i, "itemtype");
 
@@ -90,17 +90,17 @@ function plugin_appliances_showDevice_PDF($pdf, $instID) {
                $column = "question";
             }
 
-            $query = "SELECT ".$LINK_ID_TABLE[$type].".*, 
-                             `glpi_plugin_appliances_appliances_items`.`id` AS IDD, 
+            $query = "SELECT ".$LINK_ID_TABLE[$type].".*,
+                             `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
                              `glpi_entities`.`id` AS entity
-                      FROM `glpi_plugin_appliances_appliances_items`, ".$LINK_ID_TABLE[$type]." 
-                      LEFT JOIN `glpi_entities` 
+                      FROM `glpi_plugin_appliances_appliances_items`, ".$LINK_ID_TABLE[$type]."
+                      LEFT JOIN `glpi_entities`
                            ON (`glpi_entities`.`id` = ".$LINK_ID_TABLE[$type].".`entities_id`)
-                      WHERE ".$LINK_ID_TABLE[$type].".`id` = `glpi_plugin_appliances_appliances_items`.`items_id` 
-                            AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type' 
-                            AND `glpi_plugin_appliances_appliances_items`.`appliances_id` = '$instID' ". 
+                      WHERE ".$LINK_ID_TABLE[$type].".`id` = `glpi_plugin_appliances_appliances_items`.`items_id`
+                            AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
+                            AND `glpi_plugin_appliances_appliances_items`.`appliances_id` = '$instID' ".
                             getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',
-                                                       isset($CFG_GLPI["recursive_type"][$type])); 
+                                                       isset($CFG_GLPI["recursive_type"][$type]));
 
             if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])) {
                $query .= " AND ".$LINK_ID_TABLE[$type].".`is_template` = '0'";
@@ -129,7 +129,7 @@ function plugin_appliances_showDevice_PDF($pdf, $instID) {
                      if (isMultiEntitiesMode()) {
                         $pdf->setColumnsSize(12,27,25,18,18);
                         $pdf->displayLine(
-                                    $ci->getType(), 
+                                    $ci->getType(),
                                     $name,
                                     getDropdownName("glpi_entities",$data['entities_id']),
                                     (isset($data["serial"])? "".$data["serial"]."" :"-"),
@@ -137,14 +137,14 @@ function plugin_appliances_showDevice_PDF($pdf, $instID) {
                      } else {
                         $pdf->setColumnsSize(25,31,22,22);
                         $pdf->displayTitle(
-                                    $ci->getType(), 
+                                    $ci->getType(),
                                     $name,
                                     (isset($data["serial"])? "".$data["serial"]."" :"-"),
                                     (isset($data["otherserial"])? "".$data["otherserial"]."" :"-"));
                      }
 
                      plugin_appliances_showRelation_PDF($pdf,
-                                                        $PluginAppliances->fields["relationtypes_id"], 
+                                                        $PluginAppliances->fields["relationtypes_id"],
                                                         $data["IDD"]);
                      plugin_appliances_showOptions_PDF($pdf,$data["id"], $instID);
                   } // Each device
@@ -186,7 +186,7 @@ function plugin_appliances_showTickets($ID) {
                  getCommonLeftJoinForTrackingSearch()."
                  WHERE `glpi_tickets`.`itemtype` = '".$type."'
                        AND `glpi_tickets`.`items_id`r IN (SELECT DISTINCT `items_id`
-                                                          FROM `glpi_plugin_appliances_appliances_items` 
+                                                          FROM `glpi_plugin_appliances_appliances_items`
                                                           WHERE `itemtype` = '".$type."'
                                                                 AND `appliances_id` = '$ID')
                        AND `glpi_tickets`.`status` IN ('new','assign','plan','waiting')".
@@ -211,12 +211,12 @@ function plugin_appliances_showTickets($ID) {
 
 
 
-/** 
+/**
  * show for PDF the applicatif associated with a device
- * 
+ *
  * @param $ID of the device
  * @param $itemtype : type of the device
- * 
+ *
  */
 function plugin_appliances_showAssociated_PDF($pdf, $ID, $itemtype){
    global $DB,$CFG_GLPI, $LANG;
@@ -224,18 +224,18 @@ function plugin_appliances_showAssociated_PDF($pdf, $ID, $itemtype){
    $pdf->setColumnsSize(100);
    $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][9].'</b>');
 
-   $ci = new CommonItem(); 
-   $ci->getFromDB($itemtype,$ID); 
+   $ci = new CommonItem();
+   $ci->getFromDB($itemtype,$ID);
 
    $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
                     `glpi_plugin_appliances_appliances`.*
              FROM `glpi_plugin_appliances_appliances_items`,
                   `glpi_plugin_appliances_appliances`
-             LEFT JOIN `glpi_entities` 
+             LEFT JOIN `glpi_entities`
                   ON (`glpi_entities`.`id` = `glpi_plugin_appliances_appliances`.`entities_id`)
-             WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '$ID' 
-                   AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype' 
-                   AND `glpi_plugin_appliances_appliances_items`.`appliances_id` 
+             WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '$ID'
+                   AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype'
+                   AND `glpi_plugin_appliances_appliances_items`.`appliances_id`
                         = `glpi_plugin_appliances_appliances`.`id`".
                    getEntitiesRestrictRequest(" AND ","glpi_plugin_appliances_appliances",'','',
                                        isset($CFG_GLPI["recursive_type"][PLUGIN_APPLIANCES_TYPE]));
@@ -284,13 +284,13 @@ function plugin_appliances_showAssociated_PDF($pdf, $ID, $itemtype){
 
 
 
-/** 
+/**
  * Show for PDF the relation for a device/applicatif
- * 
+ *
  * @param $pdf object for the output
  * @param $drelation_type : type of the relation
  * @param $relID ID of the relation
- * 
+ *
  */
 function plugin_appliances_showRelation_PDF ($pdf, $relationtype, $relID) {
    global $DB,$CFG_GLPI, $LANG;
@@ -304,16 +304,16 @@ function plugin_appliances_showRelation_PDF ($pdf, $relationtype, $relID) {
    $title = plugin_appliances_getrelationtypename($relationtype);
 
    if (in_array($tablename,$CFG_GLPI["dropdowntree_tables"])) {
-      $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`, 
+      $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
                          `completename` AS dispname ";
    } else {
-      $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`, 
+      $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
                          `name` AS dispname ";
    }
    $sql_loc .= "FROM `".$tablename."` ,
-                     `glpi_plugin_appliances_relations`, 
+                     `glpi_plugin_appliances_relations`,
                      `glpi_plugin_appliances_appliances_items`
-                WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id` 
+                WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
                       AND `glpi_plugin_appliances_relations`.`appliances_items_id`
                               = `glpi_plugin_appliances_appliances_items`.`id`
                       AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
@@ -326,13 +326,13 @@ function plugin_appliances_showRelation_PDF ($pdf, $relationtype, $relID) {
    $pdf->setColumnsSize(100);
    $pdf->displayLine("<b><i>".$LANG['plugin_appliances'][22]." :</i> $title :</b> ".
                       implode(', ',$opts));
-   	
+
 }
 
 
 /**
  * Show the optional value for a device / applicatif
- * 
+ *
  * @param $ID of the relation
  * @param $appliancesID, ID of the applicatif
  * @param $canedit, if user is allowed to edit the values
@@ -342,9 +342,9 @@ function plugin_appliances_showRelation_PDF ($pdf, $relationtype, $relID) {
 function plugin_appliances_showOptions ($ID, $appliancesID, $canedit) {
    global $DB, $CFG_GLPI, $LANG;
 
-   $query_app_opt = "SELECT `id`, `champ`, `ddefault` 
-                     FROM `glpi_plugin_appliances_optvalues` 
-                     WHERE `appliances_id` = '$appliancesID' 
+   $query_app_opt = "SELECT `id`, `champ`, `ddefault`
+                     FROM `glpi_plugin_appliances_optvalues`
+                     WHERE `appliances_id` = '$appliancesID'
                      ORDER BY `vvalues`";
 
    $result_app_opt = $DB->query($query_app_opt);
@@ -352,8 +352,8 @@ function plugin_appliances_showOptions ($ID, $appliancesID, $canedit) {
 
    if ($canedit)  {
       echo "<form method='post' action='".$CFG_GLPI["root_doc"].
-            "/plugins/appliances/front/plugin_appliances.form.php'>";
-      echo "<input type='hidden' name='number_champs' value='$number_champs'>";		
+            "/plugins/appliances/front/appliance.form.php'>";
+      echo "<input type='hidden' name='number_champs' value='$number_champs'>";
    }
    echo "<table>";
 
@@ -361,7 +361,7 @@ function plugin_appliances_showOptions ($ID, $appliancesID, $canedit) {
       if ($data_opt = $DB->fetch_array($result_app_opt)) {
          $query_val = "SELECT `vvalue`
                        FROM `glpi_plugin_appliances_optvalues_items`
-                       WHERE `optvalues_id` = '".$data_opt["id"]."' 
+                       WHERE `optvalues_id` = '".$data_opt["id"]."'
                              AND `items_id` = '$ID'";
 
          $result_val = $DB->query($query_val);
@@ -381,7 +381,7 @@ function plugin_appliances_showOptions ($ID, $appliancesID, $canedit) {
          }
          echo "</td></tr>";
       } else {
-         echo "<input type='hidden' name='opt_id$i' value='-1'>"; 
+         echo "<input type='hidden' name='opt_id$i' value='-1'>";
       }
    } // For
 
@@ -397,7 +397,7 @@ function plugin_appliances_showOptions ($ID, $appliancesID, $canedit) {
 
 /**
  * Show for PDF the optional value for a device / applicatif
- * 
+ *
  * @param $pdf object for the output
  * @param $ID of the relation
  * @param $appliancesID, ID of the applicatif
@@ -406,8 +406,8 @@ function plugin_appliances_showOptions_PDF ($pdf, $ID, $appliancesID) {
    global $DB, $CFG_GLPI, $LANG;
 
    $query_app_opt = "SELECT `id`, `champ`, `ddefault`
-                     FROM `glpi_plugin_appliances_optvalues` 
-                     WHERE `appliances_id` = '$appliancesID' 
+                     FROM `glpi_plugin_appliances_optvalues`
+                     WHERE `appliances_id` = '$appliancesID'
                      ORDER BY `vvalues`";
 
    $result_app_opt = $DB->query($query_app_opt);
@@ -420,9 +420,9 @@ function plugin_appliances_showOptions_PDF ($pdf, $ID, $appliancesID) {
    $opts = array();
    for ($i=1 ; $i<=$number_champs ; $i++) {
       if ($data_opt = $DB->fetch_array($result_app_opt)) {
-         $query_val = "SELECT `vvalue` 
-                       FROM `glpi_plugin_appliances_optvalues_items` 
-                       WHERE `optvalues_id` = '".$data_opt["id"]."' 
+         $query_val = "SELECT `vvalue`
+                       FROM `glpi_plugin_appliances_optvalues_items`
+                       WHERE `optvalues_id` = '".$data_opt["id"]."'
                              AND `itesm_id` = '$ID'";
 
          $result_val = $DB->query($query_val);
@@ -442,7 +442,7 @@ function plugin_appliances_showOptions_PDF ($pdf, $ID, $appliancesID) {
 
 /**
  * Show for PDF an applicatif
- * 
+ *
  * @param $pdf object for the output
  * @param $ID of the applicatif
  */
@@ -479,9 +479,9 @@ function plugin_appliances_main_PDF ($pdf, $ID) {
       '<b><i>'.$LANG['plugin_appliances'][22].' :</i></b> '.
          html_clean(plugin_appliances_getrelationtypename($item->fields["relationtypes_id"])));
 
-   $query_app = "SELECT `champ`, `ddefault` 
-                 FROM `glpi_plugin_appliances_optvalues` 
-                 WHERE `appliances_id` = '$ID' 
+   $query_app = "SELECT `champ`, `ddefault`
+                 FROM `glpi_plugin_appliances_optvalues`
+                 WHERE `appliances_id` = '$ID'
                  ORDER BY `vvalues`";
    $result_app = $DB->query($query_app);
 

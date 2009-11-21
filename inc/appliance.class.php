@@ -373,135 +373,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<td colspan='2' class='center'>".$datestring.$date;
       echo "</td></tr>";
 
-/*      if ($ID) {
-         echo "<td class='tab_bg_1' valign='top'>";
-         echo "<table cellpadding='2' cellspacing='2' border='0'>";
-         echo "<tr><td>".$LANG['plugin_appliances'][24]."</td></tr>\n";
-         echo "<tr><td>".$LANG['plugin_appliances'][25]."</td>\n";
-         echo "<td>".$LANG['plugin_appliances'][26]."</td></tr>\n";
-
-         $query_app = "SELECT `champ`, `ddefault`
-                       FROM `glpi_plugin_appliances_optvalues`
-                       WHERE `appliances_id` = '$ID'
-                       ORDER BY `vvalues`";
-
-         $result_app = $DB->query($query_app);
-         $number_champs = $DB->numrows($result_app);
-         $number_champs++;
-         echo "<input type='hidden' name='number_champs' value='$number_champs'>\n";
-         $i = 1;
-         while ($i <= $number_champs) {
-            if ($data = $DB->fetch_array($result_app)) {
-               $champ = $data["champ"];
-               $ddefault = $data["ddefault"];
-            } else {
-               $champ = '';
-               $ddefault = '';
-            }
-            echo "<tr>\n<td><input type='text' name='champ$i' value='$champ'></td>\n<td>\n".
-                  "<input type='text' name='ddefault$i' value='$ddefault'></td></tr>\n";
-            $i = $i+1;
-         }
-
-         echo "</td></tr>";
-         echo "</table>";
-
-         echo "</td>";
-
-         echo "<td colspan='2' class='tab_bg_1' valign='top'>";
-      } else {
-         echo "<td colspan='3' class='tab_bg_1' valign='top'>";
-      }
-*/
       $this->showFormButtons($ID,$withtemplate,2);
-
-/*      if ($canedit) {
-
-         if (empty($ID) || $ID <0) {
-            echo "<tr><td class='tab_bg_2' valign='top' colspan='4'>";
-            echo "<div align='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
-            echo "</td></tr>";
-
-				} else {
-
-					echo "<tr>";
-					echo "<td class='tab_bg_2'  colspan='4' valign='top'><div align='center'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
-					if ($this->fields["deleted"]=='0'){
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
-					}else {
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
-
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'></div>";
-					}
-					echo "</td>";
-					echo "</tr>";
-				}
-			}
-			echo "</table></div></form>";
-*/
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
-//		} else {
-//			echo "<div align='center'><b>".$LANG['plugin_applicatifs'][4]."</b></div>";
-//			return false;
-
-	//	}
       return true;
    }
-
-
-   function post_updateItem($input,$updates,$history=1) {
-      global $DB;
-
-      $number_champs = $input["number_champs"];
-
-      for ($i=1 ; $i<=$number_champs ; $i++) {
-         $champ = "champ$i";
-         $ddefault = "ddefault$i";
-
-         $query_app = "SELECT `champ`
-                       FROM g`lpi_plugin_appliances_optvalues`
-                       WHERE `appliances_id` = '".$input["ID"]."'
-                             AND `vvalues` = '$i'";
-         $result_app = $DB->query($query_app);
-
-         if ($data = $DB->fetch_array($result_app)) {
-            // l'entrée existe déjà, il faut faire un update ou un delete
-            if (empty($input[$champ])) {
-               // la valeur saisie est nulle -> on fait un delete
-               $query_app_del = "DELETE
-                                 FROM `glpi_plugin_appliances_optvalues`
-                                 WHERE `appliances_id` = '".$input["ID"]."'
-                                       AND `vvalues` = '$i'";
-               $result_app_del = $DB->query($query_app_del);
-            } else {
-               // la valeur saisie est non nulle -> on fait un update
-               $query_app_upd = "UPDATE
-                                 `glpi_plugin_appliances_optvalues`
-                                 SET `champ` = '".$input[$champ]."',
-                                     `ddefault` = '".$input[$ddefault]."'
-                                 WHERE `appliances_id` = '".$input["ID"]."'
-                                       AND `vvalues` = '$i'";
-               $result_app_upd = $DB->query($query_app_upd);
-            }
-         } else {
-            // l'entrée n'existe pas
-            if (!empty($input[$champ])) {
-               // et la valeur saisie est non nulle -> on fait un insert
-               $query_app_ins = "INSERT INTO
-                                 `glpi_plugin_appliances_optvalues`
-                                 (`appliances_id`, `vvalues`, `champ`, `ddefault`)
-                                 VALUES('".$input["ID"]."', '$i' , '".$input[$champ]."',
-                                        '".$input[$ddefault]."')";
-               $result_app_ins = $DB->query($query_app_ins);
-            }
-         }
-      } // for
-   }
-
 
    /**
     * Show the Device associated with an applicatif
@@ -537,7 +414,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
 
       echo "<form method='post' name='appliances_form$rand' id='appliances_form$rand' action=\"".
-            $CFG_GLPI["root_doc"]."/plugins/appliances/front/plugin_appliances.form.php\">";
+            $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php\">";
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='".($canedit?(6+$colsup):(5+$colsup))."'>".
@@ -756,7 +633,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                           $_SESSION['glpiactiveentities']) || $data["is_recursive"])) {
 
             echo "<td class='center'><a href='".
-                  $CFG_GLPI["root_doc"]."/plugins/appliances/front/plugin_appliances.form.php?id=".
+                  $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php?id=".
                   $data["id"]."'>".$data["name"];
             if ($_SESSION["glpiis_ids_visible"]) {
                echo " (".$data["id"].")";
@@ -796,7 +673,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
          if ($canedit) {
             echo "<td class='center tab_bg_2'><a href='".$CFG_GLPI["root_doc"].
-                  "/plugins/appliances/front/plugin_appliances.form.php?deleteappliance=1".
+                  "/plugins/appliances/front/appliance.form.php?deleteappliance=1".
                   "&amp;id=".$data["entID"]."'><b>".$LANG['buttons'][6]."</b></a></td>";
          }
          echo "</tr>";
@@ -829,7 +706,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
             // needed to use the button "additem"
             echo "<form method='post' action=\"".$CFG_GLPI["root_doc"].
-                  "/plugins/appliances/front/plugin_appliances.form.php\">";
+                  "/plugins/appliances/front/appliance.form.php\">";
             echo "<input type='hidden' name='item' value='$ID'>".
                   "<input type='hidden' name='itemtype' value='$itemtype'>";
             plugin_appliances_dropdownappliances("conID",$entities,$used);
@@ -890,7 +767,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       if ($canedit) {
          echo "<form method='post' name='relation' action='".
-               $CFG_GLPI["root_doc"]."/plugins/appliances/front/plugin_appliances.form.php'>";
+               $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php'>";
          echo "<br><input type='hidden' name='deviceID' value='$relID'>";
 
          $i = 0;

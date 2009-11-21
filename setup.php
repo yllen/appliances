@@ -129,7 +129,7 @@ function plugin_init_appliances() {
 
          if (plugin_appliances_haveRight("appliance","w")) {
             $PLUGIN_HOOKS['submenu_entry']['appliances']['add']
-               = 'front/plugin_appliances.form.php?new=1';
+               = 'front/appliance.form.php?new=1';
             $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
             $PLUGIN_HOOKS['pre_item_delete']['appliances'] = 'plugin_pre_item_delete_appliances';
             $PLUGIN_HOOKS['item_purge']['appliances'] = 'plugin_item_purge_appliances';

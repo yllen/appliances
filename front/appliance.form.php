@@ -50,6 +50,7 @@ if (!isset($_GET["withtemplate"])) {
 
 $PluginAppliances = new PluginAppliancesAppliance();
 $PluginItem = new PluginAppliancesAppliance_Item();
+$Optvalue = new PluginAppliancesOptvalue();
 
 if (isset($_POST["add"])) {
    $PluginAppliances->check(-1,'w',$_POST);
@@ -106,7 +107,7 @@ if (isset($_POST["add"])) {
       $input = array('appliances_id' => $_POST['conID'],
                      'items_id'      => $_POST['item'],
                      'itemtype'      => $_POST['itemtype']);
-      
+
       $PluginItem->check(-1,'w',$input);
       $newID = $PluginItem->add($input);
    }
@@ -126,6 +127,11 @@ if (isset($_POST["add"])) {
    $input = array('id' => $_GET["id"]);
    $PluginItem->check($_GET["id"],'w');
    $PluginItem->delete($input);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST['update_optvalues'])) {
+   $PluginAppliances->check($_POST['appliances_id'],'w');
+   $Optvalue->updateList($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {

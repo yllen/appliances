@@ -59,7 +59,7 @@ if (!isset($_POST["withtemplate"])) {
 }
 // plugin_appliances_checkRight("appliances","r");
 $appliance = new PluginAppliancesAppliance();
-
+$optvalue = new PluginAppliancesOptvalue();
 if ($_POST["id"] >0
     && $appliance->getFromDB($_POST["id"])
     && $appliance->can($_POST["id"],'r')) {
@@ -74,6 +74,10 @@ if ($_POST["id"] >0
          Contract::showAssociated($appliance,$_POST['withtemplate']);
          Document::showAssociated($appliance,$_POST['withtemplate']);
          displayPluginAction(PLUGIN_APPLIANCES_TYPE,$_POST["id"],$_POST['glpi_tab']);
+         break;
+
+      case 2 :
+         $optvalue->showList($appliance);
          break;
 
       case 6 :

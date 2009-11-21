@@ -40,8 +40,8 @@ $LANG['plugin_appliances'][21] = "Responsable technique";
 $LANG['plugin_appliances'][22] = "Composants à relier";
 $LANG['plugin_appliances'][23] = "Entité";
 $LANG['plugin_appliances'][24] = "Champs personnalisables";
-$LANG['plugin_appliances'][25] = "Champ";
-$LANG['plugin_appliances'][26] = "Défaut";
+$LANG['plugin_appliances'][25] = "Nom du champ";
+$LANG['plugin_appliances'][26] = "Valeur par défaut";
 
 $LANG['plugin_appliances'][30] = "Tickets en cours sur les éléments associés";
 
