@@ -27,7 +27,7 @@ Purpose of file:
 ----------------------------------------------------------------------
  */
 //Spanish
-$title = "Aplicativo";	
+$title = "Aplicativo";
 
 $LANG['plugin_appliances']['title'][1] = "".$title."";
 
@@ -35,10 +35,7 @@ $LANG['plugin_appliances'][2] = "Lugar";
 $LANG['plugin_appliances'][3] = "Entorno";
 $LANG['plugin_appliances'][4] = "No se encuentra el ".$title."";
 $LANG['plugin_appliances'][7] = "Elementos asociados";
-$LANG['plugin_appliances'][8] = "Nombre";
 $LANG['plugin_appliances'][9] = "".$title."(s) asociado(s)";
-$LANG['plugin_appliances'][12] = "Comentarios";
-$LANG['plugin_appliances'][20] = "Tipo";
 $LANG['plugin_appliances'][21] = "Responsable técnico";
 $LANG['plugin_appliances'][22] = "Item a vincular";
 $LANG['plugin_appliances'][23] = "Entidad";
