@@ -242,7 +242,7 @@ function plugin_appliances_forceGroupBy($type) {
 
 
 function plugin_appliances_giveItem($type,$ID,$data,$num) {
-   global $CFG_GLPI, $INFOFORM_PAGES, $LANG, $LINK_ID_TABLE;
+   global $DB, $CFG_GLPI, $INFOFORM_PAGES, $LANG, $LINK_ID_TABLE;
 
    $searchopt = &getSearchOptions($type);
    $table = $searchopt[$ID]["table"];
@@ -250,59 +250,52 @@ function plugin_appliances_giveItem($type,$ID,$data,$num) {
 
    switch ($table.'.'.$field) {
       case "glpi_plugin_appliances_appliances_items.items_id" :
+         $appliances_id=$data['id'];
          $query_device = "SELECT DISTINCT `itemtype`
                           FROM `glpi_plugin_appliances_appliances_items`
-                          WHERE `appliances_id` = '".$data['id']."'
+                          WHERE `appliances_id` = '$appliances_id'
                           ORDER BY `itemtype`";
          $result_device = $DB->query($query_device);
          $number_device = $DB->numrows($result_device);
-         $y = 0;
          $out = '';
          if ($number_device > 0) {
             $ci = new CommonItem();
-            while ($y < $number_device) {
+            for ($y=0 ; $y < $number_device ; $y++) {
                $column = "name";
                if ($type==TRACKING_TYPE) {
                   $column = "id";
                }
                $type = $DB->result($result_device, $y, "itemtype");
+
                if (!empty($LINK_ID_TABLE[$type])) {
-                  $query = "SELECT '".$LINK_ID_TABLE[$type]."'.*,
-                                   `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
-                                   `glpi_entities`.`id` AS entity
-                            FROM `glpi_plugin_appliances_appliances_items`, '".$LINK_ID_TABLE[$type]."'
+                  $query = "SELECT `".$LINK_ID_TABLE[$type]."`.`id`
+                            FROM `glpi_plugin_appliances_appliances_items`, `".$LINK_ID_TABLE[$type]."`
                             LEFT JOIN `glpi_entities`
-                              ON (`glpi_entities`.`id` = '".$LINK_ID_TABLE[$type]."'.`entities_id`)
-                            WHERE '".$LINK_ID_TABLE[$type]."'.`id`
+                              ON (`glpi_entities`.`id` = `".$LINK_ID_TABLE[$type]."`.`entities_id`)
+                            WHERE `".$LINK_ID_TABLE[$type]."`.`id`
                                      = `glpi_plugin_appliances_appliances_items`.`items_id`
                                  AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
-                                 AND `glpi_plugin_appliances_appliances_items`.`appliances_id` = '".$data['id']."'".
+                                 AND `glpi_plugin_appliances_appliances_items`.`appliances_id` = '$appliances_id'".
                                  getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',
                                                             isset($CFG_GLPI["recursive_type"][$type]));
 
                   if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])) {
-                     $query .= " AND '".$LINK_ID_TABLE[$type]."'.`is_template` = '0'";
+                     $query .= " AND `".$LINK_ID_TABLE[$type]."`.`is_template` = '0'";
                   }
                   $query .= " ORDER BY `glpi_entities`.`completename`,
-                             '".$LINK_ID_TABLE[$type]."'.'$column'";
+                             `".$LINK_ID_TABLE[$type]."`.`$column`";
 
                   if ($result_linked = $DB->query($query)) {
+                     $ci->setType($type,true);
                      if ($DB->numrows($result_linked)) {
-                        $ci->setType($type);
                         while ($data=$DB->fetch_assoc($result_linked)) {
-                           $out .= $ci->getType()." - ";
-                           $ID = "";
-                           if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                              $ID = " (".$data["ID"].")";
+                           if ($ci->obj->getFromDB($data['id'])) {
+                              $out .= $ci->getType()." - ".$ci->obj->getLink()."<br>";
                            }
-                           $name = "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type].
-                                    "?id=".$data["id"]."\">".$data["name"]."$ID</a>";
-                           $out .= $name."<br> ";
                         }
                      }
                   }
                }
-               $y++;
             }
          }
          return $out;

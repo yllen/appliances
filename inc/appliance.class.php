@@ -46,169 +46,96 @@ class PluginAppliancesAppliance extends CommonDBTM {
    public $dohistory        = true;
 
 
-   function plugin_appliances_getSearchOption() {
+   function getSearchOptions() {
       global $LANG;
 
       $tab = array();
 
-      if (plugin_appliances_haveRight("appliance","r")) {
-         $tab['common'] = $LANG['appliances']['title'][1];
+      $tab['common'] = $LANG['plugin_appliances']['title'][1];
 
-         $tab[1]['table']     = 'glpi_plugin_appliances_appliances';
-         $tab[1]['field']     = 'name';
-         $tab[1]['linkfield'] = 'name';
-         $tab[1]['name']      = $LANG['plugin_appliances'][8];
-         $tab[1]['datatype']  = 'itemlink';
+      $tab[1]['table']     = 'glpi_plugin_appliances_appliances';
+      $tab[1]['field']     = 'name';
+      $tab[1]['linkfield'] = 'name';
+      $tab[1]['name']      = $LANG['common'][16];
+      $tab[1]['datatype']  = 'itemlink';
 
-         $tab[2]['table']     = 'glpi_plugin_appliances_appliancetypes';
-         $tab[2]['field']     = 'name';
-         $tab[2]['linkfield'] = 'appliancetypes_id';
-         $tab[2]['name']      = $LANG['plugin_appliances'][20];
+      $tab[2]['table']     = 'glpi_plugin_appliances_appliancetypes';
+      $tab[2]['field']     = 'name';
+      $tab[2]['linkfield'] = 'appliancetypes_id';
+      $tab[2]['name']      = $LANG['common'][17];
 
-         $tab[3]['table']     = 'glpi_locations';
-         $tab[3]['field']     = 'completename';
-         $tab[3]['linkfield'] = 'locations_id';
-         $tab[3]['name']      = $LANG['plugin_appliances'][2];
+      $tab[3]['table']     = 'glpi_locations';
+      $tab[3]['field']     = 'completename';
+      $tab[3]['linkfield'] = 'locations_id';
+      $tab[3]['name']      = $LANG['plugin_appliances'][2];
 
-         $tab[4]['table']     = 'glpi_plugin_appliances_appliances';
-         $tab[4]['field']     =  'comment';
-         $tab[4]['linkfield'] =  'comment';
-         $tab[4]['name']      =  $LANG['plugin_appliances'][12];
-         $tab[4]['datatype']  =  'text';
+      $tab[4]['table']     = 'glpi_plugin_appliances_appliances';
+      $tab[4]['field']     =  'comment';
+      $tab[4]['linkfield'] =  'comment';
+      $tab[4]['name']      =  $LANG['common'][25];
+      $tab[4]['datatype']  =  'text';
 
-         $tab[5]['table']        = 'glpi_plugin_appliances_appliances_items';
-         $tab[5]['field']        = 'items_id';
-         $tab[5]['linkfield']    = '';
-         $tab[5]['name']         = $LANG['plugin_appliances'][7];
-         $tab[5]['forcegroupby'] =  true;
+      $tab[5]['table']        = 'glpi_plugin_appliances_appliances_items';
+      $tab[5]['field']        = 'items_id';
+      $tab[5]['linkfield']    = '';
+      $tab[5]['name']         = $LANG['plugin_appliances'][7];
+      $tab[5]['forcegroupby'] =  true;
 
-         $tab[6]['table']     = 'glpi_users';
-         $tab[6]['field']     = 'name';
-         $tab[6]['linkfield'] = 'users_id';
-         $tab[6]['name']      = $LANG['plugin_appliances'][21];
+      $tab[6]['table']     = 'glpi_users';
+      $tab[6]['field']     = 'name';
+      $tab[6]['linkfield'] = 'users_id';
+      $tab[6]['name']      = $LANG['plugin_appliances'][21];
 
-         $tab[7]['table']     = 'glpi_plugin_appliances_appliances';
-         $tab[7]['field']     = 'is_recursive';
-         $tab[7]['linkfield'] = '';
-         $tab[7]['name']      = $LANG['entity'][9];
-         $tab[7]['datatype']  = 'bool';
+      $tab[7]['table']     = 'glpi_plugin_appliances_appliances';
+      $tab[7]['field']     = 'is_recursive';
+      $tab[7]['linkfield'] = '';
+      $tab[7]['name']      = $LANG['entity'][9];
+      $tab[7]['datatype']  = 'bool';
 
-         $tab[8]['table']     = 'glpi_groups';
-         $tab[8]['field']     = 'name';
-         $tab[8]['linkfield'] = 'groups_id';
-         $tab[8]['name']      = $LANG['common'][35];
+      $tab[8]['table']     = 'glpi_groups';
+      $tab[8]['field']     = 'name';
+      $tab[8]['linkfield'] = 'groups_id';
+      $tab[8]['name']      = $LANG['common'][35];
 
-         $tab[9]['table']     = 'glpi_plugin_appliances_appliances';
-         $tab[9]['field']     = 'date_mod';
-         $tab[9]['linkfield'] = 'date_mod';
-         $tab[9]['name']      = $LANG['common'][26];
-         $tab[9]['datatype']  = 'datetime';
+      $tab[9]['table']     = 'glpi_plugin_appliances_appliances';
+      $tab[9]['field']     = 'date_mod';
+      $tab[9]['linkfield'] = 'date_mod';
+      $tab[9]['name']      = $LANG['common'][26];
+      $tab[9]['datatype']  = 'datetime';
 
-         $tab[10]['table']     = 'glpi_plugin_appliances_environments';
-         $tab[10]['field']     = 'name';
-         $tab[10]['linkfield'] = 'environments_id';
-         $tab[10]['name']      = $LANG['plugin_appliances'][3];
+      $tab[10]['table']     = 'glpi_plugin_appliances_environments';
+      $tab[10]['field']     = 'name';
+      $tab[10]['linkfield'] = 'environments_id';
+      $tab[10]['name']      = $LANG['plugin_appliances'][3];
 
-         $tab[11]['table']     = 'glpi_plugin_appliances_appliances';
-         $tab[11]['field']     = 'is_helpdesk_visible';
-         $tab[11]['linkfield'] = 'is_helpdesk_visible';
-         $tab[11]['name']      = $LANG['software'][46];
-         $tab[11]['datatype']  = 'bool';
+      $tab[11]['table']     = 'glpi_plugin_appliances_appliances';
+      $tab[11]['field']     = 'is_helpdesk_visible';
+      $tab[11]['linkfield'] = 'is_helpdesk_visible';
+      $tab[11]['name']      = $LANG['software'][46];
+      $tab[11]['datatype']  = 'bool';
 
-         $tab[30]['table']     = 'glpi_plugin_appliances_appliances';
-         $tab[30]['field']     = 'id';
-         $tab[30]['linkfield'] = '';
-         $tab[30]['name']      = $LANG['common'][2];
+      $tab[30]['table']     = 'glpi_plugin_appliances_appliances';
+      $tab[30]['field']     = 'id';
+      $tab[30]['linkfield'] = '';
+      $tab[30]['name']      = $LANG['common'][2];
 
-         $tab[80]['table']     = 'glpi_entities';
-         $tab[80]['field']     = 'completename';
-         $tab[80]['linkfield'] = 'entities_id';
-         $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
 
-         $tab['tracking'] = $LANG['title'][24];
+      $tab['tracking'] = $LANG['title'][24];
 
-         $tab[60]['table']        = 'glpi_tracking';
-         $tab[60]['field']        = 'count';
-         $tab[60]['linkfield']    = '';
-         $tab[60]['name']         = $LANG['stats'][13];
-         $tab[60]['forcegroupby'] = true;
-         $tab[60]['usehaving']    = true;
-         $tab[60]['datatype']     = 'number';
+      $tab[60]['table']        = 'glpi_tracking';
+      $tab[60]['field']        = 'count';
+      $tab[60]['linkfield']    = '';
+      $tab[60]['name']         = $LANG['stats'][13];
+      $tab[60]['forcegroupby'] = true;
+      $tab[60]['usehaving']    = true;
+      $tab[60]['datatype']     = 'number';
 
-         $tab['contract'] = $LANG['Menu'][25];
-
-         $tab[29]['table']        = 'glpi_contracts';
-         $tab['field']            = 'name';
-         $tab['linkfield']        = '';
-         $tab[29]['name']         = $LANG['common'][16]." ".$LANG['financial'][1];
-         $tab[29]['forcegroupby'] = true;
-
-         $tab[30]['table']        = 'glpi_contracts';
-         $tab[30]['field']        = 'num';
-         $tab[30]['linkfield']    = '';
-         $tab[30]['name']         = $LANG['financial'][4]." ".$LANG['financial'][1];
-         $tab[30]['forcegroupby'] = true;
-
-         $tab[130]['table']        = 'glpi_contracts';
-         $tab[130]['field']        = 'duration';
-         $tab[130]['linkfield']    = '';
-         $tab[130]['name']         = $LANG['financial'][8]." ".$LANG['financial'][1];
-         $tab[130]['forcegroupby'] = true;
-
-         $tab[131]['table']        = 'glpi_contracts';
-         $tab[131]['field']        = 'periodicity';
-         $tab[131]['linkfield']    = '';
-         $tab[131]['name']         = $LANG['financial'][69];
-         $tab[131]['forcegroupby'] = true;
-
-         $tab[132]['table']         = 'glpi_contracts';
-         $tab[132]['field']         = 'begin_date';
-         $tab[132]['linkfield']     = '';
-         $tab[132]['name']          = $LANG['search'][8]." ".$LANG['financial'][1];
-         $tab[132]['forcegroupby']  = true;
-         $tab[132]['datatype']      = 'date';
-
-         $tab[133]['table']         = 'glpi_contracts';
-         $tab[133]['field']         = 'accounting_number';
-         $tab[133]['linkfield']     = '';
-         $tab[133]['name']          = $LANG['financial'][13]." ".$LANG['financial'][1];
-         $tab[133]['forcegroupby']  = true;
-
-         $tab[134]['table']         = 'glpi_contracts';
-         $tab[134]['field']         = 'end_date';
-         $tab[134]['linkfield']     = '';
-         $tab[134]['name']          = $LANG['search'][9]." ".$LANG['financial'][1];
-         $tab[134]['forcegroupby']  = true;
-         $tab[134]['datatype']      = 'date_delay';
-         $tab[134]['datafields'][1] = 'begin_date';
-         $tab[134]['datafields'][2] = 'duration';
-
-         $tab[135]['table']         = 'glpi_contracts';
-         $tab[135]['field']         = 'notice';
-         $tab[135]['linkfield']     = '';
-         $tab[135]['name']          = $LANG['financial'][10]." ".$LANG['financial'][1];
-         $tab[135]['forcegroupby']  = true;
-
-         $tab[136]['table']         = 'glpi_contracts';
-         $tab[136]['field']         = 'cost';
-         $tab[136]['linkfield']     = '';
-         $tab[136]['name']          = $LANG['financial'][5]." ".$LANG['financial'][1];
-         $tab[136]['forcegroupby']  = true;
-
-         $tab[137]['table']         = 'glpi_contracts';
-         $tab[137]['field']         = 'billing';
-         $tab[137]['linkfield']     = '';
-         $tab[137]['name']          = $LANG['financial'][11]." ".$LANG['financial'][1];
-         $tab[137]['forcegroupby']  = true;
-
-         $tab[138]['table']         = 'glpi_contracts';
-         $tab[138]['field']         = 'renewal';
-         $tab[138]['linkfield']     = '';
-         $tab[138]['name']          = $LANG['financial'][107]." ".$LANG['financial'][1];
-         $tab[138]['forcegroupby']  = true;
-   }
    return $tab;
-}
+   }
 
 
    function cleanDBonPurge($ID) {
@@ -780,6 +707,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo "&nbsp;";
       }
    }
+
 
 }
 
