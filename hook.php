@@ -49,23 +49,24 @@ function plugin_appliances_AssignToTicket($types) {
 
 
 function plugin_appliances_install() {
+   global $DB;
 
    include_once (GLPI_ROOT."/inc/profile.class.php");
 
    if (TableExists("glpi_plugin_applicatifs_profiles")) {
       if (FieldExists("glpi_plugin_applicatifs_profiles","create_applicatifs")) { // version <1.3
-         plugin_appliances_update('applicatifs','1.3');
+         $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.3.sql");
       }
    }
    if (TableExists("glpi_plugin_applicatifs")) {
       if (!FieldExists("glpi_plugin_applicatifs","recursive")) { // version 1.3
-         plugin_appliances_update('applicatifs','1.4');
+         $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.4.sql");
       }
       if (!FieldExists("glpi_plugin_applicatifs","FK_groups")) { // version 1.4
-         plugin_appliances_update('applicatifs','1.5.0');
+         $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.5.0.sql");
       }
       if (!FieldExists("glpi_plugin_applicatifs","helpdesk_visible")) { // version 1.5.0
-         plugin_appliances_update('applicatifs','1.5.1');
+         $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.5.1.sql");
       }
       if (FieldExists("glpi_plugin_applicatifs","state")) { // empty 1.5.0 not in update 1.5.0
          $DB->query("DROP `state`");
@@ -73,10 +74,10 @@ function plugin_appliances_install() {
       if (isIndex("glpi_plugin_applicatifs_optvalues_machines", "optvalue_ID")) { // in empty 1.5.0 not in update 1.5.0
          $DB->query("DROP KEY `optvalue_ID`");
       }
-      plugin_appliances_update('appliances','1.6.0');
+      $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.6.0.sql");
    }
    if (!TableExists("glpi_plugin_appliances_appliances")) { // not installed
-       plugin_appliances_installing('1.6.0');
+      $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/empty-1.6.0.sql");
    }
 
    plugin_appliances_createFirstAccess($_SESSION['glpiactiveprofile']['id']);
