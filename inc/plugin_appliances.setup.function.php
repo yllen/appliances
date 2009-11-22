@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 function plugin_appliances_installing($version) {
    global $DB,$LANG;
 
-   $DB_file = GLPI_ROOT ."/plugins/appliances/inc/plugin_appliances-$version-empty.sql";
+   $DB_file = GLPI_ROOT ."/plugins/appliances/sql/empty-$version.sql";
    $DBf_handle = fopen($DB_file, "rt");
    $sql_query = fread($DBf_handle, filesize($DB_file));
    fclose($DBf_handle);
@@ -50,21 +50,13 @@ function plugin_appliances_installing($version) {
       }
       $DB->query($sql_line);
    }
-
-   $query = "INSERT INTO
-             `glpi_plugin_appliances_relationtypes`
-             (`id`, `name`, `comment`)
-             VALUES (1 , '".$LANG['common'][15]."', NULL),
-                    (2 , '".$LANG['help'][27]."', NULL),
-                    (3 , '".$LANG['help'][31]."', NULL)";
-   $DB->query($query) or die($DB->error());
 }
 
 
 function plugin_appliances_update($name,$version) {
    global $DB;
 
-   $DB_file = GLPI_ROOT ."/plugins/appliances/inc/plugin_$name-$version-update.sql";
+   $DB_file = GLPI_ROOT ."/plugins/appliances/sql/update-$version.sql";
    $DBf_handle = fopen($DB_file, "rt");
    $sql_query = fread($DBf_handle, filesize($DB_file));
    fclose($DBf_handle);
@@ -75,31 +67,6 @@ function plugin_appliances_update($name,$version) {
       }
       $DB->query($sql_line);
    }
-}
-
-
-function plugin_appliances_updatev14() {
-   global $DB,$LANG;
-
-   $DB_file = GLPI_ROOT ."/plugins/appliances/inc/plugin_applicatifs-1.4-update.sql";
-   $DBf_handle = fopen($DB_file, "rt");
-   $sql_query = fread($DBf_handle, filesize($DB_file));
-   fclose($DBf_handle);
-
-   foreach ( explode(";\n", "$sql_query") as $sql_line) {
-      if (get_magic_quotes_runtime()) {
-         $sql_line = stripslashes_deep($sql_line);
-      }
-      $DB->query($sql_line);
-   }
-
-   $query="INSERT
-           INTO `glpi_dropdown_plugin_applicatifs_relationtype`
-           (`ID`, `name`, `comments`)
-           VALUES (1 , '".$LANG['common'][15]."', NULL),
-                  (2 , '".$LANG['help'][27]."', NULL),
-                  (3 , '".$LANG['help'][31]."', NULL)";
-   $DB->query($query) or die($DB->error());
 }
 
 ?>

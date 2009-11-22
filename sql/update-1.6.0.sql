@@ -62,13 +62,7 @@ ALTER TABLE `glpi_plugin_appliances_profiles`
    CHANGE `applicatifs` `appliance` char(1) default NULL;
 
 
-RENAME TABLE `glpi_dropdown_plugin_applicatifs_relationtype` to `glpi_plugin_appliances_relationtypes`;
-
-ALTER TABLE `glpi_plugin_appliances_relationtypes`
-   CHANGE `ID` `id` int(11) NOT NULL auto_increment,
-   CHANGE `comments` `comment` text,
-   ADD `is_recursive` tinyint(1) NOT NULL default '0';
-
+DROP TABLE IF EXISTS `glpi_dropdown_plugin_applicatifs_relationtype`;
 
 RENAME TABLE `glpi_plugin_applicatifs_relation` to `glpi_plugin_appliances_relations`;
 

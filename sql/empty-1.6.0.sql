@@ -69,14 +69,6 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_profiles` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_relationtypes` (
-   `id` int(11) NOT NULL auto_increment,
-   `name` varchar(255) NOT NULL,
-   `comment` text,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_relations` (
    `id` int(11) NOT NULL auto_increment,
    `appliances_items_id` int(11) NOT NULL default '0',

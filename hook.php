@@ -59,7 +59,7 @@ function plugin_appliances_install() {
    }
    if (TableExists("glpi_plugin_applicatifs")) {
       if (!FieldExists("glpi_plugin_applicatifs","recursive")) { // version 1.3
-         plugin_appliances_updatev14();
+         plugin_appliances_update('applicatifs','1.4');
       }
       if (!FieldExists("glpi_plugin_applicatifs","FK_groups")) { // version 1.4
          plugin_appliances_update('applicatifs','1.5.0');
@@ -92,7 +92,6 @@ function plugin_appliances_uninstall() {
                    'glpi_plugin_appliances_appliancetypes',
                    'glpi_plugin_appliances_environments',
                    'glpi_plugin_appliances_profiles',
-                   'glpi_plugin_appliances_relationtypes',
                    'glpi_plugin_appliances_relations',
                    'glpi_plugin_appliances_optvalues',
                    'glpi_plugin_appliances_optvalues_items');
@@ -104,8 +103,8 @@ function plugin_appliances_uninstall() {
    $query = "DELETE
              FROM `glpi_displayprefs`
              WHERE (`itemtype` = '".PLUGIN_APPLIANCES_TYPE."'
-                    AND `itemtype` = '".PLUGIN_APPLIANCES_APPLIANCESTYPE."'
-                    AND `itemtype` = '".PLUGIN_APPLIANCES_ENVIRONMENT."')";
+                    OR `itemtype` = '".PLUGIN_APPLIANCES_APPLIANCESTYPE."'
+                    OR `itemtype` = '".PLUGIN_APPLIANCES_ENVIRONMENT."')";
    $DB->query($query);
 
    $query = "DELETE
