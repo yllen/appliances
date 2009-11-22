@@ -245,8 +245,8 @@ function plugin_appliances_showRelation_PDF ($pdf, $relationtype, $relID) {
    }
 
    // selects all the attached relations
-   $tablename = plugin_appliances_getrelationtypetable($relationtype);
-   $title = plugin_appliances_getrelationtypename($relationtype);
+   $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
+   $title = PluginAppliancesRelation::getTypeName($relationtype);
 
    if (in_array($tablename,$CFG_GLPI["dropdowntree_tables"])) {
       $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
@@ -357,7 +357,7 @@ function plugin_appliances_main_PDF ($pdf, $ID) {
       '<b><i>'.$LANG["common"][15].' :</i></b> '.
          html_clean(getDropdownName('glpi_locations',$item->fields['locations_id'])),
       '<b><i>'.$LANG['plugin_appliances'][22].' :</i></b> '.
-         html_clean(plugin_appliances_getrelationtypename($item->fields["relationtypes_id"])));
+         html_clean(PluginAppliancesRelation::getTypeName($item->fields["relationtypes_id"])));
 
    $query_app = "SELECT `champ`, `ddefault`
                  FROM `glpi_plugin_appliances_optvalues`

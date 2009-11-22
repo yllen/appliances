@@ -182,7 +182,7 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
 
    $sopt = array();
    if (plugin_appliances_haveRight("appliance","r")) {
-      if (in_array($itemtype, plugin_appliances_getTypes())) {
+      if (in_array($itemtype, PluginAppliancesAppliance::getTypes())) {
          $sopt[1210]['table']         = 'glpi_plugin_appliances_appliances';
          $sopt[1210]['field']         = 'name';
          $sopt[1210]['linkfield']     = '';
@@ -316,7 +316,7 @@ function plugin_appliances_MassiveActions($type) {
                       'plugin_appliances_transfert'  => $LANG['buttons'][48]);
 
       default :
-         if (in_array($type, plugin_appliances_getTypes())) {
+         if (in_array($type, PluginAppliancesAppliance::getTypes())) {
             return array("plugin_appliances_add_item" => $LANG['plugin_appliances']['setup'][13]);
          }
    }
@@ -332,13 +332,13 @@ function plugin_appliances_MassiveActionsDisplay($type,$action) {
          switch ($action) {
             // No case for add_document : use GLPI core one
             case "plugin_appliances_install" :
-               dropdownAllItems("item_item",0,0,-1,plugin_appliances_getTypes());
+               dropdownAllItems("item_item",0,0,-1,PluginAppliancesAppliance::getTypes());
                echo "<input type='submit' name='massiveaction' class='submit' ".
                      "value='".$LANG['buttons'][2]."'>";
                break;
 
             case "plugin_appliances_desinstall" :
-               dropdownAllItems("item_item",0,0,-1,plugin_appliances_getTypes());
+               dropdownAllItems("item_item",0,0,-1,PluginAppliancesAppliance::getTypes());
                echo "<input type='submit' name='massiveaction' class='submit' ".
                      "value='".$LANG['buttons'][2]."'>";
                break;
@@ -352,7 +352,7 @@ function plugin_appliances_MassiveActionsDisplay($type,$action) {
          break;
 
       default :
-         if (in_array($type, plugin_appliances_getTypes())) {
+         if (in_array($type, PluginAppliancesAppliance::getTypes())) {
             plugin_appliances_dropdownappliances("conID");
             echo "<input type='submit' name='massiveaction' class='submit\' ".
                   "value='".$LANG['buttons'][2]."'>";
@@ -475,7 +475,7 @@ function plugin_item_delete_appliances($parm) {
 // Hook done on purge item case
 function plugin_item_purge_appliances($parm) {
 
-   if (in_array($parm['type'], plugin_appliances_getTypes())
+   if (in_array($parm['type'], PluginAppliancesAppliance::getTypes())
        && $parm['type'] != TRACKING_TYPE) { // TRACKING_TYPE handle in plugin_item_delete_appliances
 
       $temp = new PluginAppliancesAppliance_Item();
@@ -499,7 +499,7 @@ function plugin_get_headings_appliances($type,$ID,$withtemplate) {
       if ($ID > 0) {
          return array(1 => $LANG['plugin_appliances']['title'][1]);
       }
-   } else if (in_array($type, plugin_appliances_getTypes())) {
+   } else if (in_array($type, PluginAppliancesAppliance::getTypes())) {
       if (!$withtemplate) {
          // Non template case
          return array(1 => $LANG['plugin_appliances']['title'][1]);
@@ -512,7 +512,7 @@ function plugin_get_headings_appliances($type,$ID,$withtemplate) {
 // Define headings actions added by the plugin
 function plugin_headings_actions_appliances($type) {
 
-   if (in_array($type,plugin_appliances_getTypes())
+   if (in_array($type,PluginAppliancesAppliance::getTypes())
        || $type == PROFILE_TYPE) {
       return array(1 => "plugin_headings_appliances");
    }
@@ -535,7 +535,7 @@ function plugin_headings_appliances($type,$ID,$withtemplate=0) {
          break;
 
       default :
-         if (in_array($type, plugin_appliances_getTypes())) {
+         if (in_array($type, PluginAppliancesAppliance::getTypes())) {
             echo "<div class='center'>";
             PluginAppliancesAppliance::showAssociated($type,$ID, $withtemplate);
             echo "</div>";
@@ -547,7 +547,7 @@ function plugin_headings_appliances($type,$ID,$withtemplate=0) {
 // Define PDF informations added by the plugin
 function plugin_headings_actionpdf_appliances($type) {
 
-   if (in_array($type,plugin_appliances_getTypes())) {
+   if (in_array($type,PluginAppliancesAppliance::getTypes())) {
       return array(1 => "plugin_headings_appliances_PDF");
    }
    return false;
@@ -558,7 +558,7 @@ function plugin_headings_actionpdf_appliances($type) {
 // Define headings actions added by the plugin
 function plugin_headings_appliances_PDF($pdf,$ID,$type) {
 
-   if (in_array($type, plugin_appliances_getTypes())) {
+   if (in_array($type, PluginAppliancesAppliance::getTypes())) {
       echo plugin_appliances_showAssociated_PDF($pdf,$ID,$type);
    }
 }

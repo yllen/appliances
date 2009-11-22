@@ -257,9 +257,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
                                                 =glpi_plugin_appliances_appliances_items.id
                                              AND glpi_plugin_appliances_appliances_items.appliances_id
                                                    =$ID"))) {
-         plugin_appliances_relationtypes("relationtypes_id",$this->fields["relationtypes_id"]);
+         PluginAppliancesRelation::dropdown("relationtypes_id",$this->fields["relationtypes_id"]);
       } else {
-         echo plugin_appliances_getrelationtypename($this->fields["relationtypes_id"]);
+         echo PluginAppliancesRelation::getTypeName($this->fields["relationtypes_id"]);
          $rand = mt_rand();
          $comment = $LANG['common'][84];
          $image = "/pics/lock.png";
@@ -410,7 +410,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
                      if ($this->fields["relationtypes_id"]) {
                         echo "<td class='center'>".
-                           plugin_appliances_getrelationtypename($this->fields["relationtypes_id"]).
+                           PluginAppliancesRelation::getTypeName($this->fields["relationtypes_id"]).
                            "&nbsp;:&nbsp;";
                         $this->showRelation($this->fields["relationtypes_id"],
                                                        $data["IDD"], $ci->obj->fields["entities_id"],
@@ -437,7 +437,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo "<input type='hidden' name='conID' value='$instID'>";
          dropdownAllItems("item",0,0,
                           ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
-                          plugin_appliances_getTypes());
+                          $this->getTypes());
          echo "</td>";
          echo "<td colspan='3' class='center' class='tab_bg_2'>";
          echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
@@ -612,7 +612,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                   "/plugins/appliances/front/appliance.form.php\">";
             echo "<input type='hidden' name='item' value='$ID'>".
                   "<input type='hidden' name='itemtype' value='$itemtype'>";
-            plugin_appliances_dropdownappliances("conID",$entities,$used);
+            PluginAppliancesAppliance::dropdown("conID",$entities,$used);
 
             echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</form>";
@@ -647,8 +647,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
 
       // selects all the attached relations
-      $tablename = plugin_appliances_getrelationtypetable($relationtype);
-      $title = plugin_appliances_getrelationtypename($relationtype);
+      $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
+      $title = PluginAppliancesRelation::getTypeName($relationtype);
 
       if (in_array($tablename,$CFG_GLPI["dropdowntree_tables"])) {
          $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
@@ -708,6 +708,91 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
    }
 
+
+   /**
+    * Diplay a dropdown to select an Appliance
+    *
+    * @param $myname string name of the dropdown
+    * @param $entity_restrict
+    * @param $used array of value to exclude
+    *
+    * @return nothing (HTML display)
+    */
+   static function dropdown($myname, $entity_restrict='', $used=array()) {
+      global $DB,$LANG,$CFG_GLPI;
+
+      $rand = mt_rand();
+
+      $where =" WHERE `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ".
+                      getEntitiesRestrictRequest("AND","glpi_plugin_appliances_appliances",'',
+                                                 $entity_restrict,true);
+
+      if (count($used)) {
+         $where .= " AND `id` NOT IN ('0'";
+         foreach ($used as $ID) {
+            $where .= ", '$ID'";
+         }
+         $where .= ")";
+      }
+
+      $query = "SELECT *
+                FROM `glpi_plugin_appliances_appliancetypes`
+                WHERE `id` IN (SELECT DISTINCT `appliancetypes_id`
+                               FROM `glpi_plugin_appliances_appliances`
+                               $where)
+                GROUP BY `name`";
+      $result = $DB->query($query);
+
+      echo "<select name='_type' id='type_appliances'>\n";
+      echo "<option value='0'>------</option>\n";
+      while ($data = $DB->fetch_assoc($result)) {
+         echo "<option value='".$data['id']."'>".$data['name']."</option>\n";
+      }
+      echo "</select>\n";
+
+      $params = array('type_appliances' => '__VALUE__',
+                      'entity_restrict' => $entity_restrict,
+                      'rand'            => $rand,
+                      'myname'          => $myname,
+                      'used'            => $used);
+
+      ajaxUpdateItemOnSelectEvent("type_appliances","show_$myname$rand",
+               $CFG_GLPI["root_doc"]."/plugins/appliances/ajax/dropdownTypeAppliances.php",$params);
+
+      echo "<span id='show_$myname$rand'>";
+      $_POST["entity_restrict"] = $entity_restrict;
+      $_POST["type_appliances"] = 0;
+      $_POST["myname"] = $myname;
+      $_POST["rand"] = $rand;
+      $_POST["used"] = $used;
+      include (GLPI_ROOT."/plugins/appliances/ajax/dropdownTypeAppliances.php");
+      echo "</span>\n";
+
+      return $rand;
+   }
+
+   /**
+    * Type than could be linked to a Appliance
+    *
+    * @return array of types
+    */
+   static function getTypes () {
+
+      static $types = array(COMPUTER_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE,
+                            NETWORKING_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
+      // temporary disabled TRACKING_TYPE,
+
+      $plugin = new Plugin();
+      if ($plugin->isActivated("rack")) {
+         $types[] = PLUGIN_RACK_TYPE;
+      }
+      foreach ($types as $key=>$type) {
+         if (!haveTypeRight($type,'r')) {
+            unset($types[$key]);
+         }
+      }
+      return $types;
+   }
 
 }
 
