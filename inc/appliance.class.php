@@ -284,6 +284,57 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
    /**
+    * Show for PDF the current applicatif
+    *
+    * @param $pdf object for the output
+    */
+   function show_PDF ($pdf) {
+      global $LANG, $DB;
+
+      $pdf->setColumnsSize(50,50);
+      $col1 = '<b>'.$LANG["common"][2].' '.$this->fields['id'].'</b>';
+      if (isset($this->fields["date_mod"])) {
+         $col2 = $LANG["common"][26].' : '.convDateTime($this->fields["date_mod"]);
+      } else {
+         $col2 = '';
+      }
+      $pdf->displayTitle($col1, $col2);
+
+      $pdf->displayLine(
+         '<b><i>'.$LANG["common"][16].' :</i></b> '.$this->fields['name'],
+         '<b><i>'.$LANG['common'][17].' :</i></b> '.
+            html_clean(getDropdownName('glpi_plugin_appliances_appliancetypes',
+                                       $this->fields['appliancetypes_id'])));
+      $pdf->displayLine(
+         '<b><i>'.$LANG["common"][10].' :</i></b> '.getUserName($this->fields['users_id']),
+         '<b><i>'.$LANG["common"][35].' :</i></b> '.
+            html_clean(getDropdownName('glpi_groups',$this->fields['groups_id'])));
+
+      $pdf->displayLine(
+         '<b><i>'.$LANG["common"][15].' :</i></b> '.
+            html_clean(getDropdownName('glpi_locations',$this->fields['locations_id'])),
+         '<b><i>'.$LANG['plugin_appliances'][22].' :</i></b> '.
+            html_clean(PluginAppliancesRelation::getTypeName($this->fields["relationtypes_id"])));
+
+      $query_app = "SELECT `champ`, `ddefault`
+                    FROM `glpi_plugin_appliances_optvalues`
+                    WHERE `appliances_id` = '".$this->fields['id']."'
+                    ORDER BY `vvalues`";
+      $result_app = $DB->query($query_app);
+
+      $opts = array();
+      while ($data = $DB->fetch_array($result_app)) {
+         $opts[] = $data["champ"].($data["ddefault"] ? '='.$data["ddefault"] : '');
+      }
+      $pdf->setColumnsSize(100);
+      $pdf->displayLine("<b><i>".$LANG['plugin_appliances'][24].": </i></b>".implode(', ',$opts));
+
+      $pdf->displayText('<b><i>'.$LANG["common"][25].' :</i></b>', $this->fields['comment']);
+
+      $pdf->displaySpace();
+   }
+
+   /**
     * Show the Device associated with an applicatif
     *
     * Called from the applicatif form
@@ -412,9 +463,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         echo "<td class='center'>".
                            PluginAppliancesRelation::getTypeName($this->fields["relationtypes_id"]).
                            "&nbsp;:&nbsp;";
-                        $this->showRelation($this->fields["relationtypes_id"],
-                                                       $data["IDD"], $ci->obj->fields["entities_id"],
-                                                       false);
+                        PluginAppliancesRelation::showList($this->fields["relationtypes_id"],
+                                                           $data["IDD"], $ci->obj->fields["entities_id"],
+                                                           false);
                         PluginAppliancesOptvalue_Item::showList($type, $data["id"], $instID, false);
                         echo "</td>";
                      }
@@ -453,6 +504,123 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "</form>";
    }
 
+   function showItem_PDF($pdf) {
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
+
+      $instID = $this->fields['id'];
+
+      if (!$this->can($instID,"r")) {
+         return false;
+      }
+      if (!plugin_appliances_haveRight("appliance","r")) {
+         return false;
+      }
+
+      $pdf->setColumnsSize(100);
+      $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][7].'</b>');
+
+      $query = "SELECT DISTINCT `itemtype`
+                FROM `glpi_plugin_appliances_appliances_items`
+                WHERE `appliances_id` = '$instID'
+                ORDER BY `itemtype`";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      if (isMultiEntitiesMode()) {
+         $pdf->setColumnsSize(12,27,25,18,18);
+         $pdf->displayTitle('<b><i>'.$LANG['common'][17],
+                                     $LANG['common'][16],
+                                     $LANG['entity'][0],
+                                     $LANG['common'][19],
+                                     $LANG['common'][20].'</i></b>');
+      } else {
+         $pdf->setColumnsSize(25,31,22,22);
+         $pdf->displayTitle('<b><i>'.$LANG['common'][17],
+                                     $LANG['common'][16],
+                                     $LANG['common'][19],
+                                     $LANG['common'][20].'</i></b>');
+      }
+
+      $ci = new CommonItem();
+      if (!$number) {
+         $pdf->displayLine($LANG['search'][15]);
+      } else {
+         for ($i=0 ; $i < $number ; $i++) {
+            $type = $DB->result($result, $i, "itemtype");
+
+            if (haveTypeRight($type,"r")) {
+               $column = "name";
+               if ($type == TRACKING_TYPE) {
+                  $column = "id";
+               }
+               if ($type == KNOWBASE_TYPE) {
+                  $column = "question";
+               }
+
+               $query = "SELECT ".$LINK_ID_TABLE[$type].".*,
+                                `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
+                                `glpi_entities`.`id` AS entity
+                         FROM `glpi_plugin_appliances_appliances_items`, ".$LINK_ID_TABLE[$type]."
+                         LEFT JOIN `glpi_entities`
+                              ON (`glpi_entities`.`id` = ".$LINK_ID_TABLE[$type].".`entities_id`)
+                         WHERE ".$LINK_ID_TABLE[$type].".`id` = `glpi_plugin_appliances_appliances_items`.`items_id`
+                               AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
+                               AND `glpi_plugin_appliances_appliances_items`.`appliances_id` = '$instID' ".
+                               getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',
+                                                          isset($CFG_GLPI["recursive_type"][$type]));
+
+               if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])) {
+                  $query .= " AND ".$LINK_ID_TABLE[$type].".`is_template` = '0'";
+               }
+               $query.=" ORDER BY `glpi_entities`.`completename`, ".$LINK_ID_TABLE[$type].".$column";
+
+               if ($result_linked=$DB->query($query)) {
+                  if ($DB->numrows($result_linked)) {
+                     while ($data = $DB->fetch_assoc($result_linked)) {
+                        if (!$ci->getFromDB($type,$data["id"])) {
+                           continue;
+                        }
+                        $ID = "";
+                        if ($type == TRACKING_TYPE) {
+                           $data["name"] = $LANG['job'][38]." ".$data["id"];
+                        }
+                        if ($type == KNOWBASE_TYPE) {
+                           $data["name"] = $data["question"];
+                        }
+
+                        if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                           $ID = " (".$data["id"].")";
+                        }
+                        $name = $data["name"].$ID;
+
+                        if (isMultiEntitiesMode()) {
+                           $pdf->setColumnsSize(12,27,25,18,18);
+                           $pdf->displayLine(
+                                       $ci->getType(),
+                                       $name,
+                                       getDropdownName("glpi_entities",$data['entities_id']),
+                                       (isset($data["serial"])? "".$data["serial"]."" :"-"),
+                                       (isset($data["otherserial"])? "".$data["otherserial"]."" :"-"));
+                        } else {
+                           $pdf->setColumnsSize(25,31,22,22);
+                           $pdf->displayTitle(
+                                       $ci->getType(),
+                                       $name,
+                                       (isset($data["serial"])? "".$data["serial"]."" :"-"),
+                                       (isset($data["otherserial"])? "".$data["otherserial"]."" :"-"));
+                        }
+
+                        PluginAppliancesRelation::showList_PDF($pdf,
+                                                               $this->fields["relationtypes_id"],
+                                                               $data["IDD"]);
+                        PluginAppliancesOptvalue_Item::showList_PDF($pdf,$data["id"], $instID);
+                     } // Each device
+                  } // numrows device
+               }
+            } // type right
+         } // each type
+      } // numrows type
+   }
 
    /**
     * Show the applicatif associated with a device
@@ -564,9 +732,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
          if ($number_app >0) {
             // add or delete a relation to an applicatifs
             echo "<td class='center'>";
-            // PluginAppliancesAppliance::showRelation = self::showRelation
-            self::showRelation ($data["relationtypes_id"], $data["entID"],
-                                            $ci->obj->fields["entities_id"],$canedit);
+            PluginAppliancesRelation::showList ($data["relationtypes_id"], $data["entID"],
+                                                $ci->obj->fields["entities_id"],$canedit);
             echo "</td>";
          }
 
@@ -625,89 +792,74 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "</table></div>";
    }
 
-
    /**
-    * Show the relation for a device/applicatif
+    * show for PDF the applicatif associated with a device
     *
-    * Called from PluginAppliancesAppliance->showItem and PluginAppliancesAppliance::showAssociated
-    *
-    * @param $drelation_type : type of the relation
-    * @param $relID ID of the relation
-    * @param $entity, ID of the entity of the device
-    * @param $canedit, if user is allowed to edit the relation
-    *    - canedit the device if called from the device form
-    *    - must be false if called from the applicatif form
+    * @param $ID of the device
+    * @param $itemtype : type of the device
     *
     */
-   static private function showRelation ($relationtype, $relID, $entity, $canedit) {
+   static function showAssociated_PDF($pdf, $ID, $itemtype){
       global $DB,$CFG_GLPI, $LANG;
 
-      if (!$relationtype) {
-         return false;
-      }
+      $pdf->setColumnsSize(100);
+      $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][9].'</b>');
 
-      // selects all the attached relations
-      $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
-      $title = PluginAppliancesRelation::getTypeName($relationtype);
+      $ci = new CommonItem();
+      $ci->getFromDB($itemtype,$ID);
 
-      if (in_array($tablename,$CFG_GLPI["dropdowntree_tables"])) {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
-                            `completename` AS dispname ";
+      $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
+                       `glpi_plugin_appliances_appliances`.*
+                FROM `glpi_plugin_appliances_appliances_items`,
+                     `glpi_plugin_appliances_appliances`
+                LEFT JOIN `glpi_entities`
+                     ON (`glpi_entities`.`id` = `glpi_plugin_appliances_appliances`.`entities_id`)
+                WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '$ID'
+                      AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype'
+                      AND `glpi_plugin_appliances_appliances_items`.`appliances_id`
+                           = `glpi_plugin_appliances_appliances`.`id`".
+                      getEntitiesRestrictRequest(" AND ","glpi_plugin_appliances_appliances",'','',
+                                          isset($CFG_GLPI["recursive_type"][PLUGIN_APPLIANCES_TYPE]));
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      if (!$number) {
+         $pdf->displayLine($LANG['search'][15]);
       } else {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
-                            `name` AS dispname ";
-      }
-      $sql_loc .= "FROM `".$tablename."` ,
-                        `glpi_plugin_appliances_relations`,
-                        `glpi_plugin_appliances_appliances_items`
-                        WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
-                              AND `glpi_plugin_appliances_relations`.`appliances_items_id`
-                                    = `glpi_plugin_appliances_appliances_items`.`id`
-                              AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
+         if (isMultiEntitiesMode()) {
+            $pdf->setColumnsSize(30,30,20,20);
+            $pdf->displayTitle('<b><i>'.$LANG['common'][16],
+                                        $LANG['entity'][0],
+                                        $LANG['common'][35],
+                                        $LANG['common'][17].'</i></b>');
+         } else {
+            $pdf->setColumnsSize(50,25,25);
+            $pdf->displayTitle('<b><i>'.$LANG['common'][16],
+                                        $LANG['common'][35],
+                                        $LANG['common'][17].'</i></b>');
+         }
 
-      $result_loc = $DB->query($sql_loc);
-      $number_loc = $DB->numrows($result_loc);
-
-      if ($canedit) {
-         echo "<form method='post' name='relation' action='".
-               $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php'>";
-         echo "<br><input type='hidden' name='deviceID' value='$relID'>";
-
-         $i = 0;
-         $itemlist = "";
-         $used = array();
-
-         if ($number_loc >0) {
-            echo "<table>";
-            while ($i < $number_loc) {
-               $res = $DB->fetch_array($result_loc);
-               echo "<tr><td class=top>";
-               // when the value of the checkbox is changed, the corresponding hidden variable value
-               // is also changed by javascript
-               echo "<input type='checkbox' name='itemrelation[" . $res["id"] . "]' value='1'></td><td>";
-               echo $res["dispname"];
-               echo "</td></tr>";
-               $i++;
+         while ($data = $DB->fetch_array($result)) {
+            $appliancesID = $data["id"];
+            if (isMultiEntitiesMode()) {
+               $pdf->setColumnsSize(30,30,20,20);
+               $pdf->displayLine($data["name"],
+                                 html_clean(getDropdownName("glpi_entities",$data['entities_id'])),
+                                 html_clean(getDropdownName("glpi_groups",$data["groups_id"])),
+                                 html_clean(getDropdownName("glpi_plugin_appliances_appliancetypes",
+                                                            $data["appliancetypes_id"])));
+            } else {
+               $pdf->setColumnsSize(50,25,25);
+               $pdf->displayLine($data["name"],
+                                 html_clean(getDropdownName("glpi_groups",$data["groups_id"])),
+                                 html_clean(getDropdownName("glpi_plugin_appliances_appliancetypes",
+                                                            $data["appliancetypes_id"])));
             }
-            echo "</table>";
-            echo "<input type='submit' name='dellieu' value='".$LANG['buttons'][6]."' class='submit'><br><br>";
+            PluginAppliancesRelation::showList_PDF($pdf,$data["relationtypes_id"], $data["entID"]);
+            PluginAppliancesOptvalue_Item::showList_PDF($pdf,$ID, $appliancesID);
          }
-
-         echo "$title&nbsp;:&nbsp;";
-
-         dropdownValue($tablename,"tablekey[" . $relID . "]","",1,$entity,"",$used);
-         echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value=\"".
-               $LANG['buttons'][8]."\" class='submit'><br>&nbsp;";
-         echo "</form>";
-      } else if ($number_loc > 0) {
-         while ($res = $DB->fetch_array($result_loc)) {
-            echo $res["dispname"]."<br>";
-         }
-      } else {
-         echo "&nbsp;";
       }
    }
-
 
    /**
     * Diplay a dropdown to select an Appliance

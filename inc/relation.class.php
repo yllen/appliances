@@ -113,6 +113,133 @@ class PluginAppliancesRelation extends CommonDBTM {
                           $value);
    }
 
+   /**
+    * Show the relation for a device/applicatif
+    *
+    * Called from PluginAppliancesAppliance->showItem and PluginAppliancesAppliance::showAssociated
+    *
+    * @param $drelation_type : type of the relation
+    * @param $relID ID of the relation
+    * @param $entity, ID of the entity of the device
+    * @param $canedit, if user is allowed to edit the relation
+    *    - canedit the device if called from the device form
+    *    - must be false if called from the applicatif form
+    *
+    */
+   static function showList ($relationtype, $relID, $entity, $canedit) {
+      global $DB,$CFG_GLPI, $LANG;
+
+      if (!$relationtype) {
+         return false;
+      }
+
+      // selects all the attached relations
+      $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
+      $title = PluginAppliancesRelation::getTypeName($relationtype);
+
+      if (in_array($tablename,$CFG_GLPI["dropdowntree_tables"])) {
+         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
+                            `completename` AS dispname ";
+      } else {
+         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
+                            `name` AS dispname ";
+      }
+      $sql_loc .= "FROM `".$tablename."` ,
+                        `glpi_plugin_appliances_relations`,
+                        `glpi_plugin_appliances_appliances_items`
+                        WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
+                              AND `glpi_plugin_appliances_relations`.`appliances_items_id`
+                                    = `glpi_plugin_appliances_appliances_items`.`id`
+                              AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
+
+      $result_loc = $DB->query($sql_loc);
+      $number_loc = $DB->numrows($result_loc);
+
+      if ($canedit) {
+         echo "<form method='post' name='relation' action='".
+               $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php'>";
+         echo "<br><input type='hidden' name='deviceID' value='$relID'>";
+
+         $i = 0;
+         $itemlist = "";
+         $used = array();
+
+         if ($number_loc >0) {
+            echo "<table>";
+            while ($i < $number_loc) {
+               $res = $DB->fetch_array($result_loc);
+               echo "<tr><td class=top>";
+               // when the value of the checkbox is changed, the corresponding hidden variable value
+               // is also changed by javascript
+               echo "<input type='checkbox' name='itemrelation[" . $res["id"] . "]' value='1'></td><td>";
+               echo $res["dispname"];
+               echo "</td></tr>";
+               $i++;
+            }
+            echo "</table>";
+            echo "<input type='submit' name='dellieu' value='".$LANG['buttons'][6]."' class='submit'><br><br>";
+         }
+
+         echo "$title&nbsp;:&nbsp;";
+
+         dropdownValue($tablename,"tablekey[" . $relID . "]","",1,$entity,"",$used);
+         echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value=\"".
+               $LANG['buttons'][8]."\" class='submit'><br>&nbsp;";
+         echo "</form>";
+      } else if ($number_loc > 0) {
+         while ($res = $DB->fetch_array($result_loc)) {
+            echo $res["dispname"]."<br>";
+         }
+      } else {
+         echo "&nbsp;";
+      }
+   }
+
+   /**
+    * Show for PDF the relation for a device/applicatif
+    *
+    * @param $pdf object for the output
+    * @param $drelation_type : type of the relation
+    * @param $relID ID of the relation
+    *
+    */
+   static function showList_PDF ($pdf, $relationtype, $relID) {
+      global $DB,$CFG_GLPI, $LANG;
+
+      if (!$relationtype) {
+         return false;
+      }
+
+      // selects all the attached relations
+      $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
+      $title = PluginAppliancesRelation::getTypeName($relationtype);
+
+      if (in_array($tablename,$CFG_GLPI["dropdowntree_tables"])) {
+         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
+                            `completename` AS dispname ";
+      } else {
+         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
+                            `name` AS dispname ";
+      }
+      $sql_loc .= "FROM `".$tablename."` ,
+                        `glpi_plugin_appliances_relations`,
+                        `glpi_plugin_appliances_appliances_items`
+                   WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
+                         AND `glpi_plugin_appliances_relations`.`appliances_items_id`
+                                 = `glpi_plugin_appliances_appliances_items`.`id`
+                         AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
+      $result_loc = $DB->query($sql_loc);
+
+      $opts = array();
+      while ($res = $DB->fetch_array($result_loc)) {
+         $opts[] = $res["dispname"];
+      }
+      $pdf->setColumnsSize(100);
+      $pdf->displayLine("<b><i>".$LANG['plugin_appliances'][22]." :</i> $title :</b> ".
+                         implode(', ',$opts));
+
+   }
+
 }
 
 ?>

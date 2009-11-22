@@ -124,6 +124,50 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
    }
 
    /**
+    * Show for PDF the optional value for a device / applicatif
+    *
+    * @param $pdf object for the output
+    * @param $ID of the relation
+    * @param $appliancesID, ID of the applicatif
+    */
+   static function showList_PDF ($pdf, $ID, $appliancesID) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $query_app_opt = "SELECT `id`, `champ`, `ddefault`
+                        FROM `glpi_plugin_appliances_optvalues`
+                        WHERE `appliances_id` = '$appliancesID'
+                        ORDER BY `vvalues`";
+
+      $result_app_opt = $DB->query($query_app_opt);
+      $number_champs = $DB->numrows($result_app_opt);
+
+      if (!$number_champs) {
+         return;
+      }
+
+      $opts = array();
+      for ($i=1 ; $i<=$number_champs ; $i++) {
+         if ($data_opt = $DB->fetch_array($result_app_opt)) {
+            $query_val = "SELECT `vvalue`
+                          FROM `glpi_plugin_appliances_optvalues_items`
+                          WHERE `optvalues_id` = '".$data_opt["id"]."'
+                                AND `items_id` = '$ID'";
+
+            $result_val = $DB->query($query_val);
+            $data_val = $DB->fetch_array($result_val);
+            $vvalue = ($data_val ? $data_val['vvalue'] : "");
+            if (empty($vvalue) && !empty($data_opt['ddefault'])) {
+               $vvalue = $data_opt['ddefault'];
+            }
+            $opts[] = $data_opt['champ'].($vvalue?"=".$vvalue:'');
+         }
+      } // For
+
+      $pdf->setColumnsSize(100);
+      $pdf->displayLine("<b><i>".$LANG['plugin_appliances'][24]." : </i></b>".implode(', ',$opts));
+   }
+
+   /**
     * Update to optional values for an appliance / item
     *
     * @param $input array on input value (form)

@@ -559,7 +559,7 @@ function plugin_headings_actionpdf_appliances($type) {
 function plugin_headings_appliances_PDF($pdf,$ID,$type) {
 
    if (in_array($type, PluginAppliancesAppliance::getTypes())) {
-      echo plugin_appliances_showAssociated_PDF($pdf,$ID,$type);
+      echo PluginAppliancesAppliance::showAssociated_PDF($pdf,$ID,$type);
    }
 }
 
@@ -690,6 +690,7 @@ function plugin_appliances_prefPDF($type) {
       case PLUGIN_APPLIANCES_TYPE :
          $item = new PluginAppliancesAppliance();
          $tabs = $item->defineTabs(1,'');
+         unset($tabs[2]); // Custom fields
          break;
    }
    return $tabs;
@@ -719,12 +720,16 @@ function plugin_appliances_generatePDF($type, $tab_id, $tab, $page=0) {
 
       switch ($type) {
          case PLUGIN_APPLIANCES_TYPE :
-            plugin_appliances_main_PDF($pdf,$ID);
+            $appli = new PluginAppliancesAppliance();
+            if (!$appli->getFromDB($ID)) {
+               continue;
+            }
+            $appli->show_PDF($pdf,$ID);
 
             foreach($tab as $i) {
                switch($i) { // See plugin_appliance::defineTabs();
                   case 1 :
-                     plugin_appliances_showDevice_PDF($pdf,$ID);
+                     $appli->showItem_PDF($pdf);
                      break;
 
                   case 6 :
