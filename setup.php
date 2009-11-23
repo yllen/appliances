@@ -33,9 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include_once ("inc/plugin_appliances.auth.function.php");
-include_once ("inc/profile.class.php");
-
 // Init the hooks of the plugins -Needed
 function plugin_init_appliances() {
    global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
@@ -92,7 +89,7 @@ function plugin_init_appliances() {
    // - plugin_appliances_generatePDF($type, $tab_id, $tab, $page=0)
    $PLUGIN_HOOKS['plugin_pdf'][PLUGIN_APPLIANCES_TYPE] = 'appliances';
 
-   $PLUGIN_HOOKS['change_profile']['appliances'] = 'plugin_appliances_changeProfile';
+   $PLUGIN_HOOKS['change_profile']['appliances'] = array('PluginAppliancesProfile','select');
    $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
 
    if (isset($_SESSION["glpiID"])) {
@@ -192,6 +189,35 @@ function plugin_appliances_haveTypeRight($type,$right) {
       case PLUGIN_APPLIANCES_APPLIANCESTYPE :
          return haveRight('entity_dropdown',$right);
 
+   }
+}
+
+function plugin_appliances_haveRight($module,$right) {
+
+   $matches = array(""  => array("","r","w"), // ne doit pas arriver normalement
+                    "r" => array("r","w"),
+                    "w" => array("w"),
+                    "1" => array("1"),
+                    "0" => array("0",
+                                 "1")); // ne doit pas arriver non plus
+
+   if (isset($_SESSION["glpi_plugin_appliances_profiles"][$module])
+       && in_array($_SESSION["glpi_plugin_appliances_profiles"][$module],$matches[$right])) {
+      return true;
+   }
+   return false;
+}
+
+function plugin_appliances_checkRight($module, $right) {
+   global $CFG_GLPI;
+
+   if (!plugin_appliances_haveRight($module, $right)) {
+      // Gestion timeout session
+      if (!isset ($_SESSION["glpiID"])) {
+         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+         exit ();
+      }
+      displayRightError();
    }
 }
 

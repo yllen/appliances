@@ -49,6 +49,14 @@ class PluginAppliancesProfile extends CommonDBTM {
       $this->delete(array('id'=>$ID));
    }
 
+   static function select() {
+      $prof = new self();
+      if ($prof->getFromDB($_SESSION['glpiactiveprofile']['id'])) {
+         $_SESSION["glpi_plugin_appliances_profiles"] = $prof->fields;
+      } else {
+         unset($_SESSION["glpi_plugin_appliances_profiles"]);
+      }
+   }
 
    //profiles modification
    function showForm($target,$ID) {
@@ -73,7 +81,7 @@ class PluginAppliancesProfile extends CommonDBTM {
       echo "<td>".$LANG['plugin_appliances']['profile'][1]." :</td><td>";
 
       if ($prof->fields['interface']!='helpdesk') {
-         dropdownNoneReadWrite("appliances",$this->fields["appliances"],1,1,1);
+         dropdownNoneReadWrite("appliance",$this->fields["appliance"],1,1,1);
       } else {
          echo $LANG['profiles'][12]; // No access;
       }
@@ -92,12 +100,38 @@ class PluginAppliancesProfile extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center' colspan='2'>";
          echo "<input type='hidden' name='id' value=$ID>";
-         echo "<input type='submit' name='update_user_profile' value=\"".$LANG['buttons'][7]."\" 
+         echo "<input type='submit' name='update_user_profile' value=\"".$LANG['buttons'][7]."\"
                class='submit'>";
          echo "</td></tr>";
       }
       echo "</table></form>";
    }
+
+   static function createAdminAccess($ID) {
+
+      $myProf = new self();
+      if (!$myProf->GetfromDB($ID)) {
+         $Profile = new Profile();
+         $Profile->GetfromDB($ID);
+         $name = $Profile->fields["name"];
+
+         $myProf->add(array('id'          => $ID,
+                            'name'        => $name,
+                            'appliance'   => 'w',
+                            'open_ticket' => '1'));
+      }
+   }
+
+   function createUserAccess($ID) {
+
+      $Profile = new Profile();
+      if ($Profile->GetfromDB($ID)) {
+         return $this->add(array('id'   => $ID,
+                                 'name' => $Profile->getField('name')));
+      }
+      return false;
+   }
+
 }
 
 ?>

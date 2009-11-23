@@ -80,7 +80,7 @@ function plugin_appliances_install() {
       $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/empty-1.6.0.sql");
    }
 
-   plugin_appliances_createFirstAccess($_SESSION['glpiactiveprofile']['id']);
+   PluginAppliancesProfile::createAdminAccess($_SESSION['glpiactiveprofile']['id']);
    return true;
 }
 
@@ -413,20 +413,17 @@ function plugin_appliances_MassiveActionsProcess($data) {
 
       case "plugin_appliances_transfert" :
          if ($data['itemtype'] == PLUGIN_APPLIANCES_TYPE) {
-            foreach ($data["items_id"] as $key => $val) {
+            foreach ($data["item"] as $key => $val) {
                if ($val == 1) {
-                  $PluginAppliances = new PluginAppliancesAppliance;
-                  $PluginAppliances->getFromDB($key);
+                  $appliance = new PluginAppliancesAppliance;
+                  $appliance->getFromDB($key);
 
-                  $type = plugin_appliances_transferDropdown($PluginAppliances->fields["appliancetypes_id"],
-                                                             $data['entities_id']);
+                  $type = PluginAppliancesAppliancetype::transfer($appliance->fields["appliancetypes_id"],
+                                                                  $data['entities_id']);
                   $values["id"] = $key;
                   $values["appliancetypes_id"] = $type;
-                  $PluginAppliances->update($values);
-                  unset($values);
-                  $values["id"] = $key;
                   $values["entities_id"] = $data['entities_id'];
-                  $PluginAppliances->update($values);
+                  $appliance->update($values);
                }
             }
          }
@@ -528,10 +525,9 @@ function plugin_headings_appliances($type,$ID,$withtemplate=0) {
    switch ($type) {
       case PROFILE_TYPE :
          $prof = new PluginAppliancesProfile();
-         if (!$prof->GetfromDB($ID)) {
-            plugin_appliances_createAccess($ID);
+         if ($prof->GetfromDB($ID) || $prof->createUserAccess($ID)) {
+            $prof->showForm($CFG_GLPI["root_doc"]."/plugins/appliances/front/profile.form.php",$ID);
          }
-         $prof->showForm($CFG_GLPI["root_doc"]."/plugins/appliances/front/plugin_appliances.profile.php",$ID);
          break;
 
       default :
