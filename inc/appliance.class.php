@@ -126,7 +126,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $tab['tracking'] = $LANG['title'][24];
 
-      $tab[60]['table']        = 'glpi_tracking';
+      $tab[60]['table']        = 'glpi_tickets';
       $tab[60]['field']        = 'count';
       $tab[60]['linkfield']    = '';
       $tab[60]['name']         = $LANG['stats'][13];
