@@ -58,15 +58,17 @@ function plugin_init_appliances() {
                       array('classname'              => 'PluginAppliancesEnvironment',
                             'tablename'              => 'glpi_plugin_appliances_environments',
                             'typename'               => $LANG['plugin_appliances'][3],
-                            'dropdown'               => true));
+                            'formpage'               => 'front/environment.form.php',
+                            'searchpage'             => 'front/environment.php'));
 
    registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCESTYPE', 1202,
                       array('classname'              => 'PluginAppliancesAppliancetype',
                             'tablename'              => 'glpi_plugin_appliances_appliancetypes',
                             'typename'               => $LANG['plugin_appliances']['setup'][2],
+                            'formpage'               => 'front/appliancetype.form.php',
+                            'searchpage'             => 'front/appliancetype.php',
                             'specif_entities_tables' => true,
-                            'recursive_type'         => true,
-                            'dropdown'               => true));
+                            'recursive_type'         => true));
 
    registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCES_ITEMS', 1203,
                       array('classname'              => 'PluginAppliancesAppliance_Item',
