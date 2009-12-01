@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_optvalues_items` (
    UNIQUE KEY `unicity` (`optvalues_id`,`itemtype`,`items_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_displayprefs` ( `id` , `itemtype` , `num` , `rank` , `users_id` )
+INSERT INTO `glpi_displaypreferences` ( `id` , `itemtype` , `num` , `rank` , `users_id` )
    VALUES (NULL,'1200','2','2','0'),
           (NULL,'1200','3','3','0'),
           (NULL,'1200','4','4','0'),

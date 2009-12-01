@@ -102,7 +102,7 @@ function plugin_appliances_uninstall() {
    }
 
    $query = "DELETE
-             FROM `glpi_displayprefs`
+             FROM `glpi_displaypreferences`
              WHERE (`itemtype` = '".PLUGIN_APPLIANCES_TYPE."'
                     OR `itemtype` = '".PLUGIN_APPLIANCES_APPLIANCESTYPE."'
                     OR `itemtype` = '".PLUGIN_APPLIANCES_ENVIRONMENT."')";
