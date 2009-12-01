@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_appliances_items` (
    `id` int(11) NOT NULL auto_increment,
    `appliances_id` int(11) NOT NULL default '0',
    `items_id` int(11) NOT NULL default '0',
-   `itemtype` int(11) NOT NULL default '0',
+   `itemtype` VARCHAR(100) NOT NULL default '',
    PRIMARY KEY (`id`),
    UNIQUE `appliances_items_type` (`appliances_id`,`items_id`,`itemtype`),
    KEY `appliances_id` (`appliances_id`),
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_optvalues_items` (
    `id` int(11) NOT NULL auto_increment, 
    `optvalues_id` int(11) NOT NULL default '0',
    `items_id` int(11) NOT NULL default '0',
-   `itemtype` int(11) NOT NULL default '0',
+   `itemtype` VARCHAR(100) NOT NULL default '',
    `vvalue` varchar(255) default NULL,
    PRIMARY KEY  (`id`),
    KEY `item` (`itemtype`,`items_id`),
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_optvalues_items` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_displaypreferences` ( `id` , `itemtype` , `num` , `rank` , `users_id` )
-   VALUES (NULL,'1200','2','2','0'),
-          (NULL,'1200','3','3','0'),
-          (NULL,'1200','4','4','0'),
-          (NULL,'1200','5','5','0');
+   VALUES (NULL,'PluginAppliancesAppliance','2','2','0'),
+          (NULL,'PluginAppliancesAppliance','3','3','0'),
+          (NULL,'PluginAppliancesAppliance','4','4','0'),
+          (NULL,'PluginAppliancesAppliance','5','5','0');

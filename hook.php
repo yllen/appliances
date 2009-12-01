@@ -47,6 +47,70 @@ function plugin_appliances_AssignToTicket($types) {
    return $types;
 }
 
+function migrateItemType ($types=array(), $glpitables=array(), $plugtables=array()) {
+   global $DB, $LANG;
+
+   $typetoname=array(
+      GENERAL_TYPE => "",// For tickets
+      COMPUTER_TYPE => "Computer",
+      NETWORKING_TYPE => "NetworkEquipment",
+      PRINTER_TYPE => "Printer",
+      MONITOR_TYPE => "Monitor",
+      PERIPHERAL_TYPE => "Peripheral",
+      SOFTWARE_TYPE => "Software",
+      CONTACT_TYPE => "Contact",
+      ENTERPRISE_TYPE => "Supplier",
+      INFOCOM_TYPE => "Infocom",
+      CONTRACT_TYPE => "Contract",
+      CARTRIDGEITEM_TYPE => "CartridgeItem",
+      TYPEDOC_TYPE => "DocumentType",
+      DOCUMENT_TYPE => "Document",
+      KNOWBASE_TYPE => "KnowbaseItem",
+      USER_TYPE => "User",
+      TRACKING_TYPE => "Ticket",
+      CONSUMABLEITEM_TYPE => "ConsumableItem",
+      CONSUMABLE_TYPE => "Consumable",
+      CARTRIDGE_TYPE => "Cartridge",
+      SOFTWARELICENSE_TYPE => "SoftwareLicense",
+      LINK_TYPE => "Link",
+      STATE_TYPE => "State",
+      PHONE_TYPE => "Phone",
+      DEVICE_TYPE => "Device",
+      REMINDER_TYPE => "Reminder",
+      STAT_TYPE => "Stat",
+      GROUP_TYPE => "Group",
+      ENTITY_TYPE => "Entity",
+      RESERVATION_TYPE => "ReservationItem",
+      AUTH_MAIL_TYPE => "AuthMail",
+      AUTH_LDAP_TYPE => "AuthLDAP",
+      OCSNG_TYPE => "OcsServer",
+      REGISTRY_TYPE => "RegistryKey",
+      PROFILE_TYPE => "Profile",
+      MAILGATE_TYPE => "MailCollector",
+      RULE_TYPE => "Rule",
+      TRANSFER_TYPE => "Transfer",
+      BOOKMARK_TYPE => "Bookmark",
+      SOFTWAREVERSION_TYPE => "SoftwareVersion",
+      PLUGIN_TYPE => "Plugin",
+      COMPUTERDISK_TYPE => "ComputerDisk",
+      NETWORKING_PORT_TYPE => "NetworkPort",
+      FOLLOWUP_TYPE => "TicketFollowup",
+      BUDGET_TYPE => "Budget");
+
+   foreach ($types as $num => $name) {
+      $typetoname[$num]=$name;
+      foreach ($glpitables as $table) {
+         $query = "UPDATE `$table` SET `itemtype` = '$name' WHERE `itemtype` = '$num'";
+         $DB->query($query) or die("update itemtype of table $table for $name : ". $DB->error());
+      }
+   }
+   foreach ($typetoname as $num => $name) {
+      foreach ($plugtables as $table) {
+         $query = "UPDATE `$table` SET `itemtype` = '$name' WHERE `itemtype` = '$num'";
+         $DB->query($query) or die("update itemtype of table $table for $name : ". $DB->error());
+      }
+   }
+}
 
 function plugin_appliances_install() {
    global $DB;
@@ -69,12 +133,17 @@ function plugin_appliances_install() {
          $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.5.1.sql");
       }
       if (FieldExists("glpi_plugin_applicatifs","state")) { // empty 1.5.0 not in update 1.5.0
-         $DB->query("DROP `state`");
+         $DB->query("ALTER TABLE `glpi_plugin_applicatifs` DROP `state`");
       }
       if (isIndex("glpi_plugin_applicatifs_optvalues_machines", "optvalue_ID")) { // in empty 1.5.0 not in update 1.5.0
-         $DB->query("DROP KEY `optvalue_ID`");
+         $DB->query("ALTER TABLE `glpi_plugin_applicatifs_optvalues_machines` DROP KEY `optvalue_ID`");
       }
       $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.6.0.sql");
+      migrateItemType(
+         array(1200=>'PluginAppliancesAppliance'),
+         array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences",
+               "glpi_documents_items", "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+         array("glpi_plugin_appliances_appliances_items", "glpi_plugin_appliances_optvalues_items"));
    }
    if (!TableExists("glpi_plugin_appliances_appliances")) { // not installed
       $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/empty-1.6.0.sql");

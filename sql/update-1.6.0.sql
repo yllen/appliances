@@ -30,20 +30,21 @@ ALTER TABLE `glpi_plugin_appliances_appliances_items`
    CHANGE `ID` `id` int(11) NOT NULL auto_increment,
    CHANGE `FK_applicatif` `appliances_id` int(11) NOT NULL default '0',
    CHANGE `FK_device` `items_id` int(11) NOT NULL default '0',
-   CHANGE `device_type` `itemtype` int(11) NOT NULL default '0',
+   CHANGE `device_type` `itemtype` VARCHAR(100) NOT NULL default '',
    ADD UNIQUE `appliances_items_type` (`appliances_id`,`items_id`,`itemtype`),
    ADD KEY `appliances_id` (`appliances_id`),
    ADD KEY `type_items` (`itemtype`,`items_id`);
 
 
-RENAME TABLE `glpi_dropdown_plugin_applicatifs_type` to `glpi_plugin_appliance_appliancetypes`;
+RENAME TABLE `glpi_dropdown_plugin_applicatifs_type` to `glpi_plugin_appliances_appliancetypes`;
 
-ALTER TABLE `glpi_plugin_appliance_appliancetypes`
+ALTER TABLE `glpi_plugin_appliances_appliancetypes`
    DROP KEY `FK_entities`,
    CHANGE `ID` `id` int(11) NOT NULL auto_increment,
    CHANGE `FK_entities` `entities_id` int(11) NOT NULL default '0',
    CHANGE `comments` `comment` text,
    ADD `externalid` varchar(255) NULL,
+   ADD `is_recursive` tinyint(1) NOT NULL default '0',
    ADD KEY `entities_id` (`entities_id`),
    ADD UNIQUE (`externalid`);
 
@@ -87,7 +88,7 @@ ALTER TABLE `glpi_plugin_appliances_optvalues`
 RENAME TABLE `glpi_plugin_applicatifs_optvalues_machines` to `glpi_plugin_appliances_optvalues_items`;
 
 ALTER TABLE `glpi_plugin_appliances_optvalues_items`
-   ADD `itemtype` int(11) NOT NULL default '0',
+   ADD `itemtype` VARCHAR(100) NOT NULL default 'Computer',
    CHANGE `ID` `id` int(11) NOT NULL auto_increment,
    CHANGE `optvalue_ID` `optvalues_id` int(11) NOT NULL default '0',
    CHANGE `machine_ID` `items_id` int(11) NOT NULL default '0',
