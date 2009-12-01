@@ -118,7 +118,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["additem"])) {
-   if ($_POST['itemtype'] >0 && $_POST['item'] >0) {
+   if ($_POST['itemtype'] && $_POST['item'] >0) {
       $input = array('appliances_id' => $_POST['conID'],
                      'items_id'      => $_POST['item'],
                      'itemtype'      => $_POST['itemtype']);
