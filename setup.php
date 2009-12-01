@@ -106,7 +106,7 @@ function plugin_init_appliances() {
          if (plugin_appliances_haveRight("appliance","r")) {
             $PLUGIN_HOOKS['menu_entry']['appliances'] = false;
             $PLUGIN_HOOKS['submenu_entry']['environment']['search']['appliances']
-               = 'front/plugin_environment.form.php?plugin=appliances&search=1';
+               = 'front/environment.form.php?plugin=appliances&search=1';
             $PLUGIN_HOOKS['headings']['appliances'] = 'plugin_get_headings_appliances';
             $PLUGIN_HOOKS['headings_action']['appliances'] = 'plugin_headings_actions_appliances';
             $PLUGIN_HOOKS['headings_actionpdf']['appliances']
@@ -115,7 +115,7 @@ function plugin_init_appliances() {
 
           if (plugin_appliances_haveRight("appliance","w")) {
             $PLUGIN_HOOKS['submenu_entry']['environment']['add']['appliances']
-               = 'front/plugin_environment.form.php?plugin=appliances&add=1';
+               = 'front/environment.form.php?plugin=appliances&add=1';
             $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
             $PLUGIN_HOOKS['pre_item_delete']['appliances'] = 'plugin_pre_item_delete_appliances';
             $PLUGIN_HOOKS['item_purge']['appliances'] = 'plugin_item_purge_appliances';
