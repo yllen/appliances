@@ -38,7 +38,7 @@ function plugin_init_appliances() {
    global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
 
    // Params : plugin name - string type - number - attributes
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_TYPE', 1200,
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_TYPE', 'PluginAppliancesAppliance',
                       array('classname'              => 'PluginAppliancesAppliance',
                             'tablename'              => 'glpi_plugin_appliances_appliances',
                             'formpage'               => 'front/appliance.form.php',
@@ -54,14 +54,14 @@ function plugin_init_appliances() {
                             'contract_types'         => true,
                             'helpdesk_visible_types' => true));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_ENVIRONMENT', 1201,
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_ENVIRONMENT', 'PluginAppliancesEnvironment',
                       array('classname'              => 'PluginAppliancesEnvironment',
                             'tablename'              => 'glpi_plugin_appliances_environments',
                             'typename'               => $LANG['plugin_appliances'][3],
                             'formpage'               => 'front/environment.form.php',
                             'searchpage'             => 'front/environment.php'));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCESTYPE', 1202,
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCESTYPE', 'PluginAppliancesAppliancetype',
                       array('classname'              => 'PluginAppliancesAppliancetype',
                             'tablename'              => 'glpi_plugin_appliances_appliancetypes',
                             'typename'               => $LANG['plugin_appliances']['setup'][2],
@@ -70,19 +70,19 @@ function plugin_init_appliances() {
                             'specif_entities_tables' => true,
                             'recursive_type'         => true));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCES_ITEMS', 1203,
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCES_ITEMS', 'PluginAppliancesAppliance_Item',
                       array('classname'              => 'PluginAppliancesAppliance_Item',
                             'tablename'              => 'glpi_plugin_appliances_appliances_items'));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_OPTVALUES', 1204,
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_OPTVALUES', 'PluginAppliancesOptvalue',
                       array('classname'              => 'PluginAppliancesOptvalue',
                             'tablename'              => 'glpi_plugin_appliances_optvalues'));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_OPTVALUES_ITEMS', 1205,
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_OPTVALUES_ITEMS', 'PluginAppliancesOptvalue_Item',
                       array('classname'              => 'PluginAppliancesOptvalue_Item',
                             'tablename'              => 'glpi_plugin_appliances_optvalues_items'));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_RELATIONS', 1206,
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_RELATIONS', 'PluginAppliancesRelation',
                       array('classname'              => 'PluginAppliancesRelation',
                             'tablename'              => 'glpi_plugin_appliances_relations'));
 
