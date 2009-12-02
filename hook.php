@@ -264,7 +264,6 @@ function plugin_appliances_giveItem($type,$ID,$data,$num) {
          $number_device = $DB->numrows($result_device);
          $out = '';
          if ($number_device > 0) {
-            $ci = new CommonItem();
             for ($y=0 ; $y < $number_device ; $y++) {
                $column = "name";
                if ($type==TRACKING_TYPE) {
@@ -291,11 +290,11 @@ function plugin_appliances_giveItem($type,$ID,$data,$num) {
                              `".$LINK_ID_TABLE[$type]."`.`$column`";
 
                   if ($result_linked = $DB->query($query)) {
-                     $ci->setType($type,true);
+                     $item = new $type();
                      if ($DB->numrows($result_linked)) {
                         while ($data=$DB->fetch_assoc($result_linked)) {
-                           if ($ci->obj->getFromDB($data['id'])) {
-                              $out .= $ci->getType()." - ".$ci->obj->getLink()."<br>";
+                           if ($item->getFromDB($data['id'])) {
+                              $out .= $item->getTypeName()." - ".$item->getLink()."<br>";
                            }
                         }
                      }

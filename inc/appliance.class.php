@@ -395,9 +395,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<th>".$LANG['common'][20]."</th>";
       echo "</tr>";
 
-      $ci = new CommonItem();
       while ($i < $number) {
          $type = $DB->result($result, $i, "itemtype");
+         if (!class_exists($type)) {
+            continue;
+         }
+         $item = new $type();
          if (haveTypeRight($type,"r")) {
             $column = "name";
             if ($type == TRACKING_TYPE) {
@@ -430,7 +433,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                                               $this->fields['name']);
 
                   while ($data = $DB->fetch_assoc($result_linked)) {
-                     $ci->getFromDB($type,$data["id"]);
+                     $item->getFromDB($data["id"]);
                      addToNavigateListItems($type,$data["id"]);
                      $ID = "";
                      if ($type == TRACKING_TYPE) {
@@ -456,7 +459,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
                         echo "</td>";
                      }
-                     echo "<td class='center'>".$ci->getType()."</td>";
+                     echo "<td class='center'>".$item->getTypeName()."</td>";
                      echo "<td class='center' ".
                            (isset($data['deleted']) && $data['deleted']?"class='tab_bg_2_2'":"").">".
                            $name."</td>";
@@ -470,7 +473,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                            PluginAppliancesRelation::getTypeName($this->fields["relationtypes_id"]).
                            "&nbsp;:&nbsp;";
                         PluginAppliancesRelation::showList($this->fields["relationtypes_id"],
-                                                           $data["IDD"], $ci->obj->fields["entities_id"],
+                                                           $data["IDD"], $item->fields["entities_id"],
                                                            false);
                         PluginAppliancesOptvalue_Item::showList($type, $data["id"], $instID, false);
                         echo "</td>";
@@ -547,12 +550,15 @@ class PluginAppliancesAppliance extends CommonDBTM {
                                      $LANG['common'][20].'</i></b>');
       }
 
-      $ci = new CommonItem();
       if (!$number) {
          $pdf->displayLine($LANG['search'][15]);
       } else {
          for ($i=0 ; $i < $number ; $i++) {
             $type = $DB->result($result, $i, "itemtype");
+            if (!class_exists($type)) {
+               continue;
+            }
+            $item = new $type();
 
             if (haveTypeRight($type,"r")) {
                $column = "name";
@@ -583,7 +589,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                if ($result_linked=$DB->query($query)) {
                   if ($DB->numrows($result_linked)) {
                      while ($data = $DB->fetch_assoc($result_linked)) {
-                        if (!$ci->getFromDB($type,$data["id"])) {
+                        if (!$item->getFromDB($data["id"])) {
                            continue;
                         }
                         $ID = "";
@@ -602,7 +608,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         if (isMultiEntitiesMode()) {
                            $pdf->setColumnsSize(12,27,25,18,18);
                            $pdf->displayLine(
-                                       $ci->getType(),
+                                       $item->getTypeName(),
                                        $name,
                                        getDropdownName("glpi_entities",$data['entities_id']),
                                        (isset($data["serial"])? "".$data["serial"]."" :"-"),
@@ -610,7 +616,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         } else {
                            $pdf->setColumnsSize(25,31,22,22);
                            $pdf->displayTitle(
-                                       $ci->getType(),
+                                       $item->getTypeName(),
                                        $name,
                                        (isset($data["serial"])? "".$data["serial"]."" :"-"),
                                        (isset($data["otherserial"])? "".$data["otherserial"]."" :"-"));
@@ -643,10 +649,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static function showAssociated($itemtype,$ID,$withtemplate='') {
       global $DB,$CFG_GLPI, $LANG;
 
-      $ci = new CommonItem();
-      $ci->getFromDB($itemtype,$ID);
-      $canread = $ci->obj->can($ID,'r');
-      $canedit = $ci->obj->can($ID,'w');
+      $item = new $itemtype();
+      $canread = $item->can($ID,'r');
+      $canedit = $item->can($ID,'w');
 
       $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
                        `glpi_plugin_appliances_appliances`.*
@@ -739,7 +744,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
             // add or delete a relation to an applicatifs
             echo "<td class='center'>";
             PluginAppliancesRelation::showList ($data["relationtypes_id"], $data["entID"],
-                                                $ci->obj->fields["entities_id"],$canedit);
+                                                $item->fields["entities_id"],$canedit);
             echo "</td>";
          }
 
@@ -756,14 +761,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
 
       if ($canedit){
-         $ci = new CommonItem();
          $entities = "";
-         if ($ci->getFromDB($itemtype,$ID) && isset($ci->obj->fields["entities_id"])) {
-            if (isset($ci->obj->fields["is_recursive"]) && $ci->obj->fields["is_recursive"]) {
-               $entities = getEntitySons($ci->obj->fields["entities_id"]);
-            } else {
-               $entities = $ci->obj->fields["entities_id"];
-            }
+         if ($item->isRecursive()) {
+            $entities = getEntitySons($item->getEntityID());
+         } else {
+            $entities = $item->getEntityID();
          }
          $limit = getEntitiesRestrictRequest(" AND ","glpi_plugin_appliances_appliances",'',$entities,
                                              true);
@@ -808,11 +810,14 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static function showAssociated_PDF($pdf, $ID, $itemtype){
       global $DB,$CFG_GLPI, $LANG;
 
+      $item = new $itemtype();
+      if (!$item->can($ID,'r')) {
+         return false;
+      }
+
       $pdf->setColumnsSize(100);
       $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][9].'</b>');
 
-      $ci = new CommonItem();
-      $ci->getFromDB($itemtype,$ID);
 
       $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
                        `glpi_plugin_appliances_appliances`.*
