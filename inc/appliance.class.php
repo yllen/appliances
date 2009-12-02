@@ -46,6 +46,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
    public $dohistory        = true;
 
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['plugin_appliances']['title'][1];
+   }
+
    function getSearchOptions() {
       global $LANG;
 
