@@ -80,6 +80,10 @@ function plugin_appliances_install() {
          array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences",
                "glpi_documents_items", "glpi_infocoms", "glpi_logs", "glpi_tickets"),
          array("glpi_plugin_appliances_appliances_items", "glpi_plugin_appliances_optvalues_items"));
+      
+      Plugin::migrateItemType(
+         array(4450 => "PluginRacksRack"),
+         array("glpi_plugin_appliances_appliances_items"));
    }
    if (!TableExists("glpi_plugin_appliances_appliances")) { // not installed
       $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/empty-1.6.0.sql");
