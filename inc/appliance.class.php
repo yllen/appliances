@@ -762,7 +762,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if ($canedit){
          $entities = "";
          if ($item->isRecursive()) {
-            $entities = getEntitySons($item->getEntityID());
+            $entities = getSonsOf('glpi_entities',$item->getEntityID());
          } else {
             $entities = $item->getEntityID();
          }
