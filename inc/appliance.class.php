@@ -395,7 +395,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<th>".$LANG['common'][20]."</th>";
       echo "</tr>";
 
-      while ($i < $number) {
+      for ($i=0 ; $i < $number ; $i++) {
          $type = $DB->result($result, $i, "itemtype");
          if (!class_exists($type)) {
             continue;
@@ -488,7 +488,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
                }
             }
          }
-         $i++;
       }
 
       if ($canedit) {
