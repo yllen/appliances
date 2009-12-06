@@ -54,9 +54,6 @@ if (!isset($_POST["sort"])) {
 if (!isset($_POST["order"])) {
    $_POST["order"] = "";
 }
-if (!isset($_POST["withtemplate"])) {
-   $_POST["withtemplate"] = "";
-}
 $appliance = new PluginAppliancesAppliance();
 $optvalue = new PluginAppliancesOptvalue();
 
@@ -70,9 +67,9 @@ if ($_POST["id"] >0
          // $appliance->showDevice();
 
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$appliance);
-         Contract::showAssociated($appliance,$_POST['withtemplate']);
-         Document::showAssociated($appliance,$_POST['withtemplate']);
-         displayPluginAction(PLUGIN_APPLIANCES_TYPE,$_POST["id"],$_POST['glpi_tab']);
+         Contract::showAssociated($appliance);
+         Document::showAssociated($appliance);
+         displayPluginAction('PluginAppliancesAppliance',$_POST["id"],$_POST['glpi_tab']);
          break;
 
       case 2 :
@@ -80,28 +77,28 @@ if ($_POST["id"] >0
          break;
 
       case 6 :
-         showJobListForItem(PLUGIN_APPLIANCES_TYPE,$_POST["id"]);
+         showJobListForItem('PluginAppliancesAppliance',$_POST["id"]);
          break;
 
       case 9 :
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$appliance);
-         Contract::showAssociated($appliance,$_POST['withtemplate']);
+         Contract::showAssociated($appliance);
          break;
 
       case 10 :
-         Document::showAssociated($appliance,$_POST['withtemplate']);
+         Document::showAssociated($appliance);
          break;
 
       case 11 :
-         showNotesForm($_POST['target'],PLUGIN_APPLIANCES_TYPE,$_POST["id"]);
+         showNotesForm($_POST['target'],'PluginAppliancesAppliance',$_POST["id"]);
          break;
 
       case 12 :
-         showHistory(PLUGIN_APPLIANCES_TYPE,$_POST["id"]);
+         showHistory('PluginAppliancesAppliance',$_POST["id"]);
          break;
 
       default :
-         if (!displayPluginAction(PLUGIN_APPLIANCES_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+         if (!displayPluginAction('PluginAppliancesAppliance',$_POST["id"],$_POST['glpi_tab'])) {
             $appliance->showItem();
          }
    }
