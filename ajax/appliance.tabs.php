@@ -57,9 +57,9 @@ if (!isset($_POST["order"])) {
 if (!isset($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
 }
-// plugin_appliances_checkRight("appliances","r");
 $appliance = new PluginAppliancesAppliance();
 $optvalue = new PluginAppliancesOptvalue();
+
 if ($_POST["id"] >0
     && $appliance->getFromDB($_POST["id"])
     && $appliance->can($_POST["id"],'r')) {
@@ -69,8 +69,7 @@ if ($_POST["id"] >0
          $appliance->showItem();
          // $appliance->showDevice();
 
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PLUGIN_APPLIANCES_TYPE,
-                         $_POST["id"],1,$_POST['withtemplate']);
+         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$appliance);
          Contract::showAssociated($appliance,$_POST['withtemplate']);
          Document::showAssociated($appliance,$_POST['withtemplate']);
          displayPluginAction(PLUGIN_APPLIANCES_TYPE,$_POST["id"],$_POST['glpi_tab']);
@@ -85,8 +84,7 @@ if ($_POST["id"] >0
          break;
 
       case 9 :
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PLUGIN_APPLIANCES_TYPE,
-                         $_POST["id"],1,$_POST['withtemplate']);
+         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$appliance);
          Contract::showAssociated($appliance,$_POST['withtemplate']);
          break;
 
