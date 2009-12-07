@@ -39,6 +39,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 usePlugin('appliances',true);
 
-$dropdown = new PluginAppliancesAppliancetype();
+$dropdown = new PluginAppliancesApplianceType();
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
 ?>

@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-class PluginAppliancesAppliancetype extends CommonDropdown {
+class PluginAppliancesApplianceType extends CommonDropdown {
 
    // From CommonDBTM
    public $table            = 'glpi_plugin_appliances_appliancetypes';

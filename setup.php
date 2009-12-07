@@ -61,8 +61,8 @@ function plugin_init_appliances() {
                             'formpage'               => 'front/environment.form.php',
                             'searchpage'             => 'front/environment.php'));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCESTYPE', 'PluginAppliancesAppliancetype',
-                      array('classname'              => 'PluginAppliancesAppliancetype',
+   registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCESTYPE', 'PluginAppliancesApplianceType',
+                      array('classname'              => 'PluginAppliancesApplianceType',
                             'tablename'              => 'glpi_plugin_appliances_appliancetypes',
                             'typename'               => $LANG['plugin_appliances']['setup'][2],
                             'formpage'               => 'front/appliancetype.form.php',

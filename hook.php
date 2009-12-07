@@ -426,7 +426,7 @@ function plugin_appliances_MassiveActionsProcess($data) {
                   $appliance = new PluginAppliancesAppliance;
                   $appliance->getFromDB($key);
 
-                  $type = PluginAppliancesAppliancetype::transfer($appliance->fields["appliancetypes_id"],
+                  $type = PluginAppliancesApplianceType::transfer($appliance->fields["appliancetypes_id"],
                                                                   $data['entities_id']);
                   $values["id"] = $key;
                   $values["appliancetypes_id"] = $type;
