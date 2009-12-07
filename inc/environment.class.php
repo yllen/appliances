@@ -41,7 +41,7 @@ class PluginAppliancesEnvironment extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_plugin_appliances_environments';
-   public $type  = PLUGIN_APPLIANCES_ENVIRONMENT;
+   public $type  = 'PluginAppliancesEnvironment';
 
    static function getTypeName() {
       global $LANG;

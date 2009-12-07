@@ -41,11 +41,11 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
    // From CommonDBTM
    public $table = 'glpi_plugin_appliances_appliances_items';
-   public $type  = PLUGIN_APPLIANCES_APPLIANCES_ITEMS;
+   public $type  = 'PluginAppliancesAppliance_Item';
 
    // From CommonDBRelation
-   public $itemtype_1 = PLUGIN_APPLIANCES_TYPE;
-   public $items_id_1 = 'appliances_id';
+   public $itemtype_1 = 'PluginAppliancesAppliance';
+   public $items_id_1 = 'plugin_appliances_appliances_id';
 
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';

@@ -41,7 +41,7 @@ class PluginAppliancesApplianceType extends CommonDropdown {
 
    // From CommonDBTM
    public $table            = 'glpi_plugin_appliances_appliancetypes';
-   public $type             = PLUGIN_APPLIANCES_APPLIANCESTYPE;
+   public $type             = 'PluginAppliancesApplianceType';
    public $entity_assign    = true;
    public $may_be_recursive = true;
 

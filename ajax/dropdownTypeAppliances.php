@@ -49,12 +49,12 @@ if (isset($_POST["type_appliances"])) {
    $rand = $_POST['rand'];
 
    $use_ajax = false;
-   if ($CFG_GLPI["use_ajax"] 
+   if ($CFG_GLPI["use_ajax"]
        && countElementsInTable(
             'glpi_plugin_appliances_appliances',
-            "appliancetypes_id ='".$_POST["type_appliances"].
+            "plugin_appliances_appliancetypes_id ='".$_POST["type_appliances"].
                "' ".getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances","",
-                                               $_POST["entity_restrict"],true) 
+                                               $_POST["entity_restrict"],true)
                                               )>$CFG_GLPI["ajax_limit_count"]) {
       $use_ajax = true;
    }

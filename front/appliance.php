@@ -35,7 +35,7 @@
 $NEEDED_ITEMS = array('computer', 'monitor', 'networking', 'peripheral', 'phone', 'printer', 'search',
                       'software', 'tracking');
 
-define('GLPI_ROOT', '../..');
+define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
 
 $plugin = new Plugin();
@@ -48,9 +48,9 @@ if ($plugin->isActivated("environment")) {
 }
 
 if (plugin_appliances_haveRight("appliance","r") || haveRight("config","w")) {
-   manageGetValuesInSearch(PLUGIN_APPLIANCES_TYPE);
-   searchForm(PLUGIN_APPLIANCES_TYPE,$_GET);
-   showList(PLUGIN_APPLIANCES_TYPE,$_GET);
+   manageGetValuesInSearch('PluginAppliancesAppliance');
+   searchForm('PluginAppliancesAppliance',$_GET);
+   showList('PluginAppliancesAppliance',$_GET);
    commonFooter();
 } else {
    echo "<div class='center'><br><br>".

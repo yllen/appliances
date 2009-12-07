@@ -45,7 +45,7 @@ class PluginAppliancesRelation extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_plugin_appliances_relations';
-   public $type  = PLUGIN_APPLIANCES_RELATIONS;
+   public $type  = 'PluginAppliancesRelation';
 
    /**
     * Clean object veryfing criteria (when a relation is deleted)
@@ -103,7 +103,7 @@ class PluginAppliancesRelation extends CommonDBTM {
       return $name;
    }
 
-   static function dropdown($myname,$value=0) {
+   static function dropdownType($myname,$value=0) {
       global $LANG;
 
       dropdownArrayValues($myname, array (0 => "-----",
@@ -148,7 +148,7 @@ class PluginAppliancesRelation extends CommonDBTM {
                         `glpi_plugin_appliances_relations`,
                         `glpi_plugin_appliances_appliances_items`
                         WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
-                              AND `glpi_plugin_appliances_relations`.`appliances_items_id`
+                              AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
                                     = `glpi_plugin_appliances_appliances_items`.`id`
                               AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
 
@@ -177,14 +177,15 @@ class PluginAppliancesRelation extends CommonDBTM {
                $i++;
             }
             echo "</table>";
-            echo "<input type='submit' name='dellieu' value='".$LANG['buttons'][6]."' class='submit'><br><br>";
+            echo "<input type='submit' name='dellieu' value='".$LANG['buttons'][6]."' class='submit'>".
+                  "<br><br>";
          }
 
          echo "$title&nbsp;:&nbsp;";
 
          dropdownValue($tablename,"tablekey[" . $relID . "]","",1,$entity,"",$used);
-         echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value=\"".
-               $LANG['buttons'][8]."\" class='submit'><br>&nbsp;";
+         echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value='".
+               $LANG['buttons'][8]."' class='submit'><br>&nbsp;";
          echo "</form>";
       } else if ($number_loc > 0) {
          while ($res = $DB->fetch_array($result_loc)) {
@@ -225,7 +226,7 @@ class PluginAppliancesRelation extends CommonDBTM {
                         `glpi_plugin_appliances_relations`,
                         `glpi_plugin_appliances_appliances_items`
                    WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
-                         AND `glpi_plugin_appliances_relations`.`appliances_items_id`
+                         AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
                                  = `glpi_plugin_appliances_appliances_items`.`id`
                          AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
       $result_loc = $DB->query($sql_loc);

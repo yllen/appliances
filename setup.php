@@ -38,58 +38,58 @@ function plugin_init_appliances() {
    global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
 
    // Params : plugin name - string type - number - attributes
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_TYPE', 'PluginAppliancesAppliance',
-                      array('classname'              => 'PluginAppliancesAppliance',
-                            'tablename'              => 'glpi_plugin_appliances_appliances',
-                            'formpage'               => 'front/appliance.form.php',
-                            'searchpage'             => 'index.php',
-                            'typename'               => $LANG['plugin_appliances']['title'][1],
-                            'deleted_tables'         => true,
-                            'specif_entities_tables' => true,
-                            'recursive_type'         => true,
-                            'linkuser_types'         => true,
-                            'linkgroup_types'        => true,
-                            'infocom_types'          => true,
-                            'doc_types'              => true,
-                            'contract_types'         => true,
-                            'helpdesk_visible_types' => true));
+   Plugin::registerClass('PluginAppliancesAppliance',
+                         array('classname'              => 'PluginAppliancesAppliance',
+                               'tablename'              => 'glpi_plugin_appliances_appliances',
+                               'formpage'               => 'front/appliance.form.php',
+                               'searchpage'             => 'front/appliance.php',
+                               'typename'               => $LANG['plugin_appliances']['title'][1],
+                               'deleted_tables'         => true,
+                               'specif_entities_tables' => true,
+                               'recursive_type'         => true,
+                               'linkuser_types'         => true,
+                               'linkgroup_types'        => true,
+                               'infocom_types'          => true,
+                               'doc_types'              => true,
+                               'contract_types'         => true,
+                               'helpdesk_visible_types' => true));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_ENVIRONMENT', 'PluginAppliancesEnvironment',
-                      array('classname'              => 'PluginAppliancesEnvironment',
-                            'tablename'              => 'glpi_plugin_appliances_environments',
-                            'typename'               => $LANG['plugin_appliances'][3],
-                            'formpage'               => 'front/environment.form.php',
-                            'searchpage'             => 'front/environment.php'));
+   Plugin::registerClass('PluginAppliancesEnvironment',
+                         array('classname'              => 'PluginAppliancesEnvironment',
+                               'tablename'              => 'glpi_plugin_appliances_environments',
+                               'typename'               => $LANG['plugin_appliances'][3],
+                               'formpage'               => 'front/environment.form.php',
+                               'searchpage'             => 'front/environment.php'));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCESTYPE', 'PluginAppliancesApplianceType',
-                      array('classname'              => 'PluginAppliancesApplianceType',
-                            'tablename'              => 'glpi_plugin_appliances_appliancetypes',
-                            'typename'               => $LANG['plugin_appliances']['setup'][2],
-                            'formpage'               => 'front/appliancetype.form.php',
-                            'searchpage'             => 'front/appliancetype.php',
-                            'specif_entities_tables' => true,
-                            'recursive_type'         => true));
+   Plugin::registerClass('PluginAppliancesApplianceType',
+                         array('classname'              => 'PluginAppliancesApplianceType',
+                               'tablename'              => 'glpi_plugin_appliances_appliancetypes',
+                               'typename'               => $LANG['plugin_appliances']['setup'][2],
+                               'formpage'               => 'front/appliancetype.form.php',
+                               'searchpage'             => 'front/appliancetype.php',
+                               'specif_entities_tables' => true,
+                               'recursive_type'         => true));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_APPLIANCES_ITEMS', 'PluginAppliancesAppliance_Item',
-                      array('classname'              => 'PluginAppliancesAppliance_Item',
-                            'tablename'              => 'glpi_plugin_appliances_appliances_items'));
+   Plugin::registerClass('PluginAppliancesAppliance_Item',
+                         array('classname'              => 'PluginAppliancesAppliance_Item',
+                               'tablename'              => 'glpi_plugin_appliances_appliances_items'));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_OPTVALUES', 'PluginAppliancesOptvalue',
-                      array('classname'              => 'PluginAppliancesOptvalue',
-                            'tablename'              => 'glpi_plugin_appliances_optvalues'));
+   Plugin::registerClass('PluginAppliancesOptvalue',
+                         array('classname'              => 'PluginAppliancesOptvalue',
+                               'tablename'              => 'glpi_plugin_appliances_optvalues'));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_OPTVALUES_ITEMS', 'PluginAppliancesOptvalue_Item',
-                      array('classname'              => 'PluginAppliancesOptvalue_Item',
-                            'tablename'              => 'glpi_plugin_appliances_optvalues_items'));
+   Plugin::registerClass('PluginAppliancesOptvalue_Item',
+                         array('classname'              => 'PluginAppliancesOptvalue_Item',
+                               'tablename'              => 'glpi_plugin_appliances_optvalues_items'));
 
-   registerPluginType('appliances', 'PLUGIN_APPLIANCES_RELATIONS', 'PluginAppliancesRelation',
-                      array('classname'              => 'PluginAppliancesRelation',
-                            'tablename'              => 'glpi_plugin_appliances_relations'));
+   Plugin::registerClass('PluginAppliancesRelation',
+                         array('classname'              => 'PluginAppliancesRelation',
+                               'tablename'              => 'glpi_plugin_appliances_relations'));
 
    // Define the type for which we know how to generate PDF, need :
    // - plugin_appliances_prefPDF($type)
    // - plugin_appliances_generatePDF($type, $tab_id, $tab, $page=0)
-   $PLUGIN_HOOKS['plugin_pdf'][PLUGIN_APPLIANCES_TYPE] = 'appliances';
+   $PLUGIN_HOOKS['plugin_pdf']['PluginAppliancesAppliance'] = 'appliances';
 
    $PLUGIN_HOOKS['change_profile']['appliances'] = array('PluginAppliancesProfile','select');
    $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
@@ -105,11 +105,11 @@ function plugin_init_appliances() {
          // Display a menu entry ?
          if (plugin_appliances_haveRight("appliance","r")) {
             $PLUGIN_HOOKS['menu_entry']['appliances'] = false;
-            $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['title'] 
+            $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['title']
                = $LANG['plugin_appliances']['title'][1];
-				$PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['page'] 
+				$PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['page']
                = '/plugins/appliances/front/appliance.php';
-				$PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['search'] 
+				$PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['search']
                = '/plugins/appliances/front/appliance.php';
             $PLUGIN_HOOKS['headings']['appliances'] = 'plugin_get_headings_appliances';
             $PLUGIN_HOOKS['headings_action']['appliances'] = 'plugin_headings_actions_appliances';
@@ -118,7 +118,7 @@ function plugin_init_appliances() {
          }
 
           if (plugin_appliances_haveRight("appliance","w")) {
-            $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['add'] 
+            $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['add']
             = '/plugins/appliances/front/appliance.form.php';
             $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
             $PLUGIN_HOOKS['pre_item_delete']['appliances'] = 'plugin_pre_item_delete_appliances';
@@ -128,8 +128,8 @@ function plugin_init_appliances() {
        } else {
          // Display a menu entry ?
          if (plugin_appliances_haveRight("appliance","r")) {
-            $PLUGIN_HOOKS['menu_entry']['appliances'] = true;
-            $PLUGIN_HOOKS['submenu_entry']['appliances']['search'] = 'index.php';
+            $PLUGIN_HOOKS['menu_entry']['appliances'] = 'front/appliance.php';
+            $PLUGIN_HOOKS['submenu_entry']['appliances']['search'] = 'front/appliance.php';
             $PLUGIN_HOOKS['headings']['appliances'] = 'plugin_get_headings_appliances';
             $PLUGIN_HOOKS['headings_action']['appliances'] = 'plugin_headings_actions_appliances';
             $PLUGIN_HOOKS['headings_actionpdf']['appliances']
@@ -183,16 +183,16 @@ function plugin_appliances_check_config() {
 function plugin_appliances_haveTypeRight($type,$right) {
 
    switch ($type) {
-      case PLUGIN_APPLIANCES_TYPE :
+      case 'PluginAppliancesAppliance' :
          // 1 - All rights for all users
          // return true;
          // 2 - Similarity right : same right of computer
          return plugin_appliances_haveRight("appliance",$right);
 
-      case PLUGIN_APPLIANCES_ENVIRONMENT :
+      case 'PluginAppliancesEnvironment' :
          return haveRight('dropdown',$right);
 
-      case PLUGIN_APPLIANCES_APPLIANCESTYPE :
+      case 'PluginAppliancesApplianceType' :
          return haveRight('entity_dropdown',$right);
 
    }

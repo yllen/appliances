@@ -41,11 +41,11 @@ class PluginAppliancesOptvalue extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_plugin_appliances_optvalues';
-   public $type  = PLUGIN_APPLIANCES_OPTVALUES;
+   public $type  = 'PluginAppliancesOptvalue';
 
    function cleanDBonPurge($ID) {
       $temp = new PluginAppliancesOptvalue_Item();
-      $temp->clean(array('optvalues_id' => $ID));
+      $temp->clean(array('plugin_appliances_optvalues_id' => $ID));
    }
 
    /**
@@ -87,7 +87,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
 
       $query_app = "SELECT *
                     FROM `glpi_plugin_appliances_optvalues`
-                    WHERE `appliances_id` = '".$appli->fields['id']."'
+                    WHERE `plugin_appliances_appliances_id` = '".$appli->fields['id']."'
                     ORDER BY `vvalues`";
 
       $result_app = $DB->query($query_app);
@@ -113,9 +113,9 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       }
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-         echo "<input type='hidden' name='appliances_id' value='".$appli->fields['id']."'>\n";
+         echo "<input type='hidden' name='plugin_appliances_appliances_id' value='".$appli->fields['id']."'>\n";
          echo "<input type='hidden' name='number_champs' value='$number_champs'>\n";
-         echo "<input type='submit' name='update_optvalues' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         echo "<input type='submit' name='update_optvalues' value='".$LANG['buttons'][7]."' class='submit'>";
          echo "</td></tr>\n</table></div></form>";
       } else {
          echo "</table></div>";
@@ -131,7 +131,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    function updateList($input) {
       global $DB;
 
-      if (!isset($input['number_champs']) |- !isset($input['appliances_id'])) {
+      if (!isset($input['number_champs']) || !isset($input['plugin_appliances_appliances_id'])) {
          return false;
       }
       $number_champs = $input['number_champs'];
@@ -142,7 +142,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
 
          $query_app = "SELECT `id`
                        FROM `glpi_plugin_appliances_optvalues`
-                       WHERE `appliances_id` = '".$input['appliances_id']."'
+                       WHERE `plugin_appliances_appliances_id` = '".$input['plugin_appliances_appliances_id']."'
                              AND `vvalues` = '$i'";
          $result_app = $DB->query($query_app);
 
@@ -158,7 +158,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
          } else if (!empty($input[$champ])) {
             // l'entrée n'existe pas
             // et la valeur saisie est non nulle -> on fait un insert
-            $data = array('appliances_id' => $input['appliances_id'],
+            $data = array('plugin_appliances_appliances_id' => $input['plugin_appliances_appliances_id'],
                           'champ'         => $input[$champ],
                           'ddefault'      => $input[$ddefault],
                           'vvalues'       => $i);

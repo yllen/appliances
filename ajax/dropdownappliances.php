@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 checkCentralAccess();
 // Make a select box with all glpi users
 
-$where=" WHERE (`glpi_plugin_appliances_appliances`.`appliancetypes_id` = '".$_POST['type_appliances']."')
+$where=" WHERE (`glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id` = '".$_POST['type_appliances']."')
                AND `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ";
 
 if (isset($_POST["entity_restrict"]) && $_POST["entity_restrict"] >=0) {
@@ -82,7 +82,7 @@ if ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"]) {
 $query = "SELECT *
           FROM `glpi_plugin_appliances_appliances`
           $where
-          ORDER BY `entities_id`, `name` 
+          ORDER BY `entities_id`, `name`
           $LIMIT";
 
 $result = $DB->query($query);

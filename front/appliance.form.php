@@ -64,18 +64,18 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $PluginAppliances->check($_POST['id'],'w');
    $PluginAppliances->delete($_POST);
-   glpi_header($CFG_GLPI["root_doc"]."/plugins/appliances/index.php");
+   glpi_header($CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.php");
 
 } else if (isset($_POST["restore"])) {
    $PluginAppliances->check($_POST['id'],'w');
    $PluginAppliances->restore($_POST);
-   glpi_header($CFG_GLPI["root_doc"]."/plugins/appliances/index.php");
+   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["purge"])) {
    $PluginAppliances->check($_POST['id'],'w');
    $PluginAppliances->delete($_POST,1);
 
-   glpi_header($CFG_GLPI["root_doc"]."/plugins/appliances/index.php");
+   glpi_header($CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.php");
 
 // delete a relation
 } else if (isset($_POST["dellieu"])) {
@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
    if ($_POST['tablekey'] >0) {
       foreach($_POST["tablekey"] as $key => $val) {
          if ($val > 0) {
-            $relation->add(array('appliances_items_id' => $key,
+            $relation->add(array('plugin_appliances_appliances_items_id' => $key,
                                  'relations_id'        => $val));
          }
       }
@@ -101,14 +101,14 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST['update_optvalues'])) {
-   $PluginAppliances->check($_POST['appliances_id'],'w');
+   $PluginAppliances->check($_POST['plugin_appliances_appliances_id'],'w');
 
    $Optvalue = new PluginAppliancesOptvalue();
    $Optvalue->updateList($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add_opt_val"])){
-   $PluginAppliances->check($_POST['appliances_id'],'r');
+   $PluginAppliances->check($_POST['plugin_appliances_appliances_id'],'r');
    $temp = new Commonitem();
    $temp->setType($_POST['itemtype'], true);
    $temp->obj->check($_POST['items_id'],'w');
@@ -119,7 +119,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["additem"])) {
    if ($_POST['itemtype'] && $_POST['item'] >0) {
-      $input = array('appliances_id' => $_POST['conID'],
+      $input = array('plugin_appliances_appliances_id' => $_POST['conID'],
                      'items_id'      => $_POST['item'],
                      'itemtype'      => $_POST['itemtype']);
 

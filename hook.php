@@ -42,7 +42,7 @@ function plugin_appliances_AssignToTicket($types) {
    global $LANG;
 
    if (plugin_appliances_haveRight("open_ticket","1")) {
-      $types[PLUGIN_APPLIANCES_TYPE] = $LANG['plugin_appliances']['title'][1];
+      $types['PluginAppliancesAppliance'] = $LANG['plugin_appliances']['title'][1];
    }
    return $types;
 }
@@ -80,7 +80,7 @@ function plugin_appliances_install() {
          array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences",
                "glpi_documents_items", "glpi_infocoms", "glpi_logs", "glpi_tickets"),
          array("glpi_plugin_appliances_appliances_items", "glpi_plugin_appliances_optvalues_items"));
-      
+
       Plugin::migrateItemType(
          array(4450 => "PluginRacksRack"),
          array("glpi_plugin_appliances_appliances_items"));
@@ -112,26 +112,25 @@ function plugin_appliances_uninstall() {
 
    $query = "DELETE
              FROM `glpi_displaypreferences`
-             WHERE (`itemtype` = '".PLUGIN_APPLIANCES_TYPE."'
-                    OR `itemtype` = '".PLUGIN_APPLIANCES_APPLIANCESTYPE."'
-                    OR `itemtype` = '".PLUGIN_APPLIANCES_ENVIRONMENT."')";
+             WHERE (`itemtype` = IN ('PluginAppliancesAppliance','PluginAppliancesApplianceType',
+                                     'PluginAppliancesEnvironment', 1200))";
    $DB->query($query);
 
    $query = "DELETE
              FROM `glpi_documents_items`
-             WHERE `itemtype` = '".PLUGIN_APPLIANCES_TYPE."'";
+             WHERE `itemtype` = 'PluginAppliancesAppliance'";
    $DB->query($query);
 
    $query = "DELETE
              FROM `glpi_bookmarks`
-             WHERE (`itemtype` = '".PLUGIN_APPLIANCES_TYPE."'
-                    AND `itemtype` = '".PLUGIN_APPLIANCES_APPLIANCESTYPE."'
-                    AND `itemtype` = '".PLUGIN_APPLIANCES_ENVIRONMENT."')";
+             WHERE (`itemtype` = 'PluginAppliancesAppliance'
+                    AND `itemtype` = 'PluginAppliancesApplianceType'
+                    AND `itemtype` = 'PluginAppliancesEnvironment')";
    $DB->query($query);
 
    $query = "DELETE
              FROM `glpi_logs`
-             WHERE `itemtype` = '".PLUGIN_APPLIANCES_TYPE."'";
+             WHERE `itemtype` = 'PluginAppliancesAppliance'";
    $DB->query($query);
 
    if (TableExists("glpi_plugin_data_injection_models")) {
@@ -142,7 +141,7 @@ function plugin_appliances_uninstall() {
                   USING `glpi_plugin_data_injection_models`,
                         `glpi_plugin_data_injection_mappings`,
                         `glpi_plugin_data_injection_infos`
-                  WHERE `glpi_plugin_data_injection_models`.`device_type` = ".PLUGIN_APPLIANCES_TYPE."
+                  WHERE `glpi_plugin_data_injection_models`.`device_type` = 'PluginAppliancesAppliance'
                         AND `glpi_plugin_data_injection_mappings`.`model_id`
                               = `glpi_plugin_data_injection_models`.`ID`
                         AND `glpi_plugin_data_injection_infos`.`model_id`
@@ -156,8 +155,8 @@ function plugin_appliances_uninstall() {
 function plugin_appliances_getDropdown(){
    global $LANG;
 
-   return array(PLUGIN_APPLIANCES_APPLIANCESTYPE =>$LANG['plugin_appliances']['setup'][2],
-                PLUGIN_APPLIANCES_ENVIRONMENT    =>$LANG['plugin_appliances'][3]);
+   return array('PluginAppliancesApplianceType'  =>$LANG['plugin_appliances']['setup'][2],
+                'PluginAppliancesEnvironment'    =>$LANG['plugin_appliances'][3]);
 }
 
 
@@ -167,14 +166,14 @@ function plugin_appliances_getDatabaseRelations() {
    $plugin = new Plugin();
    if ($plugin->isActivated("appliances")) {
       return array('glpi_plugin_appliances_appliancetypes'
-                     => array('glpi_plugin_appliances_appliances' => 'appliancetypes_id'),
+                     => array('glpi_plugin_appliances_appliances' => 'plugin_appliances_appliancetypes_id'),
                    'glpi_plugin_appliances_environments'
-                     => array('glpi_plugin_appliances_appliances' => 'environments_id'),
+                     => array('glpi_plugin_appliances_appliances' => 'plugin_appliances_environments_id'),
                    'glpi_entities'
                      => array('glpi_plugin_appliances_appliances'      => 'entities_id',
                               'glpi_plugin_appliances_appliancetypes' => 'entities_id'),
                    'glpi_plugin_appliances_appliances'
-                     => array('glpi_plugin_appliances_appliances_items' => 'appliances_id'),
+                     => array('glpi_plugin_appliances_appliances_items' => 'plugin_appliances_appliances_id'),
                    '_virtual_device'
                      => array('glpi_plugin_appliances_appliances_items' => array('items_id',
                                                                       'itemtype')));
@@ -199,7 +198,7 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
                                         $LANG['common'][16];
          $sopt[1210]['forcegroupby']  = true;
          $sopt[1210]['datatype']      = 'itemlink';
-         $sopt[1210]['itemlink_type'] = PLUGIN_APPLIANCES_TYPE;
+         $sopt[1210]['itemlink_type'] = 'PluginAppliancesAppliance';
 
          $sopt[1211]['table']        = 'glpi_plugin_appliances_appliancetypes';
          $sopt[1211]['field']        = 'name';
@@ -218,7 +217,7 @@ function plugin_appliances_addLeftJoin($type,$ref_table,$new_table,$linkfield,
 
    switch ($new_table) {
       case "glpi_plugin_appliances_appliances_items" :
-         return " LEFT JOIN `$new_table` ON (`$ref_table`.`id` = `$new_table`.`appliances_id`) ";
+         return " LEFT JOIN `$new_table` ON (`$ref_table`.`id` = `$new_table`.`plugin_appliances_appliances_id`) ";
 
       case "glpi_plugin_appliances_appliances" : // From items
          return " LEFT JOIN `glpi_plugin_appliances_appliances_items`
@@ -226,14 +225,14 @@ function plugin_appliances_addLeftJoin($type,$ref_table,$new_table,$linkfield,
                          AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type')
                   LEFT JOIN `glpi_plugin_appliances_appliances`
                      ON (`glpi_plugin_appliances_appliances`.`id`
-                         = `glpi_plugin_appliances_appliances_items`.`appliances_id`) ";
+                         = `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`) ";
 
       case "glpi_plugin_appliances_appliancetypes" : // From items
          $out = addLeftJoin($type,$ref_table,$already_link_tables,
                             "glpi_plugin_appliances_appliances",$linkfield);
          $out .= " LEFT JOIN `glpi_plugin_appliances_appliancetypes`
                      ON (`glpi_plugin_appliances_appliancetypes`.`id`
-                         = `glpi_plugin_appliances_appliances`.`appliancetypes_id`) ";
+                         = `glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`) ";
          return $out;
    }
    return "";
@@ -243,7 +242,7 @@ function plugin_appliances_addLeftJoin($type,$ref_table,$new_table,$linkfield,
 function plugin_appliances_forceGroupBy($type) {
 
    switch ($type) {
-      case PLUGIN_APPLIANCES_TYPE :
+      case 'PluginAppliancesAppliance' :
          return true;
    }
    return false;
@@ -262,7 +261,7 @@ function plugin_appliances_giveItem($type,$ID,$data,$num) {
          $appliances_id=$data['id'];
          $query_device = "SELECT DISTINCT `itemtype`
                           FROM `glpi_plugin_appliances_appliances_items`
-                          WHERE `appliances_id` = '$appliances_id'
+                          WHERE `plugin_appliances_appliances_id` = '$appliances_id'
                           ORDER BY `itemtype`";
          $result_device = $DB->query($query_device);
          $number_device = $DB->numrows($result_device);
@@ -283,7 +282,7 @@ function plugin_appliances_giveItem($type,$ID,$data,$num) {
                             WHERE `".$LINK_ID_TABLE[$type]."`.`id`
                                      = `glpi_plugin_appliances_appliances_items`.`items_id`
                                  AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
-                                 AND `glpi_plugin_appliances_appliances_items`.`appliances_id` = '$appliances_id'".
+                                 AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id` = '$appliances_id'".
                                  getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',
                                                             isset($CFG_GLPI["recursive_type"][$type]));
 
@@ -318,7 +317,7 @@ function plugin_appliances_MassiveActions($type) {
    global $LANG;
 
    switch ($type) {
-      case PLUGIN_APPLIANCES_TYPE :
+      case 'PluginAppliancesAppliance' :
          return array('plugin_appliances_install'    => $LANG['plugin_appliances']['setup'][9],
                       'plugin_appliances_desinstall' => $LANG['plugin_appliances']['setup'][10],
                       'plugin_appliances_transfert'  => $LANG['buttons'][48]);
@@ -336,7 +335,7 @@ function plugin_appliances_MassiveActionsDisplay($type,$action) {
    global $LANG;
 
    switch ($type) {
-      case PLUGIN_APPLIANCES_TYPE :
+      case 'PluginAppliancesAppliance' :
          switch ($action) {
             // No case for add_document : use GLPI core one
             case "plugin_appliances_install" :
@@ -361,7 +360,7 @@ function plugin_appliances_MassiveActionsDisplay($type,$action) {
 
       default :
          if (in_array($type, PluginAppliancesAppliance::getTypes())) {
-            plugin_appliances_dropdownappliances("conID");
+            dropdownappliances("conID");
             echo "<input type='submit' name='massiveaction' class='submit\' ".
                   "value='".$LANG['buttons'][2]."'>";
          }
@@ -389,7 +388,7 @@ function plugin_appliances_MassiveActionsProcess($data) {
          break;
 
       case "plugin_appliances_install" :
-         if ($data['itemtype'] == PLUGIN_APPLIANCES_TYPE) {
+         if ($data['itemtype'] == 'PluginAppliancesAppliance') {
             $PluginItem = new PluginAppliancesAppliance_Item();
             foreach ($data["items"] as $key => $val) {
                if ($val == 1) {
@@ -405,14 +404,14 @@ function plugin_appliances_MassiveActionsProcess($data) {
          break;
 
       case "plugin_appliances_desinstall" :
-         if ($data['itemtype'] == PLUGIN_APPLIANCES_TYPE) {
+         if ($data['itemtype'] == 'PluginAppliancesAppliance') {
             foreach ($data["items_id"] as $key => $val) {
                if ($val == 1) {
                   $query = "DELETE
                             FROM `glpi_plugin_appliances_appliances_items`
-                            WHERE `itemtype` = '".$data['appliancetypes_id']."'
+                            WHERE `itemtype` = '".$data['plugin_appliances_appliancetypes_id']."'
                                   AND `items_id` = '".$data['item_item']."'
-                                  AND `appliances_id` = '$key'";
+                                  AND `plugin_appliances_appliances_id` = '$key'";
                   $DB->query($query);
                }
             }
@@ -420,16 +419,16 @@ function plugin_appliances_MassiveActionsProcess($data) {
          break;
 
       case "plugin_appliances_transfert" :
-         if ($data['itemtype'] == PLUGIN_APPLIANCES_TYPE) {
+         if ($data['itemtype'] == 'PluginAppliancesAppliance') {
             foreach ($data["item"] as $key => $val) {
                if ($val == 1) {
                   $appliance = new PluginAppliancesAppliance;
                   $appliance->getFromDB($key);
 
-                  $type = PluginAppliancesApplianceType::transfer($appliance->fields["appliancetypes_id"],
+                  $type = PluginAppliancesApplianceType::transfer($appliance->fields["plugin_appliances_appliancetypes_id"],
                                                                   $data['entities_id']);
                   $values["id"] = $key;
-                  $values["appliancetypes_id"] = $type;
+                  $values["plugin_appliances_appliancetypes_id"] = $type;
                   $values["entities_id"] = $data['entities_id'];
                   $appliance->update($values);
                }
@@ -691,7 +690,7 @@ function plugin_appliances_prefPDF($type) {
 
    $tabs = array();
    switch ($type) {
-      case PLUGIN_APPLIANCES_TYPE :
+      case 'PluginAppliancesAppliance' :
          $item = new PluginAppliancesAppliance();
          $tabs = $item->defineTabs(1,'');
          unset($tabs[2]); // Custom fields
@@ -723,7 +722,7 @@ function plugin_appliances_generatePDF($type, $tab_id, $tab, $page=0) {
       }
 
       switch ($type) {
-         case PLUGIN_APPLIANCES_TYPE :
+         case 'PluginAppliancesAppliance' :
             $appli = new PluginAppliancesAppliance();
             if (!$appli->getFromDB($ID)) {
                continue;

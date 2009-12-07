@@ -41,7 +41,7 @@ class PluginAppliancesProfile extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_plugin_appliances_profiles';
-   public $type  = -1;
+   public $type  = 'PluginAppliancesProfile';
 
 
    //if profile deleted
