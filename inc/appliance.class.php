@@ -217,7 +217,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][10]."&nbsp;:</td><td>";
       if ($canedit) {
-         dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
+         User::dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
       } else {
          echo getUsername($this->fields["users_id"]);
       }

@@ -142,10 +142,8 @@ function plugin_appliances_uninstall() {
                         `glpi_plugin_data_injection_mappings`,
                         `glpi_plugin_data_injection_infos`
                   WHERE `glpi_plugin_data_injection_models`.`device_type` = 'PluginAppliancesAppliance'
-                        AND `glpi_plugin_data_injection_mappings`.`model_id`
-                              = `glpi_plugin_data_injection_models`.`ID`
-                        AND `glpi_plugin_data_injection_infos`.`model_id`
-                              = `glpi_plugin_data_injection_models`.`ID`");
+                        AND `glpi_plugin_data_injection_mappings`.`model_id` = `glpi_plugin_data_injection_models`.`ID`
+                        AND `glpi_plugin_data_injection_infos`.`model_id` = `glpi_plugin_data_injection_models`.`ID`");
    }
    return true;
 }
@@ -155,8 +153,8 @@ function plugin_appliances_uninstall() {
 function plugin_appliances_getDropdown(){
    global $LANG;
 
-   return array('PluginAppliancesApplianceType'  =>$LANG['plugin_appliances']['setup'][2],
-                'PluginAppliancesEnvironment'    =>$LANG['plugin_appliances'][3]);
+   return array('PluginAppliancesApplianceType'  => $LANG['plugin_appliances']['setup'][2],
+                'PluginAppliancesEnvironment'    => $LANG['plugin_appliances'][3]);
 }
 
 
@@ -170,13 +168,13 @@ function plugin_appliances_getDatabaseRelations() {
                    'glpi_plugin_appliances_environments'
                      => array('glpi_plugin_appliances_appliances' => 'plugin_appliances_environments_id'),
                    'glpi_entities'
-                     => array('glpi_plugin_appliances_appliances'      => 'entities_id',
+                     => array('glpi_plugin_appliances_appliances'     => 'entities_id',
                               'glpi_plugin_appliances_appliancetypes' => 'entities_id'),
                    'glpi_plugin_appliances_appliances'
                      => array('glpi_plugin_appliances_appliances_items' => 'plugin_appliances_appliances_id'),
                    '_virtual_device'
                      => array('glpi_plugin_appliances_appliances_items' => array('items_id',
-                                                                      'itemtype')));
+                                                                                 'itemtype')));
    }
    return array();
 }
@@ -217,22 +215,21 @@ function plugin_appliances_addLeftJoin($type,$ref_table,$new_table,$linkfield,
 
    switch ($new_table) {
       case "glpi_plugin_appliances_appliances_items" :
-         return " LEFT JOIN `$new_table` ON (`$ref_table`.`id` = `$new_table`.`plugin_appliances_appliances_id`) ";
+         return " LEFT JOIN `$new_table` 
+                     ON (`$ref_table`.`id` = `$new_table`.`plugin_appliances_appliances_id`) ";
 
       case "glpi_plugin_appliances_appliances" : // From items
          return " LEFT JOIN `glpi_plugin_appliances_appliances_items`
                      ON (`$ref_table`.`id` = `glpi_plugin_appliances_appliances_items`.`items_id`
                          AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type')
                   LEFT JOIN `glpi_plugin_appliances_appliances`
-                     ON (`glpi_plugin_appliances_appliances`.`id`
-                         = `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`) ";
+                     ON (`glpi_plugin_appliances_appliances`.`id` = `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`) ";
 
       case "glpi_plugin_appliances_appliancetypes" : // From items
          $out = addLeftJoin($type,$ref_table,$already_link_tables,
                             "glpi_plugin_appliances_appliances",$linkfield);
          $out .= " LEFT JOIN `glpi_plugin_appliances_appliancetypes`
-                     ON (`glpi_plugin_appliances_appliancetypes`.`id`
-                         = `glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`) ";
+                     ON (`glpi_plugin_appliances_appliancetypes`.`id` = `glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`) ";
          return $out;
    }
    return "";
@@ -269,31 +266,32 @@ function plugin_appliances_giveItem($type,$ID,$data,$num) {
          if ($number_device > 0) {
             for ($y=0 ; $y < $number_device ; $y++) {
                $column = "name";
-               if ($type==TRACKING_TYPE) {
+               if ($type == 'Ticket') {
                   $column = "id";
                }
                $type = $DB->result($result_device, $y, "itemtype");
-
-               if (!empty($LINK_ID_TABLE[$type])) {
-                  $query = "SELECT `".$LINK_ID_TABLE[$type]."`.`id`
-                            FROM `glpi_plugin_appliances_appliances_items`, `".$LINK_ID_TABLE[$type]."`
+               if (!class_exists($type)) {
+                     continue;
+               }
+               $item = new $type();
+               if (!empty($item->table)) {
+                  $query = "SELECT `".$item->table."`.`id`
+                            FROM `glpi_plugin_appliances_appliances_items`, `".$item->table."`
                             LEFT JOIN `glpi_entities`
-                              ON (`glpi_entities`.`id` = `".$LINK_ID_TABLE[$type]."`.`entities_id`)
-                            WHERE `".$LINK_ID_TABLE[$type]."`.`id`
-                                     = `glpi_plugin_appliances_appliances_items`.`items_id`
+                              ON (`glpi_entities`.`id` = `".$item->table."`.`entities_id`)
+                            WHERE `".$item->table."`.`id` = `glpi_plugin_appliances_appliances_items`.`items_id`
                                  AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
                                  AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id` = '$appliances_id'".
-                                 getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',
-                                                            isset($CFG_GLPI["recursive_type"][$type]));
+                                 getEntitiesRestrictRequest(" AND ",$item->table,'','',
+                                                            $item->may_be_recursive);
 
-                  if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])) {
-                     $query .= " AND `".$LINK_ID_TABLE[$type]."`.`is_template` = '0'";
+                  if (in_array($item->table,$CFG_GLPI["template_tables"])) {
+                     $query .= " AND `".$item->table."`.`is_template` = '0'";
                   }
                   $query .= " ORDER BY `glpi_entities`.`completename`,
-                             `".$LINK_ID_TABLE[$type]."`.`$column`";
+                             `".$item->table."`.`$column`";
 
                   if ($result_linked = $DB->query($query)) {
-                     $item = new $type();
                      if ($DB->numrows($result_linked)) {
                         while ($data=$DB->fetch_assoc($result_linked)) {
                            if ($item->getFromDB($data['id'])) {
