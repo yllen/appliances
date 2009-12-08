@@ -69,7 +69,7 @@ if ($_POST["id"] >0
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$appliance);
          Contract::showAssociated($appliance);
          Document::showAssociated($appliance);
-         displayPluginAction('PluginAppliancesAppliance',$_POST["id"],$_POST['glpi_tab']);
+         Plugin::displayAction($appliance);
          break;
 
       case 2 :
@@ -98,7 +98,7 @@ if ($_POST["id"] >0
          break;
 
       default :
-         if (!displayPluginAction('PluginAppliancesAppliance',$_POST["id"],$_POST['glpi_tab'])) {
+         if (!Plugin::displayAction($appliance)) {
             $appliance->showItem();
          }
    }

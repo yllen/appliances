@@ -122,14 +122,10 @@ class PluginAppliancesProfile extends CommonDBTM {
       }
    }
 
-   function createUserAccess($ID) {
+   function createUserAccess($Profile) {
 
-      $Profile = new Profile();
-      if ($Profile->GetfromDB($ID)) {
-         return $this->add(array('id'   => $ID,
-                                 'name' => $Profile->getField('name')));
-      }
-      return false;
+      return $this->add(array('id'   => $Profile->getField('id'),
+                              'name' => $Profile->getField('name')));
    }
 
 }

@@ -494,11 +494,12 @@ function plugin_item_purge_appliances($parm) {
 
 
 // Define headings added by the plugin
-function plugin_get_headings_appliances($type,$ID,$withtemplate) {
+function plugin_get_headings_appliances($item,$withtemplate) {
    global $LANG;
 
-   if ($type == PROFILE_TYPE) {
-      if ($ID > 0) {
+   $type = get_Class($item);
+   if ($type == 'Profile') {
+      if ($item->getField('id')) {
          return array(1 => $LANG['plugin_appliances']['title'][1]);
       }
    } else if (in_array($type, PluginAppliancesAppliance::getTypes())) {
@@ -512,10 +513,11 @@ function plugin_get_headings_appliances($type,$ID,$withtemplate) {
 
 
 // Define headings actions added by the plugin
-function plugin_headings_actions_appliances($type) {
+function plugin_headings_actions_appliances($item) {
 
+   $type = get_Class($item);
    if (in_array($type,PluginAppliancesAppliance::getTypes())
-       || $type == PROFILE_TYPE) {
+       || $type == 'Profile') {
       return array(1 => "plugin_headings_appliances");
    }
    return false;
@@ -524,13 +526,15 @@ function plugin_headings_actions_appliances($type) {
 
 // applicatifs of an action heading
 // Define headings actions added by the plugin
-function plugin_headings_appliances($type,$ID,$withtemplate=0) {
+function plugin_headings_appliances($item,$withtemplate=0) {
    global $CFG_GLPI,$LANG;
 
+   $type = get_Class($item);
+   $ID = $item->getField('id');
    switch ($type) {
-      case PROFILE_TYPE :
+      case 'Profile' :
          $prof = new PluginAppliancesProfile();
-         if ($prof->GetfromDB($ID) || $prof->createUserAccess($ID)) {
+         if ($prof->GetfromDB($ID) || $prof->createUserAccess($item)) {
             $prof->showForm($CFG_GLPI["root_doc"]."/plugins/appliances/front/profile.form.php",$ID);
          }
          break;
