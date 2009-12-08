@@ -215,7 +215,7 @@ function plugin_appliances_addLeftJoin($type,$ref_table,$new_table,$linkfield,
 
    switch ($new_table) {
       case "glpi_plugin_appliances_appliances_items" :
-         return " LEFT JOIN `$new_table` 
+         return " LEFT JOIN `$new_table`
                      ON (`$ref_table`.`id` = `$new_table`.`plugin_appliances_appliances_id`) ";
 
       case "glpi_plugin_appliances_appliances" : // From items
@@ -445,7 +445,7 @@ function plugin_pre_item_delete_appliances($input) {
 
    if (isset($input["_item_type_"])) {
       switch ($input["_item_type_"]) {
-         case PROFILE_TYPE :
+         case 'Profile' :
             // Manipulate data if needed
             $PluginAppliancesProfile = new PluginAppliancesProfile;
             $PluginAppliancesProfile->cleanProfiles($input["id"]);
@@ -459,7 +459,7 @@ function plugin_pre_item_delete_appliances($input) {
 function plugin_item_delete_appliances($parm) {
 
    switch ($parm['type']) {
-      case TRACKING_TYPE :
+      case 'Ticket' :
          $temp = new PluginAppliancesAppliance_Item();
          $temp->clean(array('itemtype' => $parm['type'],
                             'items_id' => $parm['id']));
@@ -478,7 +478,7 @@ function plugin_item_delete_appliances($parm) {
 function plugin_item_purge_appliances($parm) {
 
    if (in_array($parm['type'], PluginAppliancesAppliance::getTypes())
-       && $parm['type'] != TRACKING_TYPE) { // TRACKING_TYPE handle in plugin_item_delete_appliances
+       && $parm['type'] != 'Ticket') { // TRACKING_TYPE handle in plugin_item_delete_appliances
 
       $temp = new PluginAppliancesAppliance_Item();
       $temp->clean(array('itemtype' => $parm['type'],
@@ -516,9 +516,11 @@ function plugin_get_headings_appliances($item,$withtemplate) {
 function plugin_headings_actions_appliances($item) {
 
    $type = get_Class($item);
-   if (in_array($type,PluginAppliancesAppliance::getTypes())
-       || $type == 'Profile') {
+   if ($type == 'Profile') {
       return array(1 => "plugin_headings_appliances");
+   }
+   if (in_array($type,PluginAppliancesAppliance::getTypes())) {
+      return array(1 => array('PluginAppliancesAppliance','showAssociated'));
    }
    return false;
 }
@@ -539,34 +541,18 @@ function plugin_headings_appliances($item,$withtemplate=0) {
          }
          break;
 
-      default :
-         if (in_array($type, PluginAppliancesAppliance::getTypes())) {
-            echo "<div class='center'>";
-            PluginAppliancesAppliance::showAssociated($type,$ID, $withtemplate);
-            echo "</div>";
-         }
    }
 }
 
 
 // Define PDF informations added by the plugin
-function plugin_headings_actionpdf_appliances($type) {
-
-   if (in_array($type,PluginAppliancesAppliance::getTypes())) {
-      return array(1 => "plugin_headings_appliances_PDF");
+function plugin_headings_actionpdf_appliances($item) {
+   if (in_array(get_class($item),PluginAppliancesAppliance::getTypes())) {
+      return array(1 => array('PluginAppliancesAppliance', 'showAssociated_PDF'));
    }
    return false;
 }
 
-
-// Genrerate PDF with informations added by the plugin
-// Define headings actions added by the plugin
-function plugin_headings_appliances_PDF($pdf,$ID,$type) {
-
-   if (in_array($type, PluginAppliancesAppliance::getTypes())) {
-      echo PluginAppliancesAppliance::showAssociated_PDF($pdf,$ID,$type);
-   }
-}
 
 /* TODO : A revoir avec data injection quand il sera porte en 0.80
 function plugin_appliances_data_injection_variables() {
@@ -687,13 +673,12 @@ function plugin_appliances_data_injection_variables() {
  *
  * @return array of string which describe the options
  */
-function plugin_appliances_prefPDF($type) {
+function plugin_appliances_prefPDF($item) {
    global $LANG;
 
    $tabs = array();
-   switch ($type) {
+   switch (get_class($item)) {
       case 'PluginAppliancesAppliance' :
-         $item = new PluginAppliancesAppliance();
          $tabs = $item->defineTabs(1,'');
          unset($tabs[2]); // Custom fields
          break;
@@ -710,57 +695,53 @@ function plugin_appliances_prefPDF($type) {
  * @param $tab of option to be printed
  * @param $page boolean true for landscape
  */
-function plugin_appliances_generatePDF($type, $tab_id, $tab, $page=0) {
+function plugin_appliances_generatePDF($item, $tab_id, $tab, $page=0) {
 
    $pdf = new simplePDF('a4', ($page ? 'landscape' : 'portrait'));
    $nb_id = count($tab_id);
 
    foreach ($tab_id as $key => $ID) {
-      if (plugin_pdf_add_header($pdf,$ID,$type)) {
+      if (plugin_pdf_add_header($pdf,$ID,$item)) {
          $pdf->newPage();
       } else {
          // Object not found or no right to read
          continue;
       }
 
-      switch ($type) {
+      switch (get_class($item)) {
          case 'PluginAppliancesAppliance' :
-            $appli = new PluginAppliancesAppliance();
-            if (!$appli->getFromDB($ID)) {
-               continue;
-            }
-            $appli->show_PDF($pdf,$ID);
+            $item->show_PDF($pdf);
 
             foreach($tab as $i) {
                switch($i) { // See plugin_appliance::defineTabs();
                   case 1 :
-                     $appli->showItem_PDF($pdf);
+                     $item->showItem_PDF($pdf);
                      break;
 
                   case 6 :
-                     plugin_pdf_ticket($pdf,$ID,$type);
-                     plugin_pdf_oldticket($pdf,$ID,$type);
+                     plugin_pdf_ticket($pdf,$item);
+                     plugin_pdf_oldticket($pdf,$item);
                      break;
 
                   case 9 :
-                     plugin_pdf_financial($pdf,$ID,$type);
-                     plugin_pdf_contract ($pdf,$ID,$type);
+                     plugin_pdf_financial($pdf,$item);
+                     plugin_pdf_contract ($pdf,$item);
                      break;
 
                   case 10 :
-                     plugin_pdf_document($pdf,$ID,$type);
+                     plugin_pdf_document($pdf,$item);
                      break;
 
                   case 11 :
-                     plugin_pdf_note($pdf,$ID,$type);
+                     plugin_pdf_note($pdf,$item);
                      break;
 
                   case 12 :
-                     plugin_pdf_history($pdf,$ID,$type);
+                     plugin_pdf_history($pdf,$item);
                      break;
 
                   default :
-                     plugin_pdf_pluginhook($i,$pdf,$ID,$type);
+                     plugin_pdf_pluginhook($i,$pdf,$item);
                }
             }
             break;

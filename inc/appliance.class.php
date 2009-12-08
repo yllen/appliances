@@ -647,10 +647,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
     * @param $withtemplate : not used, always empty
     *
     **/
-   static function showAssociated($itemtype,$ID,$withtemplate='') {
+   static function showAssociated($item,$withtemplate='') {
       global $DB,$CFG_GLPI, $LANG;
 
-      $item = new $itemtype();
+      $ID = $item->getField('id');
+      $itemtype = get_Class($item);
       $canread = $item->can($ID,'r');
       $canedit = $item->can($ID,'w');
 
@@ -808,13 +809,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
     * @param $itemtype : type of the device
     *
     */
-   static function showAssociated_PDF($pdf, $ID, $itemtype){
+   static function showAssociated_PDF($pdf, $item){
       global $DB,$CFG_GLPI, $LANG;
 
-      $item = new $itemtype();
-      if (!$item->can($ID,'r')) {
-         return false;
-      }
+      $ID = $item->getField('id');
+      $itemtype = get_Class($item);
+      $canread = $item->can($ID,'r');
+      $canedit = $item->can($ID,'w');
 
       $pdf->setColumnsSize(100);
       $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][9].'</b>');
