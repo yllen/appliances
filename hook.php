@@ -34,9 +34,6 @@
 // ----------------------------------------------------------------------
 
 define("PLUGIN_APPLIANCES_RELATION_LOCATION",1);
-foreach (glob(GLPI_ROOT . '/plugins/appliances/inc/*.php') as $file) {
-   include_once ($file);
-}
 
 function plugin_appliances_AssignToTicket($types) {
    global $LANG;
@@ -88,6 +85,8 @@ function plugin_appliances_install() {
    if (!TableExists("glpi_plugin_appliances_appliances")) { // not installed
       $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/empty-1.6.0.sql");
    }
+   // required cause autoload don't work for unactive plugin'
+   include_once(GLPI_ROOT."/plugins/appliances/inc/profile.class.php");
 
    PluginAppliancesProfile::createAdminAccess($_SESSION['glpiactiveprofile']['id']);
    return true;
@@ -226,7 +225,7 @@ function plugin_appliances_addLeftJoin($type,$ref_table,$new_table,$linkfield,
                      ON (`glpi_plugin_appliances_appliances`.`id` = `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`) ";
 
       case "glpi_plugin_appliances_appliancetypes" : // From items
-         $out = addLeftJoin($type,$ref_table,$already_link_tables,
+         $out = Search::addLeftJoin($type,$ref_table,$already_link_tables,
                             "glpi_plugin_appliances_appliances",$linkfield);
          $out .= " LEFT JOIN `glpi_plugin_appliances_appliancetypes`
                      ON (`glpi_plugin_appliances_appliancetypes`.`id` = `glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`) ";
@@ -249,7 +248,7 @@ function plugin_appliances_forceGroupBy($type) {
 function plugin_appliances_giveItem($type,$ID,$data,$num) {
    global $DB, $CFG_GLPI, $INFOFORM_PAGES, $LANG, $LINK_ID_TABLE;
 
-   $searchopt = &getSearchOptions($type);
+   $searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
    $field = $searchopt[$ID]["field"];
 
@@ -349,7 +348,7 @@ function plugin_appliances_MassiveActionsDisplay($type,$action) {
                break;
 
             case "plugin_appliances_transfert" :
-               dropdownValue("glpi_entities", "entities_id", '');
+               CommonDropdown::dropdownValue("glpi_entities", "entities_id", '');
                echo "&nbsp;<input type='submit' name='massiveaction' class='submit' ".
                      "value='".$LANG['buttons'][2]."'>";
                break;
@@ -697,7 +696,7 @@ function plugin_appliances_prefPDF($item) {
  */
 function plugin_appliances_generatePDF($item, $tab_id, $tab, $page=0) {
 
-   $pdf = new simplePDF('a4', ($page ? 'landscape' : 'portrait'));
+   $pdf = new PluginPdfSimplePDF('a4', ($page ? 'landscape' : 'portrait'));
    $nb_id = count($tab_id);
 
    foreach ($tab_id as $key => $ID) {

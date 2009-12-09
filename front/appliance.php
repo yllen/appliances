@@ -48,14 +48,13 @@ if ($plugin->isActivated("environment")) {
 }
 
 if (plugin_appliances_haveRight("appliance","r") || haveRight("config","w")) {
-   manageGetValuesInSearch('PluginAppliancesAppliance');
-   searchForm('PluginAppliancesAppliance',$_GET);
-   showList('PluginAppliancesAppliance',$_GET);
-   commonFooter();
+   Search::show('PluginAppliancesAppliance');
+
 } else {
    echo "<div class='center'><br><br>".
          "<img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt='warning'><br><br>".
          "<b>".$LANG['login'][5]."</b></div>";
 }
+commonFooter();
 
 ?>
