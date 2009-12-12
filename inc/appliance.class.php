@@ -237,7 +237,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       echo "</td>";
       echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
-      dropdownYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+      Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

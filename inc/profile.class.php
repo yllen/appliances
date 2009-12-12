@@ -90,7 +90,7 @@ class PluginAppliancesProfile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][352] . " - " . $LANG['plugin_appliances']['title'][1] . " :</td><td>";
       if ($prof->fields['create_ticket']) {
-         dropdownYesNo("open_ticket",$this->fields["open_ticket"]);
+         Dropdown::showYesNo("open_ticket",$this->fields["open_ticket"]);
       } else {
          echo getYesNo(0);
       }
