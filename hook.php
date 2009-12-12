@@ -246,7 +246,7 @@ function plugin_appliances_forceGroupBy($type) {
 
 
 function plugin_appliances_giveItem($type,$ID,$data,$num) {
-   global $DB, $CFG_GLPI, $INFOFORM_PAGES, $LANG, $LINK_ID_TABLE;
+   global $DB, $CFG_GLPI, $INFOFORM_PAGES, $LANG;
 
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
@@ -348,7 +348,7 @@ function plugin_appliances_MassiveActionsDisplay($type,$action) {
                break;
 
             case "plugin_appliances_transfert" :
-               CommonDropdown::dropdownValue("glpi_entities", "entities_id", '');
+               Dropdown::dropdownValue("glpi_entities", "entities_id", '');
                echo "&nbsp;<input type='submit' name='massiveaction' class='submit' ".
                      "value='".$LANG['buttons'][2]."'>";
                break;

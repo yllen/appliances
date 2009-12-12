@@ -81,7 +81,7 @@ class PluginAppliancesProfile extends CommonDBTM {
       echo "<td>".$LANG['plugin_appliances']['profile'][1]." :</td><td>";
 
       if ($prof->fields['interface']!='helpdesk') {
-         dropdownNoneReadWrite("appliance",$this->fields["appliance"],1,1,1);
+         Profile::dropdownNoneReadWrite("appliance",$this->fields["appliance"],1,1,1);
       } else {
          echo $LANG['profiles'][12]; // No access;
       }

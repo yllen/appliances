@@ -183,7 +183,7 @@ class PluginAppliancesRelation extends CommonDBTM {
 
          echo "$title&nbsp;:&nbsp;";
 
-         CommonDropdown::dropdownValue($tablename,"tablekey[" . $relID . "]","",1,$entity,"",$used);
+         Dropdown::dropdownValue($tablename,"tablekey[" . $relID . "]","",1,$entity,"",$used);
          echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value='".
                $LANG['buttons'][8]."' class='submit'><br>&nbsp;";
          echo "</form>";

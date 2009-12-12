@@ -178,26 +178,6 @@ function plugin_appliances_check_config() {
    return true;
 }
 
-
-// Define rights for the plugin types
-function plugin_appliances_haveTypeRight($type,$right) {
-
-   switch ($type) {
-      case 'PluginAppliancesAppliance' :
-         // 1 - All rights for all users
-         // return true;
-         // 2 - Similarity right : same right of computer
-         return plugin_appliances_haveRight("appliance",$right);
-
-      case 'PluginAppliancesEnvironment' :
-         return haveRight('dropdown',$right);
-
-      case 'PluginAppliancesApplianceType' :
-         return haveRight('entity_dropdown',$right);
-
-   }
-}
-
 function plugin_appliances_haveRight($module,$right) {
 
    $matches = array(""  => array("","r","w"), // ne doit pas arriver normalement
