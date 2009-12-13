@@ -357,7 +357,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
     *
     */
    function showItem() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
+      global $DB,$CFG_GLPI, $LANG;
 
       $instID = $this->fields['id'];
 
@@ -457,8 +457,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
                      if($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                         $ID = " (".$data["id"].")";
                      }
-                     $name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type].
-                              "?id=".$data["id"]."\">".$data["name"]."$ID</a>";
+                     $link = getItemTypeFormURL("$type");
+                     $name= "<a href='".$link."?id=".$data["id"]."\">".$data["name"]."$ID</a>";
 
                      echo "<tr class='tab_bg_1'>";
                      if ($canedit) {
@@ -524,7 +524,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
    function showItem_PDF($pdf) {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
+      global $DB, $CFG_GLPI, $LANG;
 
       $instID = $this->fields['id'];
 

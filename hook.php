@@ -246,7 +246,7 @@ function plugin_appliances_forceGroupBy($type) {
 
 
 function plugin_appliances_giveItem($type,$ID,$data,$num) {
-   global $DB, $CFG_GLPI, $INFOFORM_PAGES, $LANG;
+   global $DB, $CFG_GLPI, $LANG;
 
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
