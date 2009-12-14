@@ -32,10 +32,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array('computer', 'contract', 'document', 'group', 'infocom', 'monitor',
-                      'networking', 'peripheral', 'phone', 'printer', 'software', 'supplier',
-                      'tracking','user');
-
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
 
@@ -109,9 +105,9 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["add_opt_val"])){
    $PluginAppliances->check($_POST['plugin_appliances_appliances_id'],'r');
-   $temp = new Commonitem();
-   $temp->setType($_POST['itemtype'], true);
-   $temp->obj->check($_POST['items_id'],'w');
+   $item = new $_POST['itemtype']();
+   $item->getTypeName;
+   $temp->check($_POST['items_id'],'w');
 
    $OptvalueItem = new PluginAppliancesOptvalue_Item();
    $OptvalueItem->updateList($_POST);
