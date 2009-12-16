@@ -336,13 +336,13 @@ function plugin_appliances_MassiveActionsDisplay($type,$action) {
          switch ($action) {
             // No case for add_document : use GLPI core one
             case "plugin_appliances_install" :
-               dropdownAllItems("item_item",0,0,-1,PluginAppliancesAppliance::getTypes());
+               Dropdown::showAllItems("item_item",0,0,-1,PluginAppliancesAppliance::getTypes());
                echo "<input type='submit' name='massiveaction' class='submit' ".
                      "value='".$LANG['buttons'][2]."'>";
                break;
 
             case "plugin_appliances_desinstall" :
-               dropdownAllItems("item_item",0,0,-1,PluginAppliancesAppliance::getTypes());
+               Dropdown::showAllItems("item_item",0,0,-1,PluginAppliancesAppliance::getTypes());
                echo "<input type='submit' name='massiveaction' class='submit' ".
                      "value='".$LANG['buttons'][2]."'>";
                break;
@@ -458,7 +458,7 @@ function plugin_item_purge_appliances($item) {
 
    $type = get_class($item);
    if (in_array($type, PluginAppliancesAppliance::getTypes())
-       || $type == 'Ticket') { 
+       || $type == 'Ticket') {
 
       $temp = new PluginAppliancesAppliance_Item();
       $temp->clean(array('itemtype' => $type,
