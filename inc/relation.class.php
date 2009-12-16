@@ -106,11 +106,11 @@ class PluginAppliancesRelation extends CommonDBTM {
    static function dropdownType($myname,$value=0) {
       global $LANG;
 
-      dropdownArrayValues($myname, array (0 => "-----",
-                                          1 => $LANG['common'][15],  // Location
-                                          2 => $LANG['setup'][88],   // Réseau
-                                          3 => $LANG['setup'][89]),  // Domain
-                          $value);
+      Dropdown::showFromArray($myname, array (0 => "-----",
+                                               1 => $LANG['common'][15],  // Location
+                                               2 => $LANG['setup'][88],   // Réseau
+                                               3 => $LANG['setup'][89]),  // Domain
+                              array ('value' => $value));
    }
 
    /**
