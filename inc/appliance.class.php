@@ -505,9 +505,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td colspan='".(3+$colsup)."' class='center'>";
 
          echo "<input type='hidden' name='conID' value='$instID'>";
-         dropdownAllItems("item",0,0,
-                          ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
-                          $this->getTypes());
+         Dropdown::showAllItems("item",0,0,
+                                ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
+                                 $this->getTypes());
          echo "</td>";
          echo "<td colspan='3' class='center' class='tab_bg_2'>";
          echo "<input type='submit' name='additem' value='".$LANG['buttons'][8]."' class='submit'>";
