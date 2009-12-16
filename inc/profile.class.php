@@ -92,7 +92,7 @@ class PluginAppliancesProfile extends CommonDBTM {
       if ($prof->fields['create_ticket']) {
          Dropdown::showYesNo("open_ticket",$this->fields["open_ticket"]);
       } else {
-         echo getYesNo(0);
+         echo Dropdown::getYesNo(0);
       }
       echo "</td></tr>";
 
