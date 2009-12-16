@@ -52,11 +52,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
       return $LANG['plugin_appliances']['title'][1];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return plugin_appliances_haveRight('appliance', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return plugin_appliances_haveRight('appliance', 'r');
    }
 
