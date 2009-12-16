@@ -93,6 +93,8 @@ function plugin_init_appliances() {
 
    $PLUGIN_HOOKS['change_profile']['appliances']   = array('PluginAppliancesProfile','select');
    $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
+   $PLUGIN_HOOKS['pre_item_purge']['appliances']     = 'plugin_pre_item_purge_appliances';
+   $PLUGIN_HOOKS['item_purge']['appliances']         = 'plugin_item_purge_appliances';
 
    if (isset($_SESSION["glpiID"])) {
       ////array_push($CFG_GLPI["specif_entities_tables"],"glpi_plugin_appliances_appliancetypes");
@@ -117,12 +119,10 @@ function plugin_init_appliances() {
                                                            = 'plugin_headings_actionpdf_appliances';
          }
 
-          if (plugin_appliances_haveRight("appliance","w")) {
+         if (plugin_appliances_haveRight("appliance","w")) {
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['add']
                                                       = '/plugins/appliances/front/appliance.form.php';
             $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
-            $PLUGIN_HOOKS['pre_item_delete']['appliances']    = 'plugin_pre_item_delete_appliances';
-            $PLUGIN_HOOKS['item_purge']['appliances'] = 'plugin_item_purge_appliances';
          }
 
        } else {
@@ -140,8 +140,6 @@ function plugin_init_appliances() {
             $PLUGIN_HOOKS['submenu_entry']['appliances']['add']
                                                            = 'front/appliance.form.php?new=1';
             $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
-            $PLUGIN_HOOKS['pre_item_delete']['appliances'] = 'plugin_pre_item_delete_appliances';
-            $PLUGIN_HOOKS['item_purge']['appliances']      = 'plugin_item_purge_appliances';
          }
       }
    }

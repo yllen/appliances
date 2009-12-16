@@ -440,52 +440,33 @@ function plugin_appliances_MassiveActionsProcess($data) {
 
 // Hook done on delete item case
 
-function plugin_pre_item_delete_appliances($input) {
+function plugin_pre_item_purge_appliances($item) {
 
-   if (isset($input["_item_type_"])) {
-      switch ($input["_item_type_"]) {
-         case 'Profile' :
-            // Manipulate data if needed
-            $PluginAppliancesProfile = new PluginAppliancesProfile;
-            $PluginAppliancesProfile->cleanProfiles($input["id"]);
-            break;
-      }
+   switch (get_class($item)) {
+      case 'Profile' :
+         // Manipulate data if needed
+         $PluginAppliancesProfile = new PluginAppliancesProfile;
+         $PluginAppliancesProfile->cleanProfiles($item->getField("id"));
+         break;
    }
-   return $input;
-}
-
-
-function plugin_item_delete_appliances($parm) {
-
-   switch ($parm['type']) {
-      case 'Ticket' :
-         $temp = new PluginAppliancesAppliance_Item();
-         $temp->clean(array('itemtype' => $parm['type'],
-                            'items_id' => $parm['id']));
-
-         $temp = new PluginAppliancesOptvalue_Item();
-         $temp->clean(array('itemtype' => $parm['type'],
-                            'items_id' => $parm['id']));
-
-         return true;
-   }
-   return false;
+   return $item;
 }
 
 
 // Hook done on purge item case
-function plugin_item_purge_appliances($parm) {
+function plugin_item_purge_appliances($item) {
 
-   if (in_array($parm['type'], PluginAppliancesAppliance::getTypes())
-       && $parm['type'] != 'Ticket') { // TRACKING_TYPE handle in plugin_item_delete_appliances
+   $type = get_class($item);
+   if (in_array($type, PluginAppliancesAppliance::getTypes())
+       || $type == 'Ticket') { 
 
       $temp = new PluginAppliancesAppliance_Item();
-      $temp->clean(array('itemtype' => $parm['type'],
-                         'items_id' => $parm['id']));
+      $temp->clean(array('itemtype' => $type,
+                         'items_id' => $item->getField('id')));
 
       $temp = new PluginAppliancesOptvalue_Item();
-      $temp->clean(array('itemtype' => $parm['type'],
-                         'items_id' => $parm['id']));
+      $temp->clean(array('itemtype' => $type,
+                         'items_id' => $item->getField('id')));
       return true;
    }
    return false;
