@@ -282,9 +282,9 @@ function plugin_appliances_giveItem($type,$ID,$data,$num) {
                                  AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
                                  AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id` = '$appliances_id'".
                                  getEntitiesRestrictRequest(" AND ",$item->table,'','',
-                                                            $item->may_be_recursive);
+                                                            $item->maybeRecursive());
 
-                  if (in_array($item->table,$CFG_GLPI["template_tables"])) {
+                  if ($item->maybeTemplate()) {
                      $query .= " AND `".$item->table."`.`is_template` = '0'";
                   }
                   $query .= " ORDER BY `glpi_entities`.`completename`,

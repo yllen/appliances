@@ -40,13 +40,7 @@ function plugin_init_appliances() {
    // Params : plugin name - string type - number - attributes
    Plugin::registerClass('PluginAppliancesAppliance',
                          array('classname'              => 'PluginAppliancesAppliance',
-                               'tablename'              => 'glpi_plugin_appliances_appliances',
-                               'formpage'               => 'front/appliance.form.php',
-                               'searchpage'             => 'front/appliance.php',
                                'typename'               => $LANG['plugin_appliances']['title'][1],
-                               'deleted_tables'         => true,
-                               'specif_entities_tables' => true,
-                               'recursive_type'         => true,
                                'linkuser_types'         => true,
                                'linkgroup_types'        => true,
                                'infocom_types'          => true,
@@ -56,35 +50,23 @@ function plugin_init_appliances() {
 
    Plugin::registerClass('PluginAppliancesEnvironment',
                          array('classname'              => 'PluginAppliancesEnvironment',
-                               'tablename'              => 'glpi_plugin_appliances_environments',
-                               'typename'               => $LANG['plugin_appliances'][3],
-                               'formpage'               => 'front/environment.form.php',
-                               'searchpage'             => 'front/environment.php'));
+                               'typename'               => $LANG['plugin_appliances'][3]));
 
    Plugin::registerClass('PluginAppliancesApplianceType',
                          array('classname'              => 'PluginAppliancesApplianceType',
-                               'tablename'              => 'glpi_plugin_appliances_appliancetypes',
-                               'typename'               => $LANG['plugin_appliances']['setup'][2],
-                               'formpage'               => 'front/appliancetype.form.php',
-                               'searchpage'             => 'front/appliancetype.php',
-                               'specif_entities_tables' => true,
-                               'recursive_type'         => true));
+                               'typename'               => $LANG['plugin_appliances']['setup'][2]));
 
    Plugin::registerClass('PluginAppliancesAppliance_Item',
-                         array('classname'              => 'PluginAppliancesAppliance_Item',
-                               'tablename'              => 'glpi_plugin_appliances_appliances_items'));
+                         array('classname'              => 'PluginAppliancesAppliance_Item'));
 
    Plugin::registerClass('PluginAppliancesOptvalue',
-                         array('classname'              => 'PluginAppliancesOptvalue',
-                               'tablename'              => 'glpi_plugin_appliances_optvalues'));
+                         array('classname'              => 'PluginAppliancesOptvalue'));
 
    Plugin::registerClass('PluginAppliancesOptvalue_Item',
-                         array('classname'              => 'PluginAppliancesOptvalue_Item',
-                               'tablename'              => 'glpi_plugin_appliances_optvalues_items'));
+                         array('classname'              => 'PluginAppliancesOptvalue_Item'));
 
    Plugin::registerClass('PluginAppliancesRelation',
-                         array('classname'              => 'PluginAppliancesRelation',
-                               'tablename'              => 'glpi_plugin_appliances_relations'));
+                         array('classname'              => 'PluginAppliancesRelation'));
 
    // Define the type for which we know how to generate PDF, need :
    // - plugin_appliances_prefPDF($type)

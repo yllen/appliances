@@ -208,7 +208,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $canedit = $this->can($ID,'w');
       $canrecu = $this->can($ID,'recursive');
 
-      $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
+      $this->showTabs($ID);
       $this->showFormHeader($target,$ID,'',2);
 
       echo "<tr class='tab_bg_1'>";
@@ -225,7 +225,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][10]."&nbsp;:</td><td>";
       if ($canedit) {
-         User::dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
+         User::dropdown("users_id", array('value'  => $this->fields["users_id"],
+                                          'entity' => $this->fields["entities_id"]));
       } else {
          echo getUsername($this->fields["users_id"]);
       }
@@ -433,7 +434,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                                  = '$instID' ".
                             getEntitiesRestrictRequest(" AND ", $item->table);
 
-            if (in_array($item->table,$CFG_GLPI["template_tables"])) {
+            if ($item->maybeTemplate()) {
                $query .= " AND `".$item->table."`.`is_template` = '0'";
             }
             $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->table."`.$column";
@@ -592,7 +593,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                                     = '$instID' ".
                                getEntitiesRestrictRequest(" AND ",$item->table);
 
-               if (in_array($item->table,$CFG_GLPI["template_tables"])) {
+               if ($item->maybeTemplate()) {
                   $query .= " AND `".$item->table."`.`is_template` = '0'";
                }
                $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->table."`.$column";

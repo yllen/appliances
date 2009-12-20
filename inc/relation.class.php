@@ -137,7 +137,7 @@ class PluginAppliancesRelation extends CommonDBTM {
       $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
       $title = PluginAppliancesRelation::getTypeName($relationtype);
 
-      if (in_array($tablename,$CFG_GLPI["dropdowntree_tables"])) {
+      if ($tablename=='glpi_locations') {
          $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
                             `completename` AS dispname ";
       } else {
@@ -215,7 +215,7 @@ class PluginAppliancesRelation extends CommonDBTM {
       $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
       $title = PluginAppliancesRelation::getTypeName($relationtype);
 
-      if (in_array($tablename,$CFG_GLPI["dropdowntree_tables"])) {
+      if ($tablename=='glpi_locations') {
          $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
                             `completename` AS dispname ";
       } else {
