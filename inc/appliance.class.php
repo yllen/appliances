@@ -459,7 +459,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         $ID = " (".$data["id"].")";
                      }
                      $link = getItemTypeFormURL("$type");
-                     $name= "<a href='".$link."?id=".$data["id"]."\">".$data["name"]."$ID</a>";
+                     $name= "<a href='".$link."?id=".$data["id"]."''>".$data["name"]."$ID</a>";
 
                      echo "<tr class='tab_bg_1'>";
                      if ($canedit) {
