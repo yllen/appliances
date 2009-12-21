@@ -99,7 +99,7 @@ if ($DB->numrows($result)) {
             echo "</optgroup>";
          }
          $prev = $data["entities_id"];
-         echo "<optgroup label=\"". CommonDropdown::getDropdownName("glpi_entities", $prev) ."\">";
+         echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
       }
       $output = $data["name"];
       echo "<option value='".$data["id"]."' title='$output'>".substr($output,0,

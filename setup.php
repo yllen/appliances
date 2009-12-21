@@ -79,7 +79,6 @@ function plugin_init_appliances() {
    $PLUGIN_HOOKS['item_purge']['appliances']         = 'plugin_item_purge_appliances';
 
    if (isset($_SESSION["glpiID"])) {
-      ////array_push($CFG_GLPI["specif_entities_tables"],"glpi_plugin_appliances_appliancetypes");
 
       if ((isset($_SESSION["glpi_plugin_environment_installed"])
            && $_SESSION["glpi_plugin_environment_installed"] == 1)) {
