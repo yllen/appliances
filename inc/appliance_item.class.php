@@ -69,7 +69,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                          'items_id' => $this->fields['items_id']));
 
       $temp = new PluginAppliancesRelation();
-      $temp->clean(array('appliances_items_id' => $ID));
+      $temp->clean(array('plugin_appliances_appliances_items_id' => $ID));
    }
 }
 

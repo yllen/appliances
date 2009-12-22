@@ -59,16 +59,12 @@ if (isset($_POST["entity_restrict"]) && $_POST["entity_restrict"] >=0) {
 }
 
 if (isset($_POST['used'])) {
-   $where .=" AND `id` NOT IN (0";
    if (is_array($_POST['used'])) {
       $used = $_POST['used'];
    } else {
       $used = unserialize(stripslashes($_POST['used']));
    }
-   foreach($used as $val) {
-      $where .= ",$val";
-   }
-   $where .= ") ";
+   $where .=" AND `id` NOT IN ('".implode("','",$used)."')";
 }
 
 if ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"]) {

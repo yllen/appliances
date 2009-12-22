@@ -923,11 +923,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                                                  $p['entity'],true);
 
       if (count($p['used'])) {
-         $where .= " AND `id` NOT IN ('0'";
-         foreach ($p['used'] as $ID) {
-            $where .= ", '$ID'";
-         }
-         $where .= ")";
+         $where .= " AND `id` NOT IN ('".implode("','", $p['used'])."')";
       }
 
       $query = "SELECT *
