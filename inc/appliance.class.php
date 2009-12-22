@@ -801,7 +801,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
                   "/plugins/appliances/front/appliance.form.php\">";
             echo "<input type='hidden' name='item' value='$ID'>".
                   "<input type='hidden' name='itemtype' value='$itemtype'>";
-            PluginAppliancesAppliance::dropdown("conID",$entities,$used);
+            PluginAppliancesAppliance::dropdown(array('name'   => "conID",
+                                                      'entity' => $entities,
+                                                      'used'   => $used));
 
             echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</form>";
@@ -889,24 +891,40 @@ class PluginAppliancesAppliance extends CommonDBTM {
    /**
     * Diplay a dropdown to select an Appliance
     *
-    * @param $myname string name of the dropdown
-    * @param $entity_restrict
-    * @param $used array of value to exclude
+    * Parameters which could be used in options array :
+    *    - name : string / name of the select (default is plugin_appliances_appliances_id)
+    *    - entity : integer or array / restrict to a defined entity or array of entities
+    *                   (default '' : current entity)
+    *    - used : array / Already used items ID: not to display in dropdown (default empty)
+    *
+    * @param $options possible options
     *
     * @return nothing (HTML display)
     */
-   static function dropdown($myname, $entity_restrict='', $used=array()) {
+   static function dropdown($options=array()) {
       global $DB,$LANG,$CFG_GLPI;
+
+      // Defautl values
+      $p['name']           = 'plugin_appliances_appliances_id';
+      $p['entity']         = '';
+      $p['used']           = array();
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key]=$val;
+         }
+      }
+
 
       $rand = mt_rand();
 
       $where =" WHERE `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ".
                       getEntitiesRestrictRequest("AND","glpi_plugin_appliances_appliances",'',
-                                                 $entity_restrict,true);
+                                                 $p['entity'],true);
 
-      if (count($used)) {
+      if (count($p['used'])) {
          $where .= " AND `id` NOT IN ('0'";
-         foreach ($used as $ID) {
+         foreach ($p['used'] as $ID) {
             $where .= ", '$ID'";
          }
          $where .= ")";
@@ -928,20 +946,20 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "</select>\n";
 
       $params = array('type_appliances' => '__VALUE__',
-                      'entity_restrict' => $entity_restrict,
+                      'entity_restrict' => $p['entity'],
                       'rand'            => $rand,
-                      'myname'          => $myname,
-                      'used'            => $used);
+                      'myname'          => $p['name'],
+                      'used'            => $p['used']);
 
-      ajaxUpdateItemOnSelectEvent("type_appliances","show_$myname$rand",
+      ajaxUpdateItemOnSelectEvent("type_appliances","show_".$p['name'].$rand,
                $CFG_GLPI["root_doc"]."/plugins/appliances/ajax/dropdownTypeAppliances.php",$params);
 
-      echo "<span id='show_$myname$rand'>";
-      $_POST["entity_restrict"] = $entity_restrict;
+      echo "<span id='show_".$p['name']."$rand'>";
+      $_POST["entity_restrict"] = $p['entity'];
       $_POST["type_appliances"] = 0;
-      $_POST["myname"] = $myname;
+      $_POST["myname"] = $p['name'];
       $_POST["rand"] = $rand;
-      $_POST["used"] = $used;
+      $_POST["used"] = $p['used'];
       include (GLPI_ROOT."/plugins/appliances/ajax/dropdownTypeAppliances.php");
       echo "</span>\n";
 
