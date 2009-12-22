@@ -348,7 +348,7 @@ function plugin_appliances_MassiveActionsDisplay($type,$action) {
                break;
 
             case "plugin_appliances_transfert" :
-               Dropdown::dropdownValue("glpi_entities", "entities_id", '');
+               Dropdown::show('Entity');
                echo "&nbsp;<input type='submit' name='massiveaction' class='submit' ".
                      "value='".$LANG['buttons'][2]."'>";
                break;

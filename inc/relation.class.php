@@ -81,6 +81,27 @@ class PluginAppliancesRelation extends CommonDBTM {
       return $name;
    }
 
+   static function getItemType ($value) {
+
+      switch ($value) {
+         case 1 : // Location
+            $name = "Location";
+            break;
+
+         case 2 : // Réseau
+            $name = "Network";
+            break;
+
+         case 3 : // Domain
+            $name = "Domain";
+            break;
+
+         default:
+            $name ="";
+      }
+      return $name;
+   }
+
    static function getTypeName($value=0) {
       global $LANG;
 
@@ -134,20 +155,20 @@ class PluginAppliancesRelation extends CommonDBTM {
       }
 
       // selects all the attached relations
-      $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
+      $itemtype = PluginAppliancesRelation::getItemType($relationtype);
       $title = PluginAppliancesRelation::getTypeName($relationtype);
 
-      if ($tablename=='glpi_locations') {
+      if ($itemtype == 'Location') {
          $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
                             `completename` AS dispname ";
       } else {
          $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
                             `name` AS dispname ";
       }
-      $sql_loc .= "FROM `".$tablename."` ,
+      $sql_loc .= "FROM `".getTableForItemType($itemtype)."` ,
                         `glpi_plugin_appliances_relations`,
                         `glpi_plugin_appliances_appliances_items`
-                        WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
+                        WHERE `".getTableForItemType($itemtype)."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
                               AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
                                     = `glpi_plugin_appliances_appliances_items`.`id`
                               AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
@@ -183,7 +204,10 @@ class PluginAppliancesRelation extends CommonDBTM {
 
          echo "$title&nbsp;:&nbsp;";
 
-         Dropdown::dropdownValue($tablename,"tablekey[" . $relID . "]","",1,$entity,"",$used);
+         Dropdown::show($itemtype,
+                        array('name'   => "tablekey[" . $relID . "]",
+                              'entity' => $entity,
+                              'used'   => $used));
          echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value='".
                $LANG['buttons'][8]."' class='submit'><br>&nbsp;";
          echo "</form>";

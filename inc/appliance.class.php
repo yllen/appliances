@@ -217,9 +217,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
       autocompletionTextField("name","glpi_plugin_appliances_appliances","name",
                               $this->fields["name"], 34, $this->fields["entities_id"]);
       echo "</td><td>".$LANG['common'][17]."&nbsp;:</td><td>";
-      Dropdown::dropdownValue("glpi_plugin_appliances_appliancetypes", "plugin_appliances_appliancetypes_id",
-                    $this->fields["plugin_appliances_appliancetypes_id"],1,
-                    $this->fields["entities_id"]);
+      Dropdown::show('PluginAppliancesApplianceType',
+                      array('value'  => $this->fields["plugin_appliances_appliancetypes_id"],
+                            'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -233,15 +233,16 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       echo "</td>";
       echo "<td>".$LANG['plugin_appliances'][3]."&nbsp;:</td><td>";
-      Dropdown::dropdownValue("glpi_plugin_appliances_environments", "plugin_appliances_environments_id",
-                    $this->fields["plugin_appliances_environments_id"]);
+      Dropdown::show('PluginAppliancesEnvironment',
+                     array('value' => $this->fields["plugin_appliances_environments_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td><td>";
       if ($canedit) {
-         Dropdown::dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
-                       $this->fields["entities_id"]);
+         Dropdown::show('Group',
+                        array('value'  => $this->fields["groups_id"],
+                              'entity' =>$this->fields["entities_id"]));
       } else {
          echo Dropdown::getdropdownname("glpi_groups", $this->fields["groups_id"]);
       }
@@ -253,8 +254,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;:</td><td>";
       if ($canedit) {
-         Dropdown::dropdownValue("glpi_locations", "location", $this->fields["locations_id"],1,
-                       $this->fields["entities_id"]);
+         Dropdown::show('Location',
+                        array('value'  => $this->fields["locations_id"],
+                              'entity' => $this->fields["entities_id"]));
       } else {
          echo Dropdown::getdropdownname("glpi_locations",$this->fields["locations_id"]);
       }
