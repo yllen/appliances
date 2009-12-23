@@ -35,7 +35,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
 
-useplugin('appliances',true);
+Plugin::load('appliances',true);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";

@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-usePlugin('appliances',true);
+Plugin::load('appliances',true);
 
 $dropdown = new PluginAppliancesApplianceType();
 include (GLPI_ROOT . "/front/dropdown.common.php");

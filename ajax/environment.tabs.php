@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-usePlugin('appliances',true);
+Plugin::load('appliances',true);
 
 $dropdown = new PluginAppliancesEnvironment();
 include (GLPI_ROOT . "/ajax/dropdown.common.tabs.php");
