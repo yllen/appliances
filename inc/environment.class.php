@@ -39,9 +39,6 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginAppliancesEnvironment extends CommonDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_plugin_appliances_environments';
-   public $type  = 'PluginAppliancesEnvironment';
 
    static function getTypeName() {
       global $LANG;

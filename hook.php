@@ -273,22 +273,23 @@ function plugin_appliances_giveItem($type,$ID,$data,$num) {
                      continue;
                }
                $item = new $type();
-               if (!empty($item->table)) {
-                  $query = "SELECT `".$item->table."`.`id`
-                            FROM `glpi_plugin_appliances_appliances_items`, `".$item->table."`
+               $table = $item->getTable();
+               if (!empty($table)) {
+                  $query = "SELECT `$table`.`id`
+                            FROM `glpi_plugin_appliances_appliances_items`, `$table`
                             LEFT JOIN `glpi_entities`
-                              ON (`glpi_entities`.`id` = `".$item->table."`.`entities_id`)
-                            WHERE `".$item->table."`.`id` = `glpi_plugin_appliances_appliances_items`.`items_id`
+                              ON (`glpi_entities`.`id` = `$table`.`entities_id`)
+                            WHERE `$table`.`id` = `glpi_plugin_appliances_appliances_items`.`items_id`
                                  AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
                                  AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id` = '$appliances_id'".
-                                 getEntitiesRestrictRequest(" AND ",$item->table,'','',
+                                 getEntitiesRestrictRequest(" AND ",$table,'','',
                                                             $item->maybeRecursive());
 
                   if ($item->maybeTemplate()) {
-                     $query .= " AND `".$item->table."`.`is_template` = '0'";
+                     $query .= " AND `".$table."`.`is_template` = '0'";
                   }
                   $query .= " ORDER BY `glpi_entities`.`completename`,
-                             `".$item->table."`.`$column`";
+                             `$table`.`$column`";
 
                   if ($result_linked = $DB->query($query)) {
                      if ($DB->numrows($result_linked)) {

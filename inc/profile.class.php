@@ -39,10 +39,6 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginAppliancesProfile extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_plugin_appliances_profiles';
-   public $type  = 'PluginAppliancesProfile';
-
 
    //if profile deleted
    function cleanProfiles($ID) {

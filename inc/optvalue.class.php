@@ -39,9 +39,6 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginAppliancesOptvalue extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_plugin_appliances_optvalues';
-   public $type  = 'PluginAppliancesOptvalue';
 
    function cleanDBonPurge($ID) {
       $temp = new PluginAppliancesOptvalue_Item();
@@ -56,7 +53,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    public function clean ($crit) {
       global $DB;
 
-      foreach ($DB->request($this->table, $crit) as $data) {
+      foreach ($DB->request($this->getTable(), $crit) as $data) {
          $this->delete($data);
       }
    }

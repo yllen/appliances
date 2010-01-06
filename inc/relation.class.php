@@ -43,9 +43,6 @@ if (!defined('GLPI_ROOT')) {
  */
 class PluginAppliancesRelation extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_plugin_appliances_relations';
-   public $type  = 'PluginAppliancesRelation';
 
    /**
     * Clean object veryfing criteria (when a relation is deleted)
@@ -55,7 +52,7 @@ class PluginAppliancesRelation extends CommonDBTM {
    public function clean ($crit) {
       global $DB;
 
-      foreach ($DB->request($this->table, $crit) as $data) {
+      foreach ($DB->request($this->getTable(), $crit) as $data) {
          $this->delete($data);
       }
    }

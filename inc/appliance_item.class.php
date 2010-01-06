@@ -39,10 +39,6 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
-   // From CommonDBTM
-   public $table = 'glpi_plugin_appliances_appliances_items';
-   public $type  = 'PluginAppliancesAppliance_Item';
-
    // From CommonDBRelation
    public $itemtype_1 = 'PluginAppliancesAppliance';
    public $items_id_1 = 'plugin_appliances_appliances_id';
@@ -58,7 +54,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    public function clean ($crit) {
       global $DB;
 
-      foreach ($DB->request($this->table, $crit) as $data) {
+      foreach ($DB->request($this->getTable(), $crit) as $data) {
          $this->delete($data);
       }
    }

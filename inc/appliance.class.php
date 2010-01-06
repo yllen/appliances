@@ -38,11 +38,6 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginAppliancesAppliance extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table            = 'glpi_plugin_appliances_appliances';
-   public $type             = 'PluginAppliancesAppliance';
-   public $entity_assign    = true;
-   public $may_be_recursive = true;
    public $dohistory        = true;
 
 
@@ -214,8 +209,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_plugin_appliances_appliances","name",
-                              $this->fields["name"], 34, $this->fields["entities_id"]);
+      autocompletionTextField($this,"name",array('size' => 34));
       echo "</td><td>".$LANG['common'][17]."&nbsp;:</td><td>";
       Dropdown::show('PluginAppliancesApplianceType',
                       array('value'  => $this->fields["plugin_appliances_appliancetypes_id"],
@@ -424,23 +418,23 @@ class PluginAppliancesAppliance extends CommonDBTM {
                $column = "question";
             }
 
-            $query = "SELECT `".$item->table."`.*,
+            $query = "SELECT `".$item->getTable()."`.*,
                              `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
                              `glpi_entities`.`id` AS entity
                       FROM `glpi_plugin_appliances_appliances_items`, ".getTableForItemType($type)."
                       LEFT JOIN `glpi_entities`
-                           ON (`glpi_entities`.`id` = `".$item->table."`.`entities_id`)
-                      WHERE `".$item->table."`.`id`
+                           ON (`glpi_entities`.`id` = `".$item->getTable()."`.`entities_id`)
+                      WHERE `".$item->getTable()."`.`id`
                                  = `glpi_plugin_appliances_appliances_items`.`items_id`
                             AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
                             AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
                                  = '$instID' ".
-                            getEntitiesRestrictRequest(" AND ", $item->table);
+                            getEntitiesRestrictRequest(" AND ", $item->getTable());
 
             if ($item->maybeTemplate()) {
-               $query .= " AND `".$item->table."`.`is_template` = '0'";
+               $query .= " AND `".$item->getTable()."`.`is_template` = '0'";
             }
-            $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->table."`.$column";
+            $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->getTable()."`.$column";
 
             if ($result_linked = $DB->query($query)) {
                if ($DB->numrows($result_linked)) {
@@ -461,8 +455,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                      if($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                         $ID = " (".$data["id"].")";
                      }
-                     $link = getItemTypeFormURL("$type");
-                     $name= "<a href='".$link."?id=".$data["id"]."''>".$data["name"]."$ID</a>";
+                     $name= $item->getLink();
 
                      echo "<tr class='tab_bg_1'>";
                      if ($canedit) {
@@ -583,23 +576,23 @@ class PluginAppliancesAppliance extends CommonDBTM {
                   $column = "question";
                }
 
-               $query = "SELECT `".$item->table."`.*,
+               $query = "SELECT `".$item->getTable()."`.*,
                                 `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
                                 `glpi_entities`.`id` AS entity
-                         FROM `glpi_plugin_appliances_appliances_items`, `".$item->table."`
+                         FROM `glpi_plugin_appliances_appliances_items`, `".$item->getTable()."`
                          LEFT JOIN `glpi_entities`
-                              ON (`glpi_entities`.`id` = `".$item->table."`.`entities_id`)
-                         WHERE `".$item->table."`.`id`
+                              ON (`glpi_entities`.`id` = `".$item->getTable()."`.`entities_id`)
+                         WHERE `".$item->getTable()."`.`id`
                                     = `glpi_plugin_appliances_appliances_items`.`items_id`
                                AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
                                AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
                                     = '$instID' ".
-                               getEntitiesRestrictRequest(" AND ",$item->table);
+                               getEntitiesRestrictRequest(" AND ",$item->getTable());
 
                if ($item->maybeTemplate()) {
-                  $query .= " AND `".$item->table."`.`is_template` = '0'";
+                  $query .= " AND `".$item->getTable()."`.`is_template` = '0'";
                }
-               $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->table."`.$column";
+               $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->getTable()."`.$column";
 
                if ($result_linked=$DB->query($query)) {
                   if ($DB->numrows($result_linked)) {

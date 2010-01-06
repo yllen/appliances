@@ -39,11 +39,6 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginAppliancesApplianceType extends CommonDropdown {
 
-   // From CommonDBTM
-   public $table            = 'glpi_plugin_appliances_appliancetypes';
-   public $type             = 'PluginAppliancesApplianceType';
-   public $entity_assign    = true;
-   public $may_be_recursive = true;
 
    static function getTypeName() {
       global $LANG;
@@ -67,7 +62,7 @@ class PluginAppliancesApplianceType extends CommonDropdown {
          return 0;
       }
       $query = "SELECT `id`
-                FROM `".$temp->table."`
+                FROM `".$temp->getTable()."`
                 WHERE `entities_id` = '$entity'
                   AND `name` = '".addslashes($temp->fields['name'])."'";
       foreach ($DB->request($query) as $data) {

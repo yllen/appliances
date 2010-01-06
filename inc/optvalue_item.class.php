@@ -39,9 +39,6 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginAppliancesOptvalue_Item extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_plugin_appliances_optvalues_items';
-   public $type  = 'PluginAppliancesOptvalue_Item';
 
    /**
     * Clean object veryfing criteria (when a relation is deleted)
@@ -51,7 +48,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
    public function clean ($crit) {
       global $DB;
 
-      foreach ($DB->request($this->table, $crit) as $data) {
+      foreach ($DB->request($this->getTable(), $crit) as $data) {
          $this->delete($data);
       }
    }
