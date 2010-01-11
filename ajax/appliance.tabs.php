@@ -90,7 +90,7 @@ if ($_POST["id"] >0
          break;
 
       case 12 :
-         showHistory('PluginAppliancesAppliance',$_POST["id"]);
+         Log::showForItem($appliance);
          break;
 
       default :
