@@ -40,9 +40,10 @@ if (!defined('GLPI_ROOT')) {
 class PluginAppliancesOptvalue extends CommonDBTM {
 
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
+
       $temp = new PluginAppliancesOptvalue_Item();
-      $temp->clean(array('plugin_appliances_optvalues_id' => $ID));
+      $temp->clean(array('plugin_appliances_optvalues_id' => $this->fields['id']));
    }
 
    /**

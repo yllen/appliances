@@ -59,13 +59,14 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       }
    }
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
+
       $temp = new PluginAppliancesOptvalue_Item();
       $temp->clean(array('itemtype' => $this->fields['itemtype'],
                          'items_id' => $this->fields['items_id']));
 
       $temp = new PluginAppliancesRelation();
-      $temp->clean(array('plugin_appliances_appliances_items_id' => $ID));
+      $temp->clean(array('plugin_appliances_appliances_items_id' => $this->fields['id']));
    }
 }
 
