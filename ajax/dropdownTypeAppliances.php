@@ -35,7 +35,6 @@
 
 if (strpos($_SERVER['PHP_SELF'],"dropdownTypeAppliances.php")) {
    define('GLPI_ROOT', '../../..');
-   $AJAX_INCLUDE = 1;
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
    header_nocache();
