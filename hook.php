@@ -47,8 +47,6 @@ function plugin_appliances_AssignToTicket($types) {
 function plugin_appliances_install() {
    global $DB;
 
-   include_once (GLPI_ROOT."/inc/profile.class.php");
-
    if (TableExists("glpi_plugin_applicatifs_profiles")) {
       if (FieldExists("glpi_plugin_applicatifs_profiles","create_applicatifs")) { // version <1.3
          $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.3.sql");
