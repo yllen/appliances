@@ -109,7 +109,7 @@ function plugin_appliances_uninstall() {
 
    $query = "DELETE
              FROM `glpi_displaypreferences`
-             WHERE (`itemtype` = IN ('PluginAppliancesAppliance','PluginAppliancesApplianceType',
+             WHERE (`itemtype` IN ('PluginAppliancesAppliance','PluginAppliancesApplianceType',
                                      'PluginAppliancesEnvironment', 1200))";
    $DB->query($query);
 
