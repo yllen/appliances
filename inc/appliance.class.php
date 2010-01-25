@@ -123,6 +123,16 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[11]['name']      = $LANG['software'][46];
       $tab[11]['datatype']  = 'bool';
 
+      $tab[12]['table']     = 'glpi_plugin_appliances_appliances';
+      $tab[12]['field']     = 'serial';
+      $tab[12]['linkfield'] = 'serial';
+      $tab[12]['name']      = $LANG['common'][19];
+
+      $tab[13]['table']     = 'glpi_plugin_appliances_appliances';
+      $tab[13]['field']     = 'otherserial';
+      $tab[13]['linkfield'] = 'otherserial';
+      $tab[13]['name']      = $LANG['common'][20];
+
       $tab[30]['table']     = 'glpi_plugin_appliances_appliances';
       $tab[30]['field']     = 'id';
       $tab[30]['linkfield'] = '';
@@ -241,8 +251,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo Dropdown::getdropdownname("glpi_groups", $this->fields["groups_id"]);
       }
       echo "</td>";
-      echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+      echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
+      echo "<td >";
+      autocompletionTextField($this,'serial');
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -255,10 +266,19 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo Dropdown::getdropdownname("glpi_locations",$this->fields["locations_id"]);
       }
       echo "</td>";
+      echo "<td>".$LANG['common'][20]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField($this,'otherserial');
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+      echo "</td>";
       echo "<td rowspan='3'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td rowspan='3' class='middle'>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       // dropdown relationtype added
@@ -321,14 +341,25 @@ class PluginAppliancesAppliance extends CommonDBTM {
                                        $this->fields['plugin_appliances_appliancetypes_id'])));
       $pdf->displayLine(
          '<b><i>'.$LANG["common"][10].' :</i></b> '.getUserName($this->fields['users_id']),
+         '<b><i>'.$LANG['plugin_appliances'][3].' :</i></b> '.
+            html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments',
+                                       $this->fields['plugin_appliances_environments_id'])));
+
+      $pdf->displayLine(
          '<b><i>'.$LANG["common"][35].' :</i></b> '.
-            html_clean(Dropdown::getDropdownName('glpi_groups',$this->fields['groups_id'])));
+            html_clean(Dropdown::getDropdownName('glpi_groups',$this->fields['groups_id'])),
+         '<b><i>'.$LANG['common'][19].' :</i></b> '.$this->fields['serial']);
 
       $pdf->displayLine(
          '<b><i>'.$LANG["common"][15].' :</i></b> '.
             html_clean(Dropdown::getDropdownName('glpi_locations',$this->fields['locations_id'])),
+         '<b><i>'.$LANG['common'][20].' :</i></b> '.$this->fields['otherserial']);
+
+      $pdf->displayLine(
          '<b><i>'.$LANG['plugin_appliances'][22].' :</i></b> '.
-            html_clean(PluginAppliancesRelation::getTypeName($this->fields["relationtype"])));
+            html_clean(PluginAppliancesRelation::getTypeName($this->fields["relationtype"])),
+         '<b><i>'.$LANG['software'][46].' :</i></b> '.
+            Dropdown::getYesNo($this->fields["is_helpdesk_visible"]));
 
       $query_app = "SELECT `champ`, `ddefault`
                     FROM `glpi_plugin_appliances_optvalues`

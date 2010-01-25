@@ -16,10 +16,14 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_appliances` (
    `states_id` int(11) NOT NULL default '0',
    `is_helpdesk_visible` tinyint(1) NOT NULL default '1',
    `externalid` varchar(255) NULL,
+   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
    PRIMARY KEY (`id`),
    KEY `entities_id` (`entities_id`),
    KEY `is_deleted` (`is_deleted`),
    KEY `name` (`name`),
+   KEY `serial` (`serial`),
+   KEY `otherserial` (`otherserial`),
    UNIQUE `unicity` (`externalid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

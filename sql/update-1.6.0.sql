@@ -16,8 +16,12 @@ ALTER TABLE `glpi_plugin_appliances_appliances`
    CHANGE `relationtype` `relationtype` int(11) NOT NULL default '0',
    CHANGE `helpdesk_visible` `is_helpdesk_visible` tinyint(1) NOT NULL default '1',
    ADD `externalid` varchar(255) NULL,
+   ADD `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+   ADD `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
    ADD KEY `entities_id` (`entities_id`),
    ADD KEY `is_deleted` (`is_deleted`),
+   ADD KEY `serial` (`serial`),
+   ADD KEY `otherserial` (`otherserial`),
    ADD UNIQUE `unicity` (`externalid`);
 
 
