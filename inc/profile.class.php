@@ -55,8 +55,13 @@ class PluginAppliancesProfile extends CommonDBTM {
    }
 
    //profiles modification
-   function showForm($target,$ID) {
+   function showForm($ID, $options=array()) {
       global $LANG;
+
+      $target = $this->getFormURL();
+      if (isset($options['target'])) {
+        $target = $options['target'];
+      }
 
       if (!haveRight("profile","r")) {
          return false;

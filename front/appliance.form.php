@@ -156,7 +156,7 @@ if (isset($_POST["add"])) {
    } else {
       commonHeader($LANG['plugin_appliances']['title'][1],$_SERVER["PHP_SELF"],"plugins","appliances");
    }
-   $PluginAppliances->showForm($_SERVER["PHP_SELF"],$_GET["id"]);
+   $PluginAppliances->showForm($_GET["id"]);
 
    commonFooter();
 }

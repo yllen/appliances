@@ -516,7 +516,8 @@ function plugin_headings_appliances($item,$withtemplate=0) {
       case 'Profile' :
          $prof = new PluginAppliancesProfile();
          if ($prof->GetfromDB($ID) || $prof->createUserAccess($item)) {
-            $prof->showForm($CFG_GLPI["root_doc"]."/plugins/appliances/front/profile.form.php",$ID);
+            $prof->showForm($ID,
+                            array('target' => $CFG_GLPI["root_doc"]."/plugins/appliances/front/profile.form.php"));
          }
          break;
 
@@ -658,7 +659,8 @@ function plugin_appliances_prefPDF($item) {
    $tabs = array();
    switch (get_class($item)) {
       case 'PluginAppliancesAppliance' :
-         $tabs = $item->defineTabs(1,'');
+         $item->fields['id'] = 1; // really awfull :(
+         $tabs = $item->defineTabs();
          unset($tabs[2]); // Custom fields
          break;
    }

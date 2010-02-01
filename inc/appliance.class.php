@@ -166,11 +166,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $temp->clean(array('plugin_appliances_appliances_id' => $this->fields['id']));
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong[1] = $LANG['title'][26];
-      if ($ID > 0) {
+      if ($this->fields['id'] > 0) {
          $ong[2] = $LANG['plugin_appliances'][24];
          if (haveRight("show_all_ticket","1")) {
             $ong[6] = $LANG['title'][28];
@@ -200,7 +200,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
               WHERE `plugin_appliances_appliances_id`='" . $this->fields['id']."'";
    }
 
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if ($ID>0) {
@@ -213,8 +213,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $canedit = $this->can($ID,'w');
       $canrecu = $this->can($ID,'recursive');
 
-      $this->showTabs($ID);
-      $this->showFormHeader($target,$ID,'',2);
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
@@ -244,9 +244,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td><td>";
       if ($canedit) {
-         Dropdown::show('Group',
-                        array('value'  => $this->fields["groups_id"],
-                              'entity' =>$this->fields["entities_id"]));
+         Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
+                                       'entity' =>$this->fields["entities_id"]));
       } else {
          echo Dropdown::getdropdownname("glpi_groups", $this->fields["groups_id"]);
       }
@@ -259,9 +258,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;:</td><td>";
       if ($canedit) {
-         Dropdown::show('Location',
-                        array('value'  => $this->fields["locations_id"],
-                              'entity' => $this->fields["entities_id"]));
+         Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                          'entity' => $this->fields["entities_id"]));
       } else {
          echo Dropdown::getdropdownname("glpi_locations",$this->fields["locations_id"]);
       }
@@ -310,7 +308,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<td colspan='2' class='center'>".$datestring.$date;
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
