@@ -46,6 +46,14 @@ class PluginAppliancesApplianceType extends CommonDropdown {
       return $LANG['plugin_appliances']['setup'][2];
    }
 
+   function canCreate() {
+      return haveRight('entity_dropdown','w');
+   }
+
+   function canView() {
+      return haveRight('entity_dropdown','r');
+   }
+
    function prepareInputForAdd($input) {
       if (array_key_exists('externalid',$input) && !$input['externalid']) {
          // INSERT NULL as this value is an UNIQUE index
