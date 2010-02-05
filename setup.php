@@ -114,8 +114,11 @@ function plugin_init_appliances() {
          }
       }
    }
-      // Import from Data_Injection plugin
-      $PLUGIN_HOOKS['data_injection']['appliances'] = "plugin_appliances_data_injection_variables";
+   // Import from Data_Injection plugin
+   $PLUGIN_HOOKS['data_injection']['appliances'] = "plugin_appliances_data_injection_variables";
+
+   // Import webservice
+   $PLUGIN_HOOKS['webservices']['appliances'] = 'plugin_appliances_registerMethods';
 }
 
 

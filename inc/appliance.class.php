@@ -1011,6 +1011,228 @@ class PluginAppliancesAppliance extends CommonDBTM {
       return $types;
    }
 
+   static function methodTestAppliance($params, $protocol) {
+      global $PLUGIN_HOOKS;
+
+      if (isset ($params['help'])) {
+         return array('help' => 'bool,optional');
+      }
+
+      $resp = array('glpi' => GLPI_VERSION);
+
+      $plugin = new Plugin();
+      foreach ($PLUGIN_HOOKS['webservices'] as $name => $fct) {
+         if ($plugin->getFromDBbyDir($name)) {
+            $resp[$name] = $plugin->fields['version'];
+         }
+      }
+
+      return $resp;
+   }
+
+   static function methodListAppliances($params, $protocol) {
+      global $DB, $CFG_GLPI;
+
+      if (isset ($params['help'])) {
+         return array(  'help'      => 'bool,optional',
+                        'count'     => 'bool,optional',
+                        'start'     => 'integer,optional',
+                        'limit'     => 'integer,optional' );
+      }
+      if (!isset ($_SESSION['glpiID'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
+      }
+      $resp = array ();
+      $start = 0;
+      if (isset ($params['start']) && is_numeric($params['start'])) {
+         $start = $params['start'];
+      }
+      $limit = $CFG_GLPI["list_limit_max"];
+      if (isset ($params['limit']) && is_numeric($params['limit'])) {
+         $limit = $params['limit'];
+      }
+
+      $orders = array();
+      if (isset ($params['order'])) {
+         if (is_array($params['order'])) {
+            $tab = $params['order'];
+         } else {
+            $tab = array($params['order']=>'DESC');
+         }
+         foreach ($tab as $key => $val) {
+            if ($val != 'ASC') {
+               $val = 'DESC';
+            }
+            //TODO A revoir
+            if (in_array($key, array('id', 'name', 'date_mod', 'users_id',
+                                     'groups_id', 'entities_id','externalid'))) {
+               $orders[] ="`$key` $val";
+            } else {
+               return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '','order=$key');
+            }
+         }
+      }
+      if (count($orders)) {
+         $order = implode(',',$orders);
+      } else {
+         $order = "`name` DESC";
+      }
+
+
+      if (isset ($params['count'])) {
+         $query = "SELECT COUNT(DISTINCT `id`) AS count
+                   FROM `glpi_plugin_appliances_appliances` " ;
+
+         foreach ($DB->request($query) as $data) {
+            $resp = $data;
+         }
+      }else {
+         $where="";
+         $query = "SELECT `glpi_plugin_appliances_appliances`.*
+                   FROM `glpi_plugin_appliances_appliances`
+                   $where
+                   ORDER BY $order
+                   LIMIT $start,$limit";
+          foreach ($DB->request($query) as $data) {
+             $resp[] = $data;
+          }
+      }
+      return $resp;
+   }
+
+   static function methodDeleteAppliance($params, $protocol) {
+      global $DB;
+
+      if (isset ($params['help'])) {
+         return array(  'help'                                 => 'bool,optional',
+                        'force'                                => 'boolean,optional',
+                        'id'                                   => 'string' );
+      }
+      if (!isset ($_SESSION['glpiID'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
+      }
+      if (!isset ($params['id'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
+      }
+      $force=0;
+      if (isset($params['force'])){
+         $force=1;
+      }
+      $id=$params['id'];
+      $appliance = new self();
+      //      if (!$appliance->can($id, 'd')) {
+      //               return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
+      //      }
+      $id=$appliance->delete(array("id" => $id),$force);
+      return array("id" => $id);
+   }
+
+   static function methodUpdateAppliance($params, $protocol) {
+      global $DB;
+
+      if (isset ($params['help'])) {
+         return array(  'help'                                 => 'bool,optional',
+                        'is_helpdesk_visible'                  => 'bolean,optional',
+                        'name'                                 => 'string,optional',
+                        'plugin_appliances_appliancetypes_id'  => 'string,optional',
+                         'externalid'                          => 'string,optional',
+                        'id'                                   => 'string' );
+      }
+      if (!isset ($_SESSION['glpiID'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
+      }
+      if (!isset ($params['id'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
+      }
+      if ( isset ($params['is_helpdesk_visible']) ) {
+         if (!is_numeric($params['is_helpdesk_visible'])) {
+            return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_helpdesk_visible');
+         }
+      }
+      if ( isset ($params['name']) ) {
+         $params['name']=addslashes($params['name']);
+      }
+      if ( isset ($params['externalid']) ) {
+         $params['externalid']=addslashes($params['externalid']);
+      }
+      if ( isset ($params['plugin_appliances_appliancetypes_id']) ) {
+         $params['plugin_appliances_appliancetypes_id']=addslashes($params['plugin_appliances_appliancetypes_id']);
+      }
+      $id=$params['id'];
+      $appliance = new self();
+      if ($appliance->can($id, 'w')) {
+         $id=$appliance->update($params);
+      }
+      return array("id" => $id);
+   }
+
+   static function methodAddAppliance($params, $protocol) {
+      global $DB;
+
+      if (isset ($params['help'])) {
+         return array(  'help'                                 => 'bool,optional',
+                        'is_helpdesk_visible'                  => 'integer,optional',
+                        'name'                                 => 'string',
+                        'plugin_appliances_appliancetypes_id'  => 'string',
+                        'externalid'                           => 'string' );
+      }
+      if (!isset ($_SESSION['glpiID'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
+      }
+      if ( !isset ($params['name'])
+      || !isset ($params['plugin_appliances_appliancetypes_id'])
+      || !isset ($params['externalid'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
+      }
+      if ( isset ($params['is_helpdesk_visible']) ) {
+         if (!is_numeric($params['is_helpdesk_visible'])) {
+            return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_helpdesk_visible');
+         }
+      }
+      if ( isset ($params['name']) ) {
+         $params['name']=addslashes($params['name']);
+      }
+      if ( isset ($params['externalid']) ) {
+         $params['externalid']=addslashes($params['externalid']);
+      }
+      if ( isset ($params['plugin_appliances_appliancetypes_id']) ) {
+         $params['plugin_appliances_appliancetypes_id']=addslashes($params['plugin_appliances_appliancetypes_id']);
+      }
+      $appliance = new self();
+      if ($appliance->can(-1, 'w')) {
+         $id=$appliance->add($params);
+      }
+      return array("id" => $id);
+   }
+   static function methodGetAppliance($params, $protocol) {
+      global $DB;
+      if (isset ($params['help'])) {
+         return array(  'help'               => 'bool,optional',
+                        'externalid OR id'   => 'string' );
+      }
+      if (!isset ($_SESSION['glpiID'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
+      }
+      if (!isset ($params['externalid']) && !isset ($params['id']) ) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
+      }
+      $where="";
+      if (isset($params['id'])){
+         $where=" where id='".$params["id"]."'" ;
+      }
+      if (isset($params['externalid'])){
+         $where=" where externalid='".addslashes($params["externalid"])."'" ;
+      }
+      $query="select id from `glpi_plugin_appliances_appliances` ".$where ;
+      logInFile('log_plugin_appliance',$query);
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $data = $DB->fetch_array($result) ;
+            return array ('id'=> $data["id"] );
+         }
+      }
+      return array ('id'=> 'Not found');
+   }
 }
 
 ?>

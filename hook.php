@@ -35,6 +35,19 @@
 
 define("PLUGIN_APPLIANCES_RELATION_LOCATION",1);
 
+function plugin_appliances_registerMethods() {
+   global $WEBSERVICES_METHOD;
+
+   // Not authenticated method
+   $WEBSERVICES_METHOD['appliances.testAppliances']  = array('PluginAppliancesAppliance','methodTestAppliance');
+   // Authenticated method
+   $WEBSERVICES_METHOD['appliances.listAppliances']  = array('PluginAppliancesAppliance','methodListAppliances');
+   $WEBSERVICES_METHOD['appliances.addAppliance']    = array('PluginAppliancesAppliance','methodAddAppliance');
+   $WEBSERVICES_METHOD['appliances.deleteAppliance'] = array('PluginAppliancesAppliance','methodDeleteAppliance');
+   $WEBSERVICES_METHOD['appliances.updateAppliance'] = array('PluginAppliancesAppliance','methodUpdateAppliance');
+   $WEBSERVICES_METHOD['appliances.getAppliance']    = array('PluginAppliancesAppliance','methodGetAppliance');
+}
+
 function plugin_appliances_AssignToTicket($types) {
    global $LANG;
 

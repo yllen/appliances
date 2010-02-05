@@ -35,9 +35,9 @@ ALTER TABLE `glpi_plugin_appliances_appliances_items`
    CHANGE `FK_applicatif` `plugin_appliances_appliances_id` int(11) NOT NULL default '0',
    CHANGE `FK_device` `items_id` int(11) NOT NULL default '0',
    CHANGE `device_type` `itemtype` VARCHAR(100) NOT NULL default '',
-   ADD UNIQUE `appliances_items_type` (`plugin_appliances_appliances_id`,`plugin_appliances_appliances_items_id`,`itemtype`),
+   ADD UNIQUE `appliances_items_type` (`plugin_appliances_appliances_id`,`items_id`,`itemtype`),
    ADD KEY `plugin_appliances_appliances_id` (`plugin_appliances_appliances_id`),
-   ADD KEY `item` (`itemtype`,`plugin_appliances_appliances_items_id`);
+   ADD KEY `item` (`itemtype`,`items_id`);
 
 
 RENAME TABLE `glpi_dropdown_plugin_applicatifs_type` to `glpi_plugin_appliances_appliancetypes`;
