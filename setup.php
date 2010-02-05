@@ -39,34 +39,24 @@ function plugin_init_appliances() {
 
    // Params : plugin name - string type - number - attributes
    Plugin::registerClass('PluginAppliancesAppliance',
-                         array('classname'              => 'PluginAppliancesAppliance',
-                               'typename'               => $LANG['plugin_appliances']['title'][1],
-                               'linkuser_types'         => true,
+                         array('linkuser_types'         => true,
                                'linkgroup_types'        => true,
                                'infocom_types'          => true,
                                'doc_types'              => true,
                                'contract_types'         => true,
                                'helpdesk_visible_types' => true));
 
-   Plugin::registerClass('PluginAppliancesEnvironment',
-                         array('classname'              => 'PluginAppliancesEnvironment',
-                               'typename'               => $LANG['plugin_appliances'][3]));
+   Plugin::registerClass('PluginAppliancesEnvironment');
 
-   Plugin::registerClass('PluginAppliancesApplianceType',
-                         array('classname'              => 'PluginAppliancesApplianceType',
-                               'typename'               => $LANG['plugin_appliances']['setup'][2]));
+   Plugin::registerClass('PluginAppliancesApplianceType');
 
-   Plugin::registerClass('PluginAppliancesAppliance_Item',
-                         array('classname'              => 'PluginAppliancesAppliance_Item'));
+   Plugin::registerClass('PluginAppliancesAppliance_Item');
 
-   Plugin::registerClass('PluginAppliancesOptvalue',
-                         array('classname'              => 'PluginAppliancesOptvalue'));
+   Plugin::registerClass('PluginAppliancesOptvalue');
 
-   Plugin::registerClass('PluginAppliancesOptvalue_Item',
-                         array('classname'              => 'PluginAppliancesOptvalue_Item'));
+   Plugin::registerClass('PluginAppliancesOptvalue_Item');
 
-   Plugin::registerClass('PluginAppliancesRelation',
-                         array('classname'              => 'PluginAppliancesRelation'));
+   Plugin::registerClass('PluginAppliancesRelation');
 
    // Define the type for which we know how to generate PDF, need :
    // - plugin_appliances_prefPDF($type)
