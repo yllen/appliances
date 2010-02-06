@@ -1059,6 +1059,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static function methodListAppliances($params, $protocol) {
       global $DB, $CFG_GLPI;
 
+      // TODO add some search options (name, type, ...)
+
       if (isset ($params['help'])) {
          return array(  'help'      => 'bool,optional',
                         'count'     => 'bool,optional',
@@ -1251,20 +1253,24 @@ class PluginAppliancesAppliance extends CommonDBTM {
       } else {
          $input['entities_id'] = $_SESSION["glpiactive_entity"];
       }
-      if (isset($params['externalid'])) {
+      if (isset($params['externalid']) && !empty($params['externalid'])) {
          $input['externalid'] = addslashes($params['externalid']);
       }
       if (isset($params['plugin_appliances_appliancetypes_id'])) {
+         // TODO check if this id exists and is readable and is available in appliance entity
          $input['plugin_appliances_appliancetypes_id'] = intval($params['plugin_appliances_appliancetypes_id']);
+
+         // TODO allow option plugin_appliances_appliancetypes_name, use PluginAppliancesApplianceType->import()
       }
       if (isset($params['is_helpdesk_visible'])) {
          $input['is_helpdesk_visible'] = ($params['is_helpdesk_visible'] ? 1 : 0);
       }
       if (isset($params['is_recursive'])) {
+         // TODO check if canUnrecurs
          $input['is_recursive'] = ($params['is_recursive'] ? 1 : 0);
       }
       $appliance = new self();
-      if (!$appliance->can(-1, 'w',$input)) {
+      if (!$appliance->can(-1, 'w', $input)) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
       $id=$appliance->add($input);
@@ -1292,8 +1298,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $found = false;
       if (isset($params['id'])) {
          $found = $appli->getFromDB(intval($params['id']));
-      }
-      if (isset($params['externalid'])){
+
+      } else if (isset($params['externalid'])){
          $found = $appli->getFromDBbyExternalID(addslashes($params["externalid"]));
       }
       if (!$found || !$appli->can($appli->fields["id"],'r')) {
