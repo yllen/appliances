@@ -55,6 +55,32 @@ class PluginAppliancesAppliance extends CommonDBTM {
       return plugin_appliances_haveRight('appliance', 'r');
    }
 
+   /**
+    * Retrieve an Appliance from the database using its externalid (unique index)
+    *
+    * @param $extid string externalid
+    *
+    * @return true if succeed else false
+    **/
+   function getFromDBbyExternalID($extid) {
+      global $DB;
+
+      $query = "SELECT *
+                FROM `".$this->getTable()."`
+                WHERE `externalid` = '$extid'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 1) {
+            return false;
+         }
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    function getSearchOptions() {
       global $LANG;
 
@@ -1078,16 +1104,19 @@ class PluginAppliancesAppliance extends CommonDBTM {
          $order = "`name` DESC";
       }
 
+      $where = getEntitiesRestrictRequest(' WHERE ', 'glpi_plugin_appliances_appliances');
 
       if (isset ($params['count'])) {
          $query = "SELECT COUNT(DISTINCT `id`) AS count
-                   FROM `glpi_plugin_appliances_appliances` " ;
+                   FROM `glpi_plugin_appliances_appliances`
+                   $where";
 
          foreach ($DB->request($query) as $data) {
             $resp = $data;
          }
       }else {
          $where="";
+         // TODO review list of fields (should be minimal)
          $query = "SELECT `glpi_plugin_appliances_appliances`.*
                    FROM `glpi_plugin_appliances_appliances`
                    $where
@@ -1095,6 +1124,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
                    LIMIT $start,$limit";
           foreach ($DB->request($query) as $data) {
              $resp[] = $data;
+
+             // TODO : handle id2name
           }
       }
       return $resp;
@@ -1120,118 +1151,156 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       $id=$params['id'];
       $appliance = new self();
-      //      if (!$appliance->can($id, 'd')) {
-      //               return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
-      //      }
-      $id=$appliance->delete(array("id" => $id),$force);
+      if (!$appliance->can($id, 'd')) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
+      }
+      if (!$appliance->delete(array("id" => $id),$force)) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_FAILED);
+      }
       return array("id" => $id);
    }
 
    static function methodUpdateAppliance($params, $protocol) {
       global $DB;
 
+      // TODO : add more fields + factorize field translation with methodAddAppliance
+
       if (isset ($params['help'])) {
          return array(  'help'                                 => 'bool,optional',
-                        'is_helpdesk_visible'                  => 'bolean,optional',
+                        'is_helpdesk_visible'                  => 'bool,optional',
+                        'is_recursive'                         => 'bool,optional',
                         'name'                                 => 'string,optional',
                         'plugin_appliances_appliancetypes_id'  => 'string,optional',
                          'externalid'                          => 'string,optional',
                         'id'                                   => 'string' );
       }
-      if (!isset ($_SESSION['glpiID'])) {
+      if (!isset($_SESSION['glpiID'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
-      if (!isset ($params['id'])) {
+      if (!isset($params['id']) || !is_numeric($params['id'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
       }
-      if ( isset ($params['is_helpdesk_visible']) ) {
-         if (!is_numeric($params['is_helpdesk_visible'])) {
-            return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_helpdesk_visible');
+      if (isset($params['is_helpdesk_visible']) && !is_numeric($params['is_helpdesk_visible'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_helpdesk_visible');
+      }
+      if (isset($params['is_recursive']) && !is_numeric($params['is_recursive'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_recursive');
+      }
+      $id = intval($params['id']);
+      $input = array('id' => $id);
+      if (isset($params['name'])) {
+         $input['name'] = addslashes($params['name']);
+      }
+      if (isset($params['externalid'])) {
+         if (empty($params['externalid'])) {
+            $input['externalid'] = 'NULL';
+         } else {
+            $input['externalid'] = addslashes($params['externalid']);
          }
       }
-      if ( isset ($params['name']) ) {
-         $params['name']=addslashes($params['name']);
+      if (isset($params['is_helpdesk_visible'])) {
+         $input['is_helpdesk_visible'] = ($params['is_helpdesk_visible'] ? 1 : 0);
       }
-      if ( isset ($params['externalid']) ) {
-         $params['externalid']=addslashes($params['externalid']);
+      if (isset($params['is_recursive'])) {
+         $input['is_recursive'] = ($params['is_recursive'] ? 1 : 0);
       }
-      if ( isset ($params['plugin_appliances_appliancetypes_id']) ) {
-         $params['plugin_appliances_appliancetypes_id']=addslashes($params['plugin_appliances_appliancetypes_id']);
+      if (isset($params['plugin_appliances_appliancetypes_id'])) {
+         $input['plugin_appliances_appliancetypes_id'] = intval($params['plugin_appliances_appliancetypes_id']);
       }
-      $id=$params['id'];
       $appliance = new self();
-      if ($appliance->can($id, 'w')) {
-         $id=$appliance->update($params);
+      if (!$appliance->can($id, 'w')) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
-      return array("id" => $id);
+      if ($appliance->update($input)) {
+         // Does not detect unicity error on externalid :(
+         return $appliance->methodGetAppliance(array('id'=>$id), $protocol);
+      }
+      return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_FAILED);
    }
 
    static function methodAddAppliance($params, $protocol) {
       global $DB;
 
+      // TODO : add more fields
       if (isset ($params['help'])) {
          return array(  'help'                                 => 'bool,optional',
-                        'is_helpdesk_visible'                  => 'integer,optional',
+                        'entities_id'                          => 'integer,optional',
+                        'is_helpdesk_visible'                  => 'bool,optional',
+                        'is_recursive'                         => 'bool,optional',
                         'name'                                 => 'string',
-                        'plugin_appliances_appliancetypes_id'  => 'string',
-                        'externalid'                           => 'string' );
+                        'plugin_appliances_appliancetypes_id'  => 'string,optional',
+                        'externalid'                           => 'string,optional');
       }
-      if (!isset ($_SESSION['glpiID'])) {
+      if (!isset($_SESSION['glpiID'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
-      if ( !isset ($params['name'])
-      || !isset ($params['plugin_appliances_appliancetypes_id'])
-      || !isset ($params['externalid'])) {
+      if (!isset($params['name'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
       }
-      if ( isset ($params['is_helpdesk_visible']) ) {
-         if (!is_numeric($params['is_helpdesk_visible'])) {
-            return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_helpdesk_visible');
-         }
+      if (isset($params['is_helpdesk_visible']) && !is_numeric($params['is_helpdesk_visible'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_helpdesk_visible');
       }
-      if ( isset ($params['name']) ) {
-         $params['name']=addslashes($params['name']);
+      if (isset($params['is_recursive']) && !is_numeric($params['is_recursive'])) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_recursive');
       }
-      if ( isset ($params['externalid']) ) {
-         $params['externalid']=addslashes($params['externalid']);
+      $input = array();
+      $input['name'] = addslashes($params['name']);
+
+      if (isset($params['entities_id'])) {
+         $input['entities_id'] = intval($params['entities_id']);
+      } else {
+         $input['entities_id'] = $_SESSION["glpiactive_entity"];
       }
-      if ( isset ($params['plugin_appliances_appliancetypes_id']) ) {
-         $params['plugin_appliances_appliancetypes_id']=addslashes($params['plugin_appliances_appliancetypes_id']);
+      if (isset($params['externalid'])) {
+         $input['externalid'] = addslashes($params['externalid']);
+      }
+      if (isset($params['plugin_appliances_appliancetypes_id'])) {
+         $input['plugin_appliances_appliancetypes_id'] = intval($params['plugin_appliances_appliancetypes_id']);
+      }
+      if (isset($params['is_helpdesk_visible'])) {
+         $input['is_helpdesk_visible'] = ($params['is_helpdesk_visible'] ? 1 : 0);
+      }
+      if (isset($params['is_recursive'])) {
+         $input['is_recursive'] = ($params['is_recursive'] ? 1 : 0);
       }
       $appliance = new self();
-      if ($appliance->can(-1, 'w')) {
-         $id=$appliance->add($params);
+      if (!$appliance->can(-1, 'w',$input)) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
-      return array("id" => $id);
+      $id=$appliance->add($input);
+      if ($id) {
+         // Return the newly created object
+         return $appliance->methodGetAppliance(array('id'=>$id), $protocol);
+      }
+      return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_FAILED);
    }
+
    static function methodGetAppliance($params, $protocol) {
       global $DB;
+
       if (isset ($params['help'])) {
          return array(  'help'               => 'bool,optional',
                         'externalid OR id'   => 'string' );
       }
-      if (!isset ($_SESSION['glpiID'])) {
+      if (!isset($_SESSION['glpiID'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
-      if (!isset ($params['externalid']) && !isset ($params['id']) ) {
+      if (!isset($params['externalid']) && !isset($params['id'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
       }
-      $where="";
-      if (isset($params['id'])){
-         $where=" where id='".$params["id"]."'" ;
+      $appli = new self();
+      $found = false;
+      if (isset($params['id'])) {
+         $found = $appli->getFromDB(intval($params['id']));
       }
       if (isset($params['externalid'])){
-         $where=" where externalid='".addslashes($params["externalid"])."'" ;
+         $found = $appli->getFromDBbyExternalID(addslashes($params["externalid"]));
       }
-      $query="select id from `glpi_plugin_appliances_appliances` ".$where ;
-      logInFile('log_plugin_appliance',$query);
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $data = $DB->fetch_array($result) ;
-            return array ('id'=> $data["id"] );
-         }
+      if (!$found || !$appli->can($appli->fields["id"],'r')) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTFOUND);
       }
-      return array ('id'=> 'Not found');
+      // TODO manage id2name option
+      return $appli->fields;
    }
 }
 
