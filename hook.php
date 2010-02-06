@@ -340,12 +340,12 @@ function plugin_appliances_MassiveActions($type) {
 }
 
 
-function plugin_appliances_MassiveActionsDisplay($type,$action) {
+function plugin_appliances_MassiveActionsDisplay($options) {
    global $LANG;
 
-   switch ($type) {
+   switch ($options['itemtype']) {
       case 'PluginAppliancesAppliance' :
-         switch ($action) {
+         switch ($options['action']) {
             // No case for add_document : use GLPI core one
             case "plugin_appliances_install" :
                Dropdown::showAllItems("item_item",0,0,-1,PluginAppliancesAppliance::getTypes());
@@ -368,7 +368,7 @@ function plugin_appliances_MassiveActionsDisplay($type,$action) {
          break;
 
       default :
-         if (in_array($type, PluginAppliancesAppliance::getTypes())) {
+         if (in_array($options['itemtype'], PluginAppliancesAppliance::getTypes())) {
             dropdownappliances("conID");
             echo "<input type='submit' name='massiveaction' class='submit\' ".
                   "value='".$LANG['buttons'][2]."'>";
@@ -682,14 +682,20 @@ function plugin_appliances_prefPDF($item) {
 
 
 /**
- * Hook to generate a PDF for a type
+ * Hook to generate a PDF for an Appliance
  *
- * @param $type of item
- * @param $tab_id array of ID
- * @param $tab of option to be printed
- * @param $page boolean true for landscape
+ * @param $options array of PDF options
+ * - item object
+ * - tab_id array of ID
+ * - tab array of options to be printed
+ * - page boolean true for landscape
  */
-function plugin_appliances_generatePDF($item, $tab_id, $tab, $page=0) {
+function plugin_appliances_generatePDF($options) {
+
+   $item   = $options['item'];
+   $tab_id = $options['tab_id'];
+   $tab    = $options['tab'];
+   $page   = $options['page'];
 
    $pdf = new PluginPdfSimplePDF('a4', ($page ? 'landscape' : 'portrait'));
    $nb_id = count($tab_id);
