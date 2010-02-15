@@ -65,8 +65,13 @@ function plugin_init_appliances() {
 
    $PLUGIN_HOOKS['change_profile']['appliances']   = array('PluginAppliancesProfile','select');
    $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
-   $PLUGIN_HOOKS['pre_item_purge']['appliances']     = 'plugin_pre_item_purge_appliances';
-   $PLUGIN_HOOKS['item_purge']['appliances']         = 'plugin_item_purge_appliances';
+
+   $PLUGIN_HOOKS['pre_item_purge']['appliances'] = array('Profile'=>'plugin_pre_item_purge_appliances');
+
+   $PLUGIN_HOOKS['item_purge']['appliances'] = array();
+   foreach (PluginAppliancesAppliance::getTypes() as $type) {
+      $PLUGIN_HOOKS['item_purge']['appliances'][$type] = 'plugin_item_purge_appliances';
+   }
 
    if (isset($_SESSION["glpiID"])) {
 
