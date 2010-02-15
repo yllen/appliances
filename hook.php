@@ -369,7 +369,7 @@ function plugin_appliances_MassiveActionsDisplay($options) {
 
       default :
          if (in_array($options['itemtype'], PluginAppliancesAppliance::getTypes())) {
-            dropdownappliances("conID");
+            PluginAppliancesAppliance::dropdown();
             echo "<input type='submit' name='massiveaction' class='submit\' ".
                   "value='".$LANG['buttons'][2]."'>";
          }
@@ -383,26 +383,12 @@ function plugin_appliances_MassiveActionsProcess($data) {
 
    switch ($data['action']) {
       case "plugin_appliances_add_item" :
-         $PluginItem = new PluginAppliancesAppliance_Item();
-         foreach ($data["items"] as $key => $val) {
-            if ($val == 1) {
-               $input = array('appliances_id' => $data['conID'],
-                              'items_id'      => $key,
-                              'itemtype'      => $data['itemtype']);
-               if ($PluginItem->can(-1,'w',$input)) {
-                  $PluginItem->add($input);
-               }
-            }
-         }
-         break;
-
-      case "plugin_appliances_install" :
-         if ($data['itemtype'] == 'PluginAppliancesAppliance') {
+         if (in_array($data['itemtype'],PluginAppliancesAppliance::getTypes())) {
             $PluginItem = new PluginAppliancesAppliance_Item();
-            foreach ($data["items"] as $key => $val) {
+            foreach ($data["item"] as $key => $val) {
                if ($val == 1) {
-                  $input = array('appliances_id' => $key,
-                                 'items_id'      => $data["item_item"],
+                  $input = array('plugin_appliances_appliances_id' => $data['plugin_appliances_appliances_id'],
+                                 'items_id'      => $key,
                                  'itemtype'      => $data['itemtype']);
                   if ($PluginItem->can(-1,'w',$input)) {
                      $PluginItem->add($input);
@@ -412,13 +398,29 @@ function plugin_appliances_MassiveActionsProcess($data) {
          }
          break;
 
+      case "plugin_appliances_install" :
+         if (in_array($data['itemtype'],PluginAppliancesAppliance::getTypes())) {
+            $PluginItem = new PluginAppliancesAppliance_Item();
+            foreach ($data["item"] as $key => $val) {
+               if ($val == 1) {
+                  $input = array('plugin_appliances_appliances_id' => $key,
+                                 'items_id'      => $data["item_item"],
+                                 'itemtype'      => $data['itemtype']);
+                  if ($PluginItem->can(-1,'w',$input)) {
+                     $newid = $PluginItem->add($input);
+                  }
+               }
+            }
+         }
+         break;
+
       case "plugin_appliances_desinstall" :
-         if ($data['itemtype'] == 'PluginAppliancesAppliance') {
-            foreach ($data["items_id"] as $key => $val) {
+         if (in_array($data['itemtype'],PluginAppliancesAppliance::getTypes())) {
+            foreach ($data["item"] as $key => $val) {
                if ($val == 1) {
                   $query = "DELETE
                             FROM `glpi_plugin_appliances_appliances_items`
-                            WHERE `itemtype` = '".$data['plugin_appliances_appliancetypes_id']."'
+                            WHERE `itemtype` = '".$data['itemtype']."'
                                   AND `items_id` = '".$data['item_item']."'
                                   AND `plugin_appliances_appliances_id` = '$key'";
                   $DB->query($query);
