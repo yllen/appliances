@@ -1225,13 +1225,15 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       // TODO : add more fields
       if (isset ($params['help'])) {
-         return array(  'help'                                 => 'bool,optional',
-                        'entities_id'                          => 'integer,optional',
-                        'is_helpdesk_visible'                  => 'bool,optional',
-                        'is_recursive'                         => 'bool,optional',
-                        'name'                                 => 'string',
-                        'plugin_appliances_appliancetypes_id'  => 'string,optional',
-                        'externalid'                           => 'string,optional');
+         return array(  'help'                                  => 'bool,optional',
+                        'name'                                  => 'string',
+                        'entities_id'                           => 'integer,optional',
+                        'is_helpdesk_visible'                   => 'bool,optional',
+                        'is_recursive'                          => 'bool,optional',
+                        'comment'                               => 'string,optional',
+                        'externalid'                            => 'string,optional',
+                        'plugin_appliances_appliancetypes_id'   => 'string,optional',
+                        'plugin_appliances_appliancetypes_name' => 'string,optional');
       }
       if (!isset($_SESSION['glpiID'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
@@ -1253,10 +1255,21 @@ class PluginAppliancesAppliance extends CommonDBTM {
       } else {
          $input['entities_id'] = $_SESSION["glpiactive_entity"];
       }
+      if (isset($params['is_recursive'])) {
+         // TODO check if canUnrecurs
+         $input['is_recursive'] = ($params['is_recursive'] ? 1 : 0);
+      }
       if (isset($params['externalid']) && !empty($params['externalid'])) {
          $input['externalid'] = addslashes($params['externalid']);
       }
-      if (isset($params['plugin_appliances_appliancetypes_id'])) {
+      if (isset($params['plugin_appliances_appliancetypes_name'])) {
+         $type = new PluginAppliancesApplianceType();
+         $input2 = array();
+         $input2['entities_id']  = $input['entities_id'];
+         $input2['is_recursive'] = $input['is_recursive'];
+         $input2['name']         = addslashes($params['plugin_appliances_appliancetypes_name']);
+         $input['plugin_appliances_appliancetypes_id'] = $type->import($input2);
+      } else if (isset($params['plugin_appliances_appliancetypes_id'])) {
          // TODO check if this id exists and is readable and is available in appliance entity
          $input['plugin_appliances_appliancetypes_id'] = intval($params['plugin_appliances_appliancetypes_id']);
 
@@ -1265,9 +1278,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if (isset($params['is_helpdesk_visible'])) {
          $input['is_helpdesk_visible'] = ($params['is_helpdesk_visible'] ? 1 : 0);
       }
-      if (isset($params['is_recursive'])) {
-         // TODO check if canUnrecurs
-         $input['is_recursive'] = ($params['is_recursive'] ? 1 : 0);
+   if (isset($params['comment'])) {
+         $input['comment'] = addslashes($params['comment']);
       }
       $appliance = new self();
       if (!$appliance->can(-1, 'w', $input)) {
