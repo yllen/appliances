@@ -141,7 +141,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   plugin_appliances_checkRight("appliance","r");
+   $PluginAppliances->checkGlobal('r');
    if (!isset($_SESSION['glpi_tab'])) {
       $_SESSION['glpi_tab'] = 1;
    }

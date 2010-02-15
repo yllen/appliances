@@ -173,17 +173,4 @@ function plugin_appliances_haveRight($module,$right) {
    return false;
 }
 
-function plugin_appliances_checkRight($module, $right) {
-   global $CFG_GLPI;
-
-   if (!plugin_appliances_haveRight($module, $right)) {
-      // Gestion timeout session
-      if (!isset ($_SESSION["glpiID"])) {
-         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-         exit ();
-      }
-      displayRightError();
-   }
-}
-
 ?>
