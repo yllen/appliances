@@ -1013,9 +1013,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
    /**
     * Type than could be linked to a Appliance
     *
+    * @param $all boolean, all type, or only allowed ones
+    *
     * @return array of types
     */
-   static function getTypes () {
+   static function getTypes ($all=false) {
 
       static $types = array('Computer', 'Printer', 'Monitor', 'Peripheral', 'NetworkEquipment',
                             'Phone', 'Software');
@@ -1025,6 +1027,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if ($plugin->isActivated("rack")) {
          $types[] = 'PluginRacksRack';
       }
+      if ($all) {
+         return $types;
+      }
+      // Only allowed types
       foreach ($types as $key=>$type) {
          if (!class_exists($type)) {
             continue;

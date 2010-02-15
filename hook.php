@@ -198,7 +198,7 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
 
    $sopt = array();
    if (plugin_appliances_haveRight("appliance","r")) {
-      if (in_array($itemtype, PluginAppliancesAppliance::getTypes())) {
+      if (in_array($itemtype, PluginAppliancesAppliance::getTypes(true))) {
          $sopt[1210]['table']         = 'glpi_plugin_appliances_appliances';
          $sopt[1210]['field']         = 'name';
          $sopt[1210]['linkfield']     = '';
@@ -332,7 +332,7 @@ function plugin_appliances_MassiveActions($type) {
                       'plugin_appliances_transfert'  => $LANG['buttons'][48]);
 
       default :
-         if (in_array($type, PluginAppliancesAppliance::getTypes())) {
+         if (in_array($type, PluginAppliancesAppliance::getTypes(true))) {
             return array("plugin_appliances_add_item" => $LANG['plugin_appliances']['setup'][13]);
          }
    }
@@ -368,7 +368,7 @@ function plugin_appliances_MassiveActionsDisplay($options) {
          break;
 
       default :
-         if (in_array($options['itemtype'], PluginAppliancesAppliance::getTypes())) {
+         if (in_array($options['itemtype'], PluginAppliancesAppliance::getTypes(true))) {
             PluginAppliancesAppliance::dropdown();
             echo "<input type='submit' name='massiveaction' class='submit\' ".
                   "value='".$LANG['buttons'][2]."'>";
@@ -471,7 +471,7 @@ function plugin_pre_item_purge_appliances($item) {
 function plugin_item_purge_appliances($item) {
 
    $type = get_class($item);
-   if (in_array($type, PluginAppliancesAppliance::getTypes())
+   if (in_array($type, PluginAppliancesAppliance::getTypes(true))
        || $type == 'Ticket') {
 
       $temp = new PluginAppliancesAppliance_Item();
@@ -496,7 +496,7 @@ function plugin_get_headings_appliances($item,$withtemplate) {
       if ($item->getField('id')) {
          return array(1 => $LANG['plugin_appliances']['title'][1]);
       }
-   } else if (in_array($type, PluginAppliancesAppliance::getTypes())) {
+   } else if (in_array($type, PluginAppliancesAppliance::getTypes(true))) {
       if (!$withtemplate) {
          // Non template case
          return array(1 => $LANG['plugin_appliances']['title'][1]);
@@ -513,7 +513,7 @@ function plugin_headings_actions_appliances($item) {
    if ($type == 'Profile') {
       return array(1 => "plugin_headings_appliances");
    }
-   if (in_array($type,PluginAppliancesAppliance::getTypes())) {
+   if (in_array($type,PluginAppliancesAppliance::getTypes(true))) {
       return array(1 => array('PluginAppliancesAppliance','showAssociated'));
    }
    return false;
@@ -542,7 +542,7 @@ function plugin_headings_appliances($item,$withtemplate=0) {
 
 // Define PDF informations added by the plugin
 function plugin_headings_actionpdf_appliances($item) {
-   if (in_array(get_class($item),PluginAppliancesAppliance::getTypes())) {
+   if (in_array(get_class($item),PluginAppliancesAppliance::getTypes(true))) {
       return array(1 => array('PluginAppliancesAppliance', 'showAssociated_PDF'));
    }
    return false;

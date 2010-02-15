@@ -69,7 +69,7 @@ function plugin_init_appliances() {
    $PLUGIN_HOOKS['pre_item_purge']['appliances'] = array('Profile'=>'plugin_pre_item_purge_appliances');
 
    $PLUGIN_HOOKS['item_purge']['appliances'] = array();
-   foreach (PluginAppliancesAppliance::getTypes() as $type) {
+   foreach (PluginAppliancesAppliance::getTypes(true) as $type) {
       $PLUGIN_HOOKS['item_purge']['appliances'][$type] = 'plugin_item_purge_appliances';
    }
 
