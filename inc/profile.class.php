@@ -41,8 +41,9 @@ class PluginAppliancesProfile extends CommonDBTM {
 
 
    //if profile deleted
-   function cleanProfiles($ID) {
-      $this->delete(array('id'=>$ID));
+   static function cleanProfiles(Profile $prof) {
+      $plugprof = new self();
+      $plugprof->delete(array('id'=>$prof->getField("id")));
    }
 
    static function select() {

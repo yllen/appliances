@@ -452,20 +452,6 @@ function plugin_appliances_MassiveActionsProcess($data) {
 
 //////////////////////////////
 
-// Hook done on delete item case
-
-function plugin_pre_item_purge_appliances($item) {
-
-   switch (get_class($item)) {
-      case 'Profile' :
-         // Manipulate data if needed
-         $PluginAppliancesProfile = new PluginAppliancesProfile;
-         $PluginAppliancesProfile->cleanProfiles($item->getField("id"));
-         break;
-   }
-   return $item;
-}
-
 
 // Hook done on purge item case
 function plugin_item_purge_appliances($item) {
