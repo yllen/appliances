@@ -135,6 +135,7 @@ function plugin_version_appliances() {
 
    return array('name'           => $LANG['plugin_appliances']['title'][1],
                 'version'        => '1.6.0',
+                'oldname' => 'applicatifs',
                 'author'         => 'Remi Collet, Xavier Caillaud, Nelly Lasson',
                 'homepage'       => 'https://forge.indepnet.net/projects/show/appliances',
                 'minGlpiVersion' => '0.80');
