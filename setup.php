@@ -138,15 +138,15 @@ function plugin_version_appliances() {
                 'oldname' => 'applicatifs',
                 'author'         => 'Remi Collet, Xavier Caillaud, Nelly Lasson',
                 'homepage'       => 'https://forge.indepnet.net/projects/show/appliances',
-                'minGlpiVersion' => '0.80');
+                'minGlpiVersion' => '0.78');
 }
 
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_appliances_check_prerequisites() {
 
-   if (GLPI_VERSION < 0.80) {
-      echo "GLPI version not compatible need 0.80";
+   if (GLPI_VERSION < 0.78) {
+      echo "GLPI version not compatible need 0.78";
    } else {
       return true;
    }
