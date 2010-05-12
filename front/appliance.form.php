@@ -106,8 +106,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["add_opt_val"])){
    $PluginAppliances->check($_POST['plugin_appliances_appliances_id'],'r');
    $item = new $_POST['itemtype']();
-   $item->getTypeName;
-   $temp->check($_POST['items_id'],'w');
+   $item->check($_POST['items_id'],'w');
 
    $OptvalueItem = new PluginAppliancesOptvalue_Item();
    $OptvalueItem->updateList($_POST);
