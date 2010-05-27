@@ -534,119 +534,6 @@ function plugin_headings_actionpdf_appliances($item) {
    return false;
 }
 
-
-/* TODO : A revoir avec data injection quand il sera porte en 0.80
-function plugin_appliances_data_injection_variables() {
-   global $IMPORT_PRIMARY_TYPES, $DATA_INJECTION_MAPPING, $LANG, $IMPORT_TYPES,
-          $DATA_INJECTION_INFOS;
-
-   if (plugin_appliances_haveRight("appliances","w")) {
-      if (!in_array(PLUGIN_APPLIANCES_TYPE, $IMPORT_PRIMARY_TYPES)) {
-         //Add types of objects to be injected by data_injection plugin
-         array_push($IMPORT_PRIMARY_TYPES, PLUGIN_APPLIANCES_TYPE);
-
-
-
-         $DATA_INJECTION_MAPPING[PLUGIN_APPLIANCES_TYPE]['name']['table'] = 'glpi_plugin_applicatifs';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLIANCES_TYPE]['name']['field'] = 'name';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLIANCES_TYPE]['name']['name'] = $LANG['plugin_applicatifs'][8];
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLIANCES_TYPE]['name']['type'] = "text";
-
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['table'] = 'glpi_dropdown_plugin_applicatifs_type';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['field'] = 'name';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['linkfield'] = 'type';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['name'] = $LANG['plugin_applicatifs'][20];
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['type'] = "text";
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['table_type'] = "dropdown";
-
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['table'] = 'glpi_dropdown_plugin_applicatifs_environment';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['field'] = 'name';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['linkfield'] = 'environment';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['name'] = $LANG['plugin_applicatifs'][3];
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['type'] = "text";
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['type']['table_type'] = "dropdown";
-
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_users']['table'] = 'glpi_users';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_users']['field'] = 'name';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_users']['linkfield'] = 'FK_users';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_users']['name'] = $LANG['plugin_applicatifs'][21];
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_users']['type'] = "text";
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_users']['table_type'] = "user";
-
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['table'] = 'glpi_groups';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['field'] = 'name';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['linkfield'] = 'FK_groups';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['name'] = $LANG['common'][35];
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['type'] = "text";
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['table_type'] = "single";
-
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['location']['table'] = 'glpi_dropdown_locations';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['location']['field'] = 'completename';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['location']['linkfield'] = 'location';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['location']['name'] = $LANG['plugin_applicatifs'][2];
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['location']['type'] = "text";
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['location']['table_type'] = "dropdown";
-
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['comments']['table'] = 'glpi_plugin_applicatifs';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['comments']['field'] = 'comments';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['comments']['name'] = $LANG['plugin_applicatifs'][12];
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['comments']['type'] = "text";
-
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['recursive']['table'] = 'glpi_plugin_applicatifs';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['recursive']['field'] = 'recursive';
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['recursive']['name'] = $LANG["entity"][9];
-			$DATA_INJECTION_MAPPING[PLUGIN_APPLICATIFS_TYPE]['recursive']['type'] = 'integer';
-
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['table'] = 'glpi_dropdown_plugin_applicatifs_type';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['field'] = 'name';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['linkfield'] = 'type';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['name'] = $LANG['plugin_applicatifs'][20];
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['type'] = "text";
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['table_type'] = "dropdown";
-
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['table'] = 'glpi_dropdown_plugin_applicatifs_environment';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['field'] = 'name';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['linkfield'] = 'environment';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['name'] = $LANG['plugin_applicatifs'][3];
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['type'] = "text";
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['type']['table_type'] = "dropdown";
-
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_users']['table'] = 'glpi_users';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_users']['field'] = 'name';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_users']['linkfield'] = 'FK_users';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_users']['name'] = $LANG['plugin_applicatifs'][21];
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_users']['type'] = "text";
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_users']['table_type'] = "user";
-
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['table'] = 'glpi_groups';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['field'] = 'name';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['linkfield'] = 'FK_groups';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['name'] = $LANG['common'][35];
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['type'] = "text";
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['FK_groups']['input_type'] = "single";
-
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['location']['table'] = 'glpi_dropdown_locations';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['location']['field'] = 'completename';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['location']['linkfield'] = 'location';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['location']['name'] = $LANG['plugin_applicatifs'][2];
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['location']['type'] = "text";
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['location']['table_type'] = "dropdown";
-
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['comments']['table'] = 'glpi_plugin_applicatifs';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['comments']['field'] = 'comments';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['comments']['name'] = $LANG['plugin_applicatifs'][12];
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['comments']['type'] = "text";
-
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['recursive']['table'] = 'glpi_plugin_applicatifs';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['recursive']['field'] = 'recursive';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['recursive']['name'] = $LANG["entity"][9];
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['recursive']['type'] = 'integer';
-			$DATA_INJECTION_INFOS[PLUGIN_APPLICATIFS_TYPE]['recursive']['input_type'] = 'yesno';
-		}
-	}
-}
-*/
-
 /**
  * Hook : options for one type
  *
@@ -738,4 +625,8 @@ function plugin_appliances_generatePDF($options) {
    $pdf->render();
 }
 
+function plugin_datainjection_populate() {
+   global $INJECTABLE_TYPES;
+   $INJECTABLE_TYPES['PluginAppliancesApplianceInjection'] = 'appliances';
+}
 ?>
