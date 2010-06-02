@@ -199,9 +199,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[30]['field']     = 'id';
       $tab[30]['linkfield'] = '';
       $tab[30]['name']      = $LANG['common'][2];
-      $tab[30]['displaytype']  = 'dropdown';
-      $tab[30]['checktype']  = 'text';
-      $tab[30]['injectable']  = true;
+      $tab[30]['injectable']  = false;
 
       $tab[80]['table']     = 'glpi_entities';
       $tab[80]['field']     = 'completename';

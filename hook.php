@@ -625,7 +625,7 @@ function plugin_appliances_generatePDF($options) {
    $pdf->render();
 }
 
-function plugin_datainjection_populate() {
+function plugin_datainjection_populate_appliances() {
    global $INJECTABLE_TYPES;
    $INJECTABLE_TYPES['PluginAppliancesApplianceInjection'] = 'appliances';
 }
