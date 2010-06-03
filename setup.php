@@ -63,6 +63,8 @@ function plugin_init_appliances() {
    // - plugin_appliances_generatePDF($type, $tab_id, $tab, $page=0)
    $PLUGIN_HOOKS['plugin_pdf']['PluginAppliancesAppliance'] = 'appliances';
 
+   $PLUGIN_HOOKS['migratetypes']['appliances'] = 'plugin_datainjection_migratetypes_appliances';
+
    $PLUGIN_HOOKS['change_profile']['appliances']   = array('PluginAppliancesProfile','select');
    $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
 
@@ -173,6 +175,11 @@ function plugin_appliances_haveRight($module,$right) {
       return true;
    }
    return false;
+}
+
+function plugin_datainjection_migratetypes_appliances($types) {
+   $types[1200] = 'PluginAppliancesAppliance';
+   return $types;
 }
 
 ?>
