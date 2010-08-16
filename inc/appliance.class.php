@@ -1063,7 +1063,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       // temporary disabled TRACKING_TYPE,
 
       $plugin = new Plugin();
-      if ($plugin->isActivated("rack")) {
+      if ($plugin->isActivated("racks")) {
          $types[] = 'PluginRacksRack';
       }
       if ($all) {
