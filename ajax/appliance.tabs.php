@@ -73,7 +73,7 @@ if ($_POST["id"] >0
          break;
 
       case 6 :
-         Ticket::showListForItem('PluginAppliancesAppliance',$_POST["id"]);
+         Ticket::showListForItem('PluginAppliancesAppliance', $_POST["id"], 31);
          break;
 
       case 9 :
