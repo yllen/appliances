@@ -44,6 +44,7 @@ function plugin_init_appliances() {
                                'infocom_types'          => true,
                                'doc_types'              => true,
                                'contract_types'         => true,
+                               'helpdesk_types'         => true,
                                'helpdesk_visible_types' => true));
 
    Plugin::registerClass('PluginAppliancesEnvironment');
