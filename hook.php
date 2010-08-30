@@ -143,18 +143,10 @@ function plugin_appliances_uninstall() {
              WHERE `itemtype` = 'PluginAppliancesAppliance'";
    $DB->query($query);
 
-   if (TableExists("glpi_plugin_data_injection_models")) {
-      $DB->query("DELETE
-                  FROM `glpi_plugin_data_injection_models`,
-                       `glpi_plugin_data_injection_mappings`,
-                       `glpi_plugin_data_injection_infos`
-                  USING `glpi_plugin_data_injection_models`,
-                        `glpi_plugin_data_injection_mappings`,
-                        `glpi_plugin_data_injection_infos`
-                  WHERE `glpi_plugin_data_injection_models`.`device_type` = 'PluginAppliancesAppliance'
-                        AND `glpi_plugin_data_injection_mappings`.`model_id` = `glpi_plugin_data_injection_models`.`ID`
-                        AND `glpi_plugin_data_injection_infos`.`model_id` = `glpi_plugin_data_injection_models`.`ID`");
+   if (class_exists('PluginDatainjectionModel')) {
+      PluginDatainjectionModel::clean(array('itemtype'=>'PluginAppliancesAppliance'));
    }
+
    return true;
 }
 
