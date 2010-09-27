@@ -215,10 +215,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
    function cleanDBonPurge() {
 
       $temp = new PluginAppliancesAppliance_Item();
-      $temp->clean(array('plugin_appliances_appliances_id' => $this->fields['id']));
+      $temp->deleteByCriteria(array('plugin_appliances_appliances_id' => $this->fields['id']));
 
       $temp = new PluginAppliancesOptvalue();
-      $temp->clean(array('plugin_appliances_appliances_id' => $this->fields['id']));
+      $temp->deleteByCriteria(array('plugin_appliances_appliances_id' => $this->fields['id']));
    }
 
    function defineTabs($options=array()) {

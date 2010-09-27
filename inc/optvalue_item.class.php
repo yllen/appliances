@@ -41,18 +41,6 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
 
 
    /**
-    * Clean object veryfing criteria (when a relation is deleted)
-    *
-    * @param $crit array of criteria (should be an index)
-    */
-   public function clean ($crit) {
-      global $DB;
-
-      foreach ($DB->request($this->getTable(), $crit) as $data) {
-         $this->delete($data);
-      }
-   }
-   /**
     * Show the optional values for a item / applicatif
     *
     * @param $itemtype type of the item

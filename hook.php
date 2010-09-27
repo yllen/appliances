@@ -144,7 +144,8 @@ function plugin_appliances_uninstall() {
    $DB->query($query);
 
    if (class_exists('PluginDatainjectionModel')) {
-      PluginDatainjectionModel::clean(array('itemtype'=>'PluginAppliancesAppliance'));
+      $temp = new PluginDatainjectionModel();
+      $temp->deleteByCriteria(array('itemtype'=>'PluginAppliancesAppliance'));
    }
 
    return true;
@@ -453,12 +454,12 @@ function plugin_item_purge_appliances($item) {
        || $type == 'Ticket') {
 
       $temp = new PluginAppliancesAppliance_Item();
-      $temp->clean(array('itemtype' => $type,
-                         'items_id' => $item->getField('id')));
+      $temp->deleteByCriteria(array('itemtype' => $type,
+                                    'items_id' => $item->getField('id')));
 
       $temp = new PluginAppliancesOptvalue_Item();
-      $temp->clean(array('itemtype' => $type,
-                         'items_id' => $item->getField('id')));
+      $temp->deleteByCriteria(array('itemtype' => $type,
+                                    'items_id' => $item->getField('id')));
       return true;
    }
    return false;
