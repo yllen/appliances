@@ -1098,6 +1098,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       if (isset ($params['help'])) {
          return array(  'help'      => 'bool,optional',
+                        'id2name'   => 'bool,optional',
                         'count'     => 'bool,optional',
                         'start'     => 'integer,optional',
                         'limit'     => 'integer,optional' );
@@ -1153,16 +1154,29 @@ class PluginAppliancesAppliance extends CommonDBTM {
          }
       }else {
          $where="";
-         // TODO review list of fields (should be minimal)
-         $query = "SELECT `glpi_plugin_appliances_appliances`.*
-                   FROM `glpi_plugin_appliances_appliances`
-                   $where
-                   ORDER BY $order
-                   LIMIT $start,$limit";
+         if (isset ($params['id2name'])) {
+            // TODO : users_name and groups_name ?
+            $query = "SELECT `glpi_plugin_appliances_appliances`.*,
+                             `glpi_plugin_appliances_appliancetypes`.`name` AS plugin_appliances_appliancetypes_name,
+                             `glpi_plugin_appliances_environments`.`name` AS plugin_appliances_environments_name
+                      FROM `glpi_plugin_appliances_appliances`
+                      LEFT JOIN `glpi_plugin_appliances_appliancetypes`
+                           ON `glpi_plugin_appliances_appliancetypes`.`id`=`glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`
+                      LEFT JOIN `glpi_plugin_appliances_environments`
+                           ON `glpi_plugin_appliances_environments`.`id`=`glpi_plugin_appliances_appliances`.`plugin_appliances_environments_id`
+                      $where
+                      ORDER BY $order
+                      LIMIT $start,$limit";
+         } else {
+            // TODO review list of fields (should probably be minimal, or configurable)
+            $query = "SELECT `glpi_plugin_appliances_appliances`.*
+                      FROM `glpi_plugin_appliances_appliances`
+                      $where
+                      ORDER BY $order
+                      LIMIT $start,$limit";
+         }
           foreach ($DB->request($query) as $data) {
              $resp[] = $data;
-
-             // TODO : handle id2name
           }
       }
       return $resp;
@@ -1207,7 +1221,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         'is_helpdesk_visible'                  => 'bool,optional',
                         'is_recursive'                         => 'bool,optional',
                         'name'                                 => 'string,optional',
-                        'plugin_appliances_appliancetypes_id'  => 'string,optional',
+                        'plugin_appliances_appliancetypes_id'  => 'integer,optional',
+                        'plugin_appliances_appliancetypes_name'=> 'string,optional',
                          'externalid'                          => 'string,optional',
                         'id'                                   => 'string' );
       }
@@ -1224,6 +1239,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_recursive');
       }
       $id = intval($params['id']);
+      $appliance = new self();
+      if (!$appliance->can($id, 'w')) {
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
+      }
       $input = array('id' => $id);
       if (isset($params['name'])) {
          $input['name'] = addslashes($params['name']);
@@ -1241,12 +1260,17 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if (isset($params['is_recursive'])) {
          $input['is_recursive'] = ($params['is_recursive'] ? 1 : 0);
       }
-      if (isset($params['plugin_appliances_appliancetypes_id'])) {
+      if (isset($params['plugin_appliances_appliancetypes_name'])) {
+         $type = new PluginAppliancesApplianceType();
+         $input2 = array();
+         $input2['entities_id']
+            = (isset($input['entities_id']) ? $input['entities_id'] : $appliance->fields['entities_id']);
+         $input2['is_recursive']
+            = (isset($input['is_recursive']) ? $input['is_recursive'] : $appliance->fields['entities_id']);
+         $input2['name']         = addslashes($params['plugin_appliances_appliancetypes_name']);
+         $input['plugin_appliances_appliancetypes_id'] = $type->import($input2);
+      } else if (isset($params['plugin_appliances_appliancetypes_id'])) {
          $input['plugin_appliances_appliancetypes_id'] = intval($params['plugin_appliances_appliancetypes_id']);
-      }
-      $appliance = new self();
-      if (!$appliance->can($id, 'w')) {
-         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
       if ($appliance->update($input)) {
          // Does not detect unicity error on externalid :(
@@ -1267,7 +1291,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         'is_recursive'                          => 'bool,optional',
                         'comment'                               => 'string,optional',
                         'externalid'                            => 'string,optional',
-                        'plugin_appliances_appliancetypes_id'   => 'string,optional',
+                        'plugin_appliances_appliancetypes_id'   => 'integer,optional',
                         'plugin_appliances_appliancetypes_name' => 'string,optional');
       }
       if (!isset($_SESSION['glpiID'])) {
@@ -1307,8 +1331,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
       } else if (isset($params['plugin_appliances_appliancetypes_id'])) {
          // TODO check if this id exists and is readable and is available in appliance entity
          $input['plugin_appliances_appliancetypes_id'] = intval($params['plugin_appliances_appliancetypes_id']);
-
-         // TODO allow option plugin_appliances_appliancetypes_name, use PluginAppliancesApplianceType->import()
       }
       if (isset($params['is_helpdesk_visible'])) {
          $input['is_helpdesk_visible'] = ($params['is_helpdesk_visible'] ? 1 : 0);
@@ -1333,6 +1355,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       if (isset ($params['help'])) {
          return array(  'help'               => 'bool,optional',
+                        'id2name'            => 'bool,optional',
                         'externalid OR id'   => 'string' );
       }
       if (!isset($_SESSION['glpiID'])) {
@@ -1352,8 +1375,18 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if (!$found || !$appli->can($appli->fields["id"],'r')) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTFOUND);
       }
-      // TODO manage id2name option
-      return $appli->fields;
+      $resp = $appli->fields;
+      if (isset($params['id2name'])) {
+         $resp['plugin_appliances_appliancetypes_name']
+            = html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes', $resp['plugin_appliances_appliancetypes_id']));
+         $resp['plugin_appliances_environments_name']
+            = html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments', $resp['plugin_appliances_environments_id']));
+         $resp['users_name']
+            = html_clean(Dropdown::getDropdownName('glpi_users', $resp['users_id']));
+         $resp['groups_name']
+            = html_clean(Dropdown::getDropdownName('glpi_groups', $resp['groups_id']));
+      }
+      return $resp;
    }
 }
 
