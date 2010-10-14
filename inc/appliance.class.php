@@ -1254,6 +1254,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
             $input['externalid'] = addslashes($params['externalid']);
          }
       }
+      foreach (array('comment', 'notes', 'serial', 'otherserial') as $field) {
+         if (isset($params[$field])) {
+            $input[$field] = addslashes($params[$field]);
+         }
+      }
       if (isset($params['is_helpdesk_visible'])) {
          $input['is_helpdesk_visible'] = ($params['is_helpdesk_visible'] ? 1 : 0);
       }
@@ -1335,8 +1340,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if (isset($params['is_helpdesk_visible'])) {
          $input['is_helpdesk_visible'] = ($params['is_helpdesk_visible'] ? 1 : 0);
       }
-   if (isset($params['comment'])) {
-         $input['comment'] = addslashes($params['comment']);
+      foreach (array('comment', 'notes', 'serial', 'otherserial') as $field) {
+         if (isset($params[$field])) {
+            $input[$field] = addslashes($params[$field]);
+         }
       }
       $appliance = new self();
       if (!$appliance->can(-1, 'w', $input)) {
