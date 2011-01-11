@@ -59,7 +59,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                         ORDER BY `vvalues`";
 
       $result_app_opt = $DB->query($query_app_opt);
-      $number_champs = $DB->numrows($result_app_opt);
+      $number_champs  = $DB->numrows($result_app_opt);
 
       if ($canedit)  {
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
@@ -76,8 +76,8 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                                 AND `items_id` = '$items_id'";
 
             $result_val = $DB->query($query_val);
-            $data_val = $DB->fetch_array($result_val);
-            $vvalue = ($data_val ? $data_val['vvalue'] : "");
+            $data_val   = $DB->fetch_array($result_val);
+            $vvalue     = ($data_val ? $data_val['vvalue'] : "");
             if (empty($vvalue) && !empty($data_opt['ddefault'])) {
                $vvalue = $data_opt['ddefault'];
             }
@@ -91,6 +91,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                echo $vvalue;
             }
             echo "</td></tr>";
+
          } else {
             echo "<input type='hidden' name='opt_id$i' value='-1'>";
          }
@@ -107,6 +108,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
          echo "</form>";
       }
    }
+
 
    /**
     * Show for PDF the optional value for a device / applicatif
@@ -152,6 +154,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
       $pdf->displayLine("<b><i>".$LANG['plugin_appliances'][24]." : </i></b>".implode(', ',$opts));
    }
 
+
    /**
     * Update to optional values for an appliance / item
     *
@@ -162,8 +165,8 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
 
       $number_champs = $input["number_champs"];
       for ($i=1 ; $i<=$number_champs ; $i++) {
-         $opt_id = "opt_id$i";
-         $vvalue = "vvalue$i";
+         $opt_id   = "opt_id$i";
+         $vvalue   = "vvalue$i";
          $ddefault = "ddefault$i";
 
          $query_app = "SELECT `id`
@@ -182,14 +185,15 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                $data['vvalue'] = $input[$vvalue];
                $this->update($data);
             }
+
          } else if (!empty($input[$vvalue])
                     && $input[$vvalue] != $input[$ddefault]) {
             // l'entrée n'existe pas
             // et la valeur saisie est non nulle -> on fait un insert
             $data = array('plugin_appliances_optvalues_id' => $input[$opt_id],
-                          'itemtype'     => $input['itemtype'],
-                          'items_id'     => $input['items_id'],
-                          'vvalue'       => $input[$vvalue]);
+                          'itemtype'                       => $input['itemtype'],
+                          'items_id'                       => $input['items_id'],
+                          'vvalue'                         => $input[$vvalue]);
             $this->add($data);
          }
       } // For

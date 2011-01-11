@@ -65,6 +65,7 @@ class PluginAppliancesRelation extends CommonDBTM {
       return $name;
    }
 
+
    static function getItemType ($value) {
 
       switch ($value) {
@@ -85,6 +86,7 @@ class PluginAppliancesRelation extends CommonDBTM {
       }
       return $name;
    }
+
 
    static function getTypeName($value=0) {
       global $LANG;
@@ -108,15 +110,17 @@ class PluginAppliancesRelation extends CommonDBTM {
       return $name;
    }
 
-   static function dropdownType($myname,$value=0) {
+
+   static function dropdownType($myname, $value=0) {
       global $LANG;
 
       Dropdown::showFromArray($myname, array (0 => DROPDOWN_EMPTY_VALUE,
-                                               1 => $LANG['common'][15],  // Location
-                                               2 => $LANG['setup'][88],   // Réseau
-                                               3 => $LANG['setup'][89]),  // Domain
+                                              1 => $LANG['common'][15],  // Location
+                                              2 => $LANG['setup'][88],   // Réseau
+                                              3 => $LANG['setup'][89]),  // Domain
                               array ('value' => $value));
    }
+
 
    /**
     * Show the relation for a device/applicatif
@@ -129,10 +133,9 @@ class PluginAppliancesRelation extends CommonDBTM {
     * @param $canedit, if user is allowed to edit the relation
     *    - canedit the device if called from the device form
     *    - must be false if called from the applicatif form
-    *
-    */
+   **/
    static function showList ($relationtype, $relID, $entity, $canedit) {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
       if (!$relationtype) {
          return false;
@@ -140,7 +143,7 @@ class PluginAppliancesRelation extends CommonDBTM {
 
       // selects all the attached relations
       $itemtype = PluginAppliancesRelation::getItemType($relationtype);
-      $title = PluginAppliancesRelation::getTypeName($relationtype);
+      $title    = PluginAppliancesRelation::getTypeName($relationtype);
 
       if ($itemtype == 'Location') {
          $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
@@ -152,10 +155,11 @@ class PluginAppliancesRelation extends CommonDBTM {
       $sql_loc .= "FROM `".getTableForItemType($itemtype)."` ,
                         `glpi_plugin_appliances_relations`,
                         `glpi_plugin_appliances_appliances_items`
-                        WHERE `".getTableForItemType($itemtype)."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
-                              AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
+                   WHERE `".getTableForItemType($itemtype)."`.`id`
+                                    = `glpi_plugin_appliances_relations`.`relations_id`
+                         AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
                                     = `glpi_plugin_appliances_appliances_items`.`id`
-                              AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
+                         AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
 
       $result_loc = $DB->query($sql_loc);
       $number_loc = $DB->numrows($result_loc);
@@ -165,9 +169,9 @@ class PluginAppliancesRelation extends CommonDBTM {
                $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php'>";
          echo "<br><input type='hidden' name='deviceID' value='$relID'>";
 
-         $i = 0;
+         $i        = 0;
          $itemlist = "";
-         $used = array();
+         $used     = array();
 
          if ($number_loc >0) {
             echo "<table>";
@@ -176,7 +180,7 @@ class PluginAppliancesRelation extends CommonDBTM {
                echo "<tr><td class=top>";
                // when the value of the checkbox is changed, the corresponding hidden variable value
                // is also changed by javascript
-               echo "<input type='checkbox' name='itemrelation[" . $res["id"] . "]' value='1'></td><td>";
+               echo "<input type='checkbox' name='itemrelation[".$res["id"]. "]' value='1'></td><td>";
                echo $res["dispname"];
                echo "</td></tr>";
                $i++;
@@ -188,13 +192,13 @@ class PluginAppliancesRelation extends CommonDBTM {
 
          echo "$title&nbsp;:&nbsp;";
 
-         Dropdown::show($itemtype,
-                        array('name'   => "tablekey[" . $relID . "]",
-                              'entity' => $entity,
-                              'used'   => $used));
-         echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value='".
-               $LANG['buttons'][8]."' class='submit'><br>&nbsp;";
+         Dropdown::show($itemtype, array('name'   => "tablekey[" . $relID . "]",
+                                         'entity' => $entity,
+                                         'used'   => $used));
+         echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value=\"".$LANG['buttons'][8].
+               "\" class='submit'><br>&nbsp;";
          echo "</form>";
+
       } else if ($number_loc > 0) {
          while ($res = $DB->fetch_array($result_loc)) {
             echo $res["dispname"]."<br>";
@@ -210,10 +214,9 @@ class PluginAppliancesRelation extends CommonDBTM {
     * @param $pdf object for the output
     * @param $drelation_type : type of the relation
     * @param $relID ID of the relation
-    *
-    */
+   **/
    static function showList_PDF ($pdf, $relationtype, $relID) {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
       if (!$relationtype) {
          return false;
@@ -221,7 +224,7 @@ class PluginAppliancesRelation extends CommonDBTM {
 
       // selects all the attached relations
       $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
-      $title = PluginAppliancesRelation::getTypeName($relationtype);
+      $title     = PluginAppliancesRelation::getTypeName($relationtype);
 
       if ($tablename=='glpi_locations') {
          $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,

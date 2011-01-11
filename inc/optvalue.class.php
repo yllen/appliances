@@ -46,6 +46,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       $temp->deleteByCriteria(array('plugin_appliances_optvalues_id' => $this->fields['id']));
    }
 
+
    /**
     * Display list of Optvalues for an appliance
     *
@@ -75,7 +76,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
                     WHERE `plugin_appliances_appliances_id` = '".$appli->fields['id']."'
                     ORDER BY `vvalues`";
 
-      $result_app = $DB->query($query_app);
+      $result_app    = $DB->query($query_app);
       $number_champs = $DB->numrows($result_app);
       $number_champs++;
       for ($i=1 ; $i <= $number_champs ; $i++) {
@@ -87,6 +88,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
             $ddefault = '';
          }
          echo "<tr class='top tab_bg_1'>";
+
          if ($i == 1) {
             echo "<td rowspan='$number_champs'>".$LANG['plugin_appliances'][25]."&nbsp;:</td>";
          }
@@ -96,11 +98,14 @@ class PluginAppliancesOptvalue extends CommonDBTM {
          }
          echo "<td><input type='text' name='ddefault$i' value='$ddefault' size='35'></td></tr>\n";
       }
+
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-         echo "<input type='hidden' name='plugin_appliances_appliances_id' value='".$appli->fields['id']."'>\n";
+         echo "<input type='hidden' name='plugin_appliances_appliances_id' value='".
+                $appli->fields['id']."'>\n";
          echo "<input type='hidden' name='number_champs' value='$number_champs'>\n";
-         echo "<input type='submit' name='update_optvalues' value='".$LANG['buttons'][7]."' class='submit'>";
+         echo "<input type='submit' name='update_optvalues' value=\"".$LANG['buttons'][7]."\"
+                class='submit'>";
          echo "</td></tr>\n</table></div></form>";
       } else {
          echo "</table></div>";
@@ -108,11 +113,12 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       return true;
    }
 
+
    /**
     * Update the list of Optvalues defined for an appliance
     *
     * @param $input array of input data (form)
-    */
+   **/
    function updateList($input) {
       global $DB;
 
@@ -122,12 +128,13 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       $number_champs = $input['number_champs'];
 
       for ($i=1 ; $i<=$number_champs ; $i++) {
-         $champ = "champ$i";
+         $champ    = "champ$i";
          $ddefault = "ddefault$i";
 
          $query_app = "SELECT `id`
                        FROM `glpi_plugin_appliances_optvalues`
-                       WHERE `plugin_appliances_appliances_id` = '".$input['plugin_appliances_appliances_id']."'
+                       WHERE `plugin_appliances_appliances_id`
+                                 = '".$input['plugin_appliances_appliances_id']."'
                              AND `vvalues` = '$i'";
          $result_app = $DB->query($query_app);
 
@@ -140,13 +147,14 @@ class PluginAppliancesOptvalue extends CommonDBTM {
                $data['ddefault'] = $input[$ddefault];
                $this->update($data);
             }
+
          } else if (!empty($input[$champ])) {
             // l'entrée n'existe pas
             // et la valeur saisie est non nulle -> on fait un insert
             $data = array('plugin_appliances_appliances_id' => $input['plugin_appliances_appliances_id'],
-                          'champ'         => $input[$champ],
-                          'ddefault'      => $input[$ddefault],
-                          'vvalues'       => $i);
+                          'champ'                           => $input[$champ],
+                          'ddefault'                        => $input[$ddefault],
+                          'vvalues'                         => $i);
             $this->add($data);
          }
       } // for

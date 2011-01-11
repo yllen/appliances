@@ -31,7 +31,6 @@ $title = "Applicatifs";
 
 $LANG['plugin_appliances']['title'][1] = "Applicatifs";
 
-$LANG['plugin_appliances'][2]  = "Lieu";
 $LANG['plugin_appliances'][3]  = "Environnement";
 $LANG['plugin_appliances'][4]  = "Pas d'".$title." trouvé";
 $LANG['plugin_appliances'][7]  = "Elément(s) associé(s)";

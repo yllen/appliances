@@ -42,11 +42,14 @@ class PluginAppliancesProfile extends CommonDBTM {
 
    //if profile deleted
    static function cleanProfiles(Profile $prof) {
+
       $plugprof = new self();
-      $plugprof->delete(array('id'=>$prof->getField("id")));
+      $plugprof->delete(array('id' => $prof->getField("id")));
    }
 
+
    static function select() {
+
       $prof = new self();
       if ($prof->getFromDB($_SESSION['glpiactiveprofile']['id'])) {
          $_SESSION["glpi_plugin_appliances_profiles"] = $prof->fields;
@@ -54,6 +57,7 @@ class PluginAppliancesProfile extends CommonDBTM {
          unset($_SESSION["glpi_plugin_appliances_profiles"]);
       }
    }
+
 
    //profiles modification
    function showForm($ID, $options=array()) {
@@ -67,6 +71,7 @@ class PluginAppliancesProfile extends CommonDBTM {
       if (!haveRight("profile","r")) {
          return false;
       }
+
       $canedit = haveRight("profile","w");
       $prof = new Profile();
       if ($ID) {
@@ -83,16 +88,16 @@ class PluginAppliancesProfile extends CommonDBTM {
       echo "<td>".$LANG['plugin_appliances']['profile'][1]." :</td><td>";
 
       if ($prof->fields['interface']!='helpdesk') {
-         Profile::dropdownNoneReadWrite("appliance",$this->fields["appliance"],1,1,1);
+         Profile::dropdownNoneReadWrite("appliance", $this->fields["appliance"], 1, 1, 1);
       } else {
          echo $LANG['profiles'][12]; // No access;
       }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][352] . " - " . $LANG['plugin_appliances']['title'][1] . " :</td><td>";
+      echo "<td>".$LANG['setup'][352]." - ".$LANG['plugin_appliances']['title'][1]." : </td><td>";
       if ($prof->fields['create_ticket']) {
-         Dropdown::showYesNo("open_ticket",$this->fields["open_ticket"]);
+         Dropdown::showYesNo("open_ticket", $this->fields["open_ticket"]);
       } else {
          echo Dropdown::getYesNo(0);
       }
@@ -109,6 +114,7 @@ class PluginAppliancesProfile extends CommonDBTM {
       echo "</table></form>";
    }
 
+
    static function createAdminAccess($ID) {
 
       $myProf = new self();
@@ -123,6 +129,7 @@ class PluginAppliancesProfile extends CommonDBTM {
                             'open_ticket' => '1'));
       }
    }
+
 
    function createUserAccess($Profile) {
 

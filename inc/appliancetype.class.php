@@ -46,21 +46,26 @@ class PluginAppliancesApplianceType extends CommonDropdown {
       return $LANG['plugin_appliances']['setup'][2];
    }
 
+
    function canCreate() {
       return haveRight('entity_dropdown','w');
    }
+
 
    function canView() {
       return haveRight('entity_dropdown','r');
    }
 
+
    function prepareInputForAdd($input) {
+
       if (array_key_exists('externalid',$input) && !$input['externalid']) {
          // INSERT NULL as this value is an UNIQUE index
          unset($input['externalid']);
       }
       return $input;
    }
+
 
    static function transfer($ID, $entity) {
       global $DB;
@@ -69,14 +74,16 @@ class PluginAppliancesApplianceType extends CommonDropdown {
       if ($ID<=0 || !$temp->getFromDB($ID)) {
          return 0;
       }
+
       $query = "SELECT `id`
                 FROM `".$temp->getTable()."`
                 WHERE `entities_id` = '$entity'
-                  AND `name` = '".addslashes($temp->fields['name'])."'";
+                      AND `name` = '".addslashes($temp->fields['name'])."'";
+
       foreach ($DB->request($query) as $data) {
          return $data['id'];
       }
-      $input = $temp->fields;
+      $input                = $temp->fields;
       $input['entities_id'] = $entity;
       unset($input['id']);
       return $temp->add($input);

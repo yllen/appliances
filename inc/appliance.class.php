@@ -47,13 +47,16 @@ class PluginAppliancesAppliance extends CommonDBTM {
       return $LANG['plugin_appliances']['title'][1];
    }
 
+
    function canCreate() {
       return plugin_appliances_haveRight('appliance', 'w');
    }
 
+
    function canView() {
       return plugin_appliances_haveRight('appliance', 'r');
    }
+
 
    /**
     * Retrieve an Appliance from the database using its externalid (unique index)
@@ -81,6 +84,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       return false;
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
@@ -90,7 +94,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $tab[1]['table']         = 'glpi_plugin_appliances_appliances';
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
@@ -100,80 +103,72 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $tab[2]['table']        = 'glpi_plugin_appliances_appliancetypes';
       $tab[2]['field']        = 'name';
-      $tab[2]['linkfield']    = 'plugin_appliances_appliancetypes_id';
       $tab[2]['name']         = $LANG['common'][17];
       $tab[2]['displaytype']  = 'dropdown';
       $tab[2]['checktype']    = 'text';
       $tab[2]['injectable']   = true;
 
-      $tab[3]['table']        = 'glpi_locations';
-      $tab[3]['field']        = 'completename';
-      $tab[3]['linkfield']    = 'locations_id';
-      $tab[3]['name']         = $LANG['plugin_appliances'][2];
+      $tab += Location::getSearchOptionsToAdd();
+
       $tab[3]['displaytype']  = 'dropdown';
       $tab[3]['checktype']    = 'text';
       $tab[3]['injectable']   = true;
 
       $tab[4]['table']        = 'glpi_plugin_appliances_appliances';
       $tab[4]['field']        =  'comment';
-      $tab[4]['linkfield']    =  'comment';
       $tab[4]['name']         =  $LANG['common'][25];
       $tab[4]['datatype']     =  'text';
       $tab[4]['displaytype']  = 'multiline_text';
       $tab[4]['injectable']   = true;
 
-      $tab[5]['table']        = 'glpi_plugin_appliances_appliances_items';
-      $tab[5]['field']        = 'items_id';
-      $tab[5]['linkfield']    = '';
-      $tab[5]['name']         = $LANG['plugin_appliances'][7];
-      $tab[5]['forcegroupby'] =  true;
-      $tab[5]['injectable']   = false;
+      $tab[5]['table']         = 'glpi_plugin_appliances_appliances_items';
+      $tab[5]['field']         = 'items_id';
+      $tab[5]['name']          = $LANG['plugin_appliances'][7];
+      $tab[5]['massiveaction'] = false;
+      $tab[5]['forcegroupby']  =  true;
+      $tab[5]['injectable']    = false;
 
       $tab[6]['table']        = 'glpi_users';
       $tab[6]['field']        = 'name';
-      $tab[6]['linkfield']    = 'users_id';
       $tab[6]['name']         = $LANG['plugin_appliances'][21];
       $tab[6]['displaytype']  = 'user';
       $tab[6]['checktype']    = 'text';
       $tab[6]['injectable']   = true;
 
-      $tab[7]['table']        = 'glpi_plugin_appliances_appliances';
-      $tab[7]['field']        = 'is_recursive';
-      $tab[7]['linkfield']    = '';
-      $tab[7]['name']         = $LANG['entity'][9];
-      $tab[7]['datatype']     = 'bool';
-      $tab[7]['displaytype']  = 'bool';
-      $tab[7]['checktype']    = 'decimal';
-      $tab[7]['injectable']   = true;
+      $tab[7]['table']         = 'glpi_plugin_appliances_appliances';
+      $tab[7]['field']         = 'is_recursive';
+      $tab[7]['name']          = $LANG['entity'][9];
+      $tab[7]['massiveaction'] = false;
+      $tab[7]['datatype']      = 'bool';
+      $tab[7]['displaytype']   = 'bool';
+      $tab[7]['checktype']     = 'decimal';
+      $tab[7]['injectable']    = true;
 
       $tab[8]['table']        = 'glpi_groups';
       $tab[8]['field']        = 'name';
-      $tab[8]['linkfield']    = 'groups_id';
       $tab[8]['name']         = $LANG['common'][35];
       $tab[8]['displaytype']  = 'dropdown';
       $tab[8]['checktype']    = 'text';
       $tab[8]['injectable']   = true;
 
-      $tab[9]['table']        = 'glpi_plugin_appliances_appliances';
-      $tab[9]['field']        = 'date_mod';
-      $tab[9]['linkfield']    = 'date_mod';
-      $tab[9]['name']         = $LANG['common'][26];
-      $tab[9]['datatype']     = 'datetime';
-      $tab[9]['displaytype']  = 'date';
-      $tab[9]['checktype']    = 'date';
-      $tab[9]['injectable']   = true;
+      $tab[9]['table']         = 'glpi_plugin_appliances_appliances';
+      $tab[9]['field']         = 'date_mod';
+      $tab[9]['name']          = $LANG['common'][26];
+      $tab[9]['massiveaction'] = false;
+      $tab[9]['datatype']      = 'datetime';
+      $tab[9]['displaytype']   = 'date';
+      $tab[9]['checktype']     = 'date';
+      $tab[9]['injectable']    = true;
 
       $tab[10]['table']       = 'glpi_plugin_appliances_environments';
       $tab[10]['field']       = 'name';
-      $tab[10]['linkfield']   = 'plugin_appliances_environments_id';
       $tab[10]['name']        = $LANG['plugin_appliances'][3];
       $tab[10]['displaytype'] = 'dropdown';
       $tab[10]['checktype']   = 'text';
-      $tab[10]['injectable']     = true;
+      $tab[10]['injectable']  = true;
 
       $tab[11]['table']       = 'glpi_plugin_appliances_appliances';
       $tab[11]['field']       = 'is_helpdesk_visible';
-      $tab[11]['linkfield']   = 'is_helpdesk_visible';
       $tab[11]['name']        = $LANG['software'][46];
       $tab[11]['datatype']    = 'bool';
       $tab[11]['displaytype'] = 'bool';
@@ -182,7 +177,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $tab[12]['table']       = 'glpi_plugin_appliances_appliances';
       $tab[12]['field']       = 'serial';
-      $tab[12]['linkfield']   = 'serial';
       $tab[12]['name']        = $LANG['common'][19];
       $tab[12]['displaytype'] = 'text';
       $tab[12]['checktype']   = 'text';
@@ -190,21 +184,19 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $tab[13]['table']       = 'glpi_plugin_appliances_appliances';
       $tab[13]['field']       = 'otherserial';
-      $tab[13]['linkfield']   = 'otherserial';
       $tab[13]['name']        = $LANG['common'][20];
       $tab[13]['displaytype'] = 'text';
       $tab[13]['checktype']   = 'text';
       $tab[13]['injectable']  = true;
 
       $tab[31]['table']       = 'glpi_plugin_appliances_appliances';
-      $tab[31]['field']       = 'id';
-      $tab[31]['linkfield']   = '';
-      $tab[31]['name']        = $LANG['common'][2];
-      $tab[31]['injectable']  = false;
+      $tab[31]['field']        = 'id';
+      $tab[31]['name']         = $LANG['common'][2];
+      $tab[31]['massiveaction'] = false;
+      $tab[31]['injectable']   = false;
 
       $tab[80]['table']       = 'glpi_entities';
       $tab[80]['field']       = 'completename';
-      $tab[80]['linkfield']   = 'entities_id';
       $tab[80]['name']        = $LANG['entity'][0];
       $tab[80]['injectable']  = false;
 
@@ -220,6 +212,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $temp = new PluginAppliancesOptvalue();
       $temp->deleteByCriteria(array('plugin_appliances_appliances_id' => $this->fields['id']));
    }
+
 
    function defineTabs($options=array()) {
       global $LANG;
@@ -244,16 +237,19 @@ class PluginAppliancesAppliance extends CommonDBTM {
       return $ong;
    }
 
-   /*
+
+   /**
     * Return the SQL command to retrieve linked object
     *
     * @return a SQL command which return a set of (itemtype, items_id)
-    */
+   **/
    function getSelectLinkedItem () {
+
       return "SELECT `itemtype`, `items_id`
               FROM `glpi_plugin_appliances_appliances_items`
               WHERE `plugin_appliances_appliances_id`='" . $this->fields['id']."'";
    }
+
 
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
@@ -302,7 +298,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
                                        'entity' =>$this->fields["entities_id"]));
       } else {
-         echo Dropdown::getdropdownname("glpi_groups", $this->fields["groups_id"]);
+         echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id"]);
       }
       echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
@@ -316,7 +312,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                           'entity' => $this->fields["entities_id"]));
       } else {
-         echo Dropdown::getdropdownname("glpi_locations",$this->fields["locations_id"]);
+         echo Dropdown::getDropdownName("glpi_locations",$this->fields["locations_id"]);
       }
       echo "</td>";
       echo "<td>".$LANG['common'][20]."&nbsp;:</td>";
@@ -337,10 +333,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
       // dropdown relationtype added
       echo "<td>".$LANG['plugin_appliances'][22]."&nbsp;:</td><td>";
       if ($canedit
-          && !($ID && countElementsInTable
-                       ("glpi_plugin_appliances_relations,
-                         glpi_plugin_appliances_appliances_items",
-                        "glpi_plugin_appliances_relations.plugin_appliances_appliances_items_id
+          && !($ID
+               && countElementsInTable(array("glpi_plugin_appliances_relations",
+                                             "glpi_plugin_appliances_appliances_items"),
+                         "glpi_plugin_appliances_relations.plugin_appliances_appliances_items_id
                                  = glpi_plugin_appliances_appliances_items.id
                          AND glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id
                                  = $ID"))) {
@@ -370,11 +366,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
       return true;
    }
 
+
    /**
     * Show for PDF the current applicatif
     *
     * @param $pdf object for the output
-    */
+   **/
    function show_PDF ($pdf) {
       global $LANG, $DB;
 
@@ -432,12 +429,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $pdf->displaySpace();
    }
 
+
    /**
     * Show the Device associated with an applicatif
     *
     * Called from the applicatif form
-    *
-    */
+   **/
    function showItem() {
       global $DB,$CFG_GLPI, $LANG;
 
@@ -556,7 +553,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
                            (isset($data['deleted']) && $data['deleted']?"class='tab_bg_2_2'":"").">".
                            $name."</td>";
                      if (isMultiEntitiesMode()) {
-                        echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data['entity']).
+                        echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+                                                                             $data['entity']).
                               "</td>";
                      }
 
@@ -565,14 +563,14 @@ class PluginAppliancesAppliance extends CommonDBTM {
                            PluginAppliancesRelation::getTypeName($this->fields["relationtype"]).
                            "&nbsp;:&nbsp;";
                         PluginAppliancesRelation::showList($this->fields["relationtype"],
-                                                           $data["IDD"], $item->fields["entities_id"],
-                                                           false);
+                                                           $data["IDD"],
+                                                           $item->fields["entities_id"], false);
                         PluginAppliancesOptvalue_Item::showList($type, $data["id"], $instID, false);
                         echo "</td>";
                      }
 
-                     echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-").
-                           "</td>";
+                     echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"].""
+                                                                       :"-")."</td>";
                      echo "<td class='center'>".
                            (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
                      echo "</tr>";
@@ -603,6 +601,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       echo "</form>";
    }
+
 
    function showItem_PDF($pdf) {
       global $DB, $CFG_GLPI, $LANG;
@@ -726,23 +725,22 @@ class PluginAppliancesAppliance extends CommonDBTM {
       } // numrows type
    }
 
+
    /**
     * Show the applicatif associated with a device
     *
     * Called from the device form (applicatif tab)
     *
     * @param $itemtype : type of the device
-    * @param $ID of the device
     * @param $withtemplate : not used, always empty
-    *
-    **/
-   static function showAssociated($item,$withtemplate='') {
+   **/
+   static function showAssociated($item, $withtemplate='') {
       global $DB,$CFG_GLPI, $LANG;
 
-      $ID = $item->getField('id');
+      $ID       = $item->getField('id');
       $itemtype = get_Class($item);
-      $canread = $item->can($ID,'r');
-      $canedit = $item->can($ID,'w');
+      $canread  = $item->can($ID,'r');
+      $canedit  = $item->can($ID,'w');
 
       $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
                        `glpi_plugin_appliances_appliances`.*
@@ -826,10 +824,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
          if (isMultiEntitiesMode()) {
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data['entities_id'])."</td>";
          }
-         echo "<td class='center'>".Dropdown::getdropdownname("glpi_groups",$data["groups_id"])."</td>";
-         echo "<td class='center'>".Dropdown::getdropdownname("glpi_plugin_appliances_appliancetypes",
-                                                    $data["plugin_appliances_appliancetypes_id"]).
-               "</td>";
+         echo "<td class='center'>".Dropdown::getDropdownName("glpi_groups",
+                                                              $data["groups_id"])."</td>";
+         echo "<td class='center'>".
+                Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
+                                          $data["plugin_appliances_appliancetypes_id"])."</td>";
 
          if ($number_app >0) {
             // add or delete a relation to an applicatifs
@@ -854,14 +853,14 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if ($canedit){
          $entities = "";
          if ($item->isRecursive()) {
-            $entities = getSonsOf('glpi_entities',$item->getEntityID());
+            $entities = getSonsOf('glpi_entities', $item->getEntityID());
          } else {
             $entities = $item->getEntityID();
          }
-         $limit = getEntitiesRestrictRequest(" AND ","glpi_plugin_appliances_appliances",'',$entities,
-                                             true);
+         $limit = getEntitiesRestrictRequest(" AND ", "glpi_plugin_appliances_appliances", '',
+                                             $entities, true);
 
-         $q = "SELECT count(*)
+         $q = "SELECT COUNT(*)
                FROM `glpi_plugin_appliances_appliances`
                WHERE `is_deleted` = '0'
                $limit";
@@ -893,20 +892,21 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "</table></div>";
    }
 
+
    /**
     * show for PDF the applicatif associated with a device
     *
-    * @param $ID of the device
-    * @param $itemtype : type of the device
+    * @param $pdf
+    * @param $item
     *
     */
    static function showAssociated_PDF($pdf, $item){
       global $DB,$CFG_GLPI, $LANG;
 
-      $ID = $item->getField('id');
+      $ID       = $item->getField('id');
       $itemtype = get_Class($item);
-      $canread = $item->can($ID,'r');
-      $canedit = $item->can($ID,'w');
+      $canread  = $item->can($ID,'r');
+      $canedit  = $item->can($ID,'w');
 
       $pdf->setColumnsSize(100);
       $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][9].'</b>');
@@ -948,22 +948,26 @@ class PluginAppliancesAppliance extends CommonDBTM {
             if (isMultiEntitiesMode()) {
                $pdf->setColumnsSize(30,30,20,20);
                $pdf->displayLine($data["name"],
-                                 html_clean(Dropdown::getDropdownName("glpi_entities",$data['entities_id'])),
-                                 html_clean(Dropdown::getDropdownName("glpi_groups",$data["groups_id"])),
+                                 html_clean(Dropdown::getDropdownName("glpi_entities",
+                                                                      $data['entities_id'])),
+                                 html_clean(Dropdown::getDropdownName("glpi_groups",
+                                                                      $data["groups_id"])),
                                  html_clean(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
-                                                   $data["plugin_appliances_appliancetypes_id"])));
+                                                                      $data["plugin_appliances_appliancetypes_id"])));
             } else {
                $pdf->setColumnsSize(50,25,25);
                $pdf->displayLine($data["name"],
-                                 html_clean(Dropdown::getDropdownName("glpi_groups",$data["groups_id"])),
+                                 html_clean(Dropdown::getDropdownName("glpi_groups",
+                                                                      $data["groups_id"])),
                                  html_clean(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
-                                                      $data["plugin_appliances_appliancetypes_id"])));
+                                                                      $data["plugin_appliances_appliancetypes_id"])));
             }
-            PluginAppliancesRelation::showList_PDF($pdf,$data["relationtype"], $data["entID"]);
-            PluginAppliancesOptvalue_Item::showList_PDF($pdf,$ID, $appliancesID);
+            PluginAppliancesRelation::showList_PDF($pdf, $data["relationtype"], $data["entID"]);
+            PluginAppliancesOptvalue_Item::showList_PDF($pdf, $ID, $appliancesID);
          }
       }
    }
+
 
    /**
     * Diplay a dropdown to select an Appliance
@@ -977,14 +981,14 @@ class PluginAppliancesAppliance extends CommonDBTM {
     * @param $options possible options
     *
     * @return nothing (HTML display)
-    */
+   **/
    static function dropdown($options=array()) {
       global $DB,$LANG,$CFG_GLPI;
 
       // Defautl values
-      $p['name']           = 'plugin_appliances_appliances_id';
-      $p['entity']         = '';
-      $p['used']           = array();
+      $p['name']     = 'plugin_appliances_appliances_id';
+      $p['entity']   = '';
+      $p['used']     = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -992,12 +996,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
          }
       }
 
-
       $rand = mt_rand();
 
       $where =" WHERE `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ".
-                      getEntitiesRestrictRequest("AND","glpi_plugin_appliances_appliances",'',
-                                                 $p['entity'],true);
+                      getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances", '',
+                                                 $p['entity'], true);
 
       if (count($p['used'])) {
          $where .= " AND `id` NOT IN ('".implode("','", $p['used'])."')";
@@ -1024,20 +1027,22 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       'myname'          => $p['name'],
                       'used'            => $p['used']);
 
-      ajaxUpdateItemOnSelectEvent("type_appliances","show_".$p['name'].$rand,
-               $CFG_GLPI["root_doc"]."/plugins/appliances/ajax/dropdownTypeAppliances.php",$params);
+      ajaxUpdateItemOnSelectEvent("type_appliances", "show_".$p['name'].$rand,
+                                  $CFG_GLPI["root_doc"]."/plugins/appliances/ajax/dropdownTypeAppliances.php",
+                                  $params);
 
       echo "<span id='show_".$p['name']."$rand'>";
       $_POST["entity_restrict"] = $p['entity'];
       $_POST["type_appliances"] = 0;
-      $_POST["myname"] = $p['name'];
-      $_POST["rand"] = $rand;
-      $_POST["used"] = $p['used'];
+      $_POST["myname"]          = $p['name'];
+      $_POST["rand"]            = $rand;
+      $_POST["used"]            = $p['used'];
       include (GLPI_ROOT."/plugins/appliances/ajax/dropdownTypeAppliances.php");
       echo "</span>\n";
 
       return $rand;
    }
+
 
    /**
     * Type than could be linked to a Appliance
@@ -1046,24 +1051,27 @@ class PluginAppliancesAppliance extends CommonDBTM {
     *
     * @return array of types
     */
-   static function getTypes ($all=false) {
+   static function getTypes($all=false) {
 
-      static $types = array('Computer', 'Printer', 'Monitor', 'Peripheral', 'NetworkEquipment',
-                            'Phone', 'Software');
+      static $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
+                            'Printer', 'Software');
       // temporary disabled TRACKING_TYPE,
 
       $plugin = new Plugin();
       if ($plugin->isActivated("racks")) {
          $types[] = 'PluginRacksRack';
       }
+
       if ($all) {
          return $types;
       }
+
       // Only allowed types
       foreach ($types as $key=>$type) {
          if (!class_exists($type)) {
             continue;
          }
+
          $item = new $type();
          if (!$item->canView()) {
             unset($types[$key]);
@@ -1071,6 +1079,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       return $types;
    }
+
 
    static function methodTestAppliance($params, $protocol) {
       global $PLUGIN_HOOKS;
@@ -1091,6 +1100,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       return $resp;
    }
 
+
    static function methodListAppliances($params, $protocol) {
       global $DB, $CFG_GLPI;
 
@@ -1103,14 +1113,17 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         'start'     => 'integer,optional',
                         'limit'     => 'integer,optional' );
       }
+
       if (!isset ($_SESSION['glpiID'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
-      $resp = array ();
+
+      $resp  = array ();
       $start = 0;
       if (isset ($params['start']) && is_numeric($params['start'])) {
          $start = $params['start'];
       }
+
       $limit = $CFG_GLPI["list_limit_max"];
       if (isset ($params['limit']) && is_numeric($params['limit'])) {
          $limit = $params['limit'];
@@ -1123,19 +1136,24 @@ class PluginAppliancesAppliance extends CommonDBTM {
          } else {
             $tab = array($params['order']=>'DESC');
          }
+
          foreach ($tab as $key => $val) {
             if ($val != 'ASC') {
                $val = 'DESC';
             }
+
             //TODO A revoir
-            if (in_array($key, array('id', 'name', 'date_mod', 'users_id',
-                                     'groups_id', 'entities_id','externalid'))) {
+            if (in_array($key, array('date_mod', 'entities_id', 'externalid', 'id', 'name',
+                                     'groups_id', 'users_id'))) {
                $orders[] ="`$key` $val";
             } else {
-               return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '','order=$key');
+               return PluginWebservicesMethodCommon::Error($protocol,
+                                                           WEBSERVICES_ERROR_BADPARAMETER, '',
+                                                           'order=$key');
             }
          }
       }
+
       if (count($orders)) {
          $order = implode(',',$orders);
       } else {
@@ -1152,8 +1170,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
          foreach ($DB->request($query) as $data) {
             $resp = $data;
          }
-      }else {
-         $where="";
+
+      } else {
+         $where = "";
          if (isset ($params['id2name'])) {
             // TODO : users_name and groups_name ?
             $query = "SELECT `glpi_plugin_appliances_appliances`.*,
@@ -1161,55 +1180,65 @@ class PluginAppliancesAppliance extends CommonDBTM {
                              `glpi_plugin_appliances_environments`.`name` AS plugin_appliances_environments_name
                       FROM `glpi_plugin_appliances_appliances`
                       LEFT JOIN `glpi_plugin_appliances_appliancetypes`
-                           ON `glpi_plugin_appliances_appliancetypes`.`id`=`glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`
+                           ON `glpi_plugin_appliances_appliancetypes`.`id`
+                                 =`glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`
                       LEFT JOIN `glpi_plugin_appliances_environments`
-                           ON `glpi_plugin_appliances_environments`.`id`=`glpi_plugin_appliances_appliances`.`plugin_appliances_environments_id`
-                      $where
+                           ON `glpi_plugin_appliances_environments`.`id`
+                                 =`glpi_plugin_appliances_appliances`.`plugin_appliances_environments_id`
                       ORDER BY $order
                       LIMIT $start,$limit";
+
          } else {
             // TODO review list of fields (should probably be minimal, or configurable)
             $query = "SELECT `glpi_plugin_appliances_appliances`.*
                       FROM `glpi_plugin_appliances_appliances`
-                      $where
                       ORDER BY $order
                       LIMIT $start,$limit";
          }
-          foreach ($DB->request($query) as $data) {
-             $resp[] = $data;
-          }
+
+         foreach ($DB->request($query) as $data) {
+            $resp[] = $data;
+         }
       }
       return $resp;
    }
+
 
    static function methodDeleteAppliance($params, $protocol) {
       global $DB;
 
       if (isset ($params['help'])) {
-         return array(  'help'                                 => 'bool,optional',
-                        'force'                                => 'boolean,optional',
-                        'id'                                   => 'string' );
+         return array('help'  => 'bool,optional',
+                      'force' => 'boolean,optional',
+                      'id'    => 'string' );
       }
+
       if (!isset ($_SESSION['glpiID'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
+
       if (!isset ($params['id'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
       }
-      $force=0;
+
+      $force = 0;
       if (isset($params['force'])){
-         $force=1;
+         $force = 1;
       }
-      $id=$params['id'];
+
+      $id        = $params['id'];
       $appliance = new self();
       if (!$appliance->can($id, 'd')) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
+
       if (!$appliance->delete(array("id" => $id),$force)) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_FAILED);
       }
+
       return array("id" => $id);
    }
+
 
    static function methodUpdateAppliance($params, $protocol) {
       global $DB;
@@ -1217,36 +1246,45 @@ class PluginAppliancesAppliance extends CommonDBTM {
       // TODO : add more fields + factorize field translation with methodAddAppliance
 
       if (isset ($params['help'])) {
-         return array(  'help'                                 => 'bool,optional',
-                        'is_helpdesk_visible'                  => 'bool,optional',
-                        'is_recursive'                         => 'bool,optional',
-                        'name'                                 => 'string,optional',
-                        'plugin_appliances_appliancetypes_id'  => 'integer,optional',
-                        'plugin_appliances_appliancetypes_name'=> 'string,optional',
-                         'externalid'                          => 'string,optional',
-                        'id'                                   => 'string' );
+         return array('help'                                  => 'bool,optional',
+                      'is_helpdesk_visible'                   => 'bool,optional',
+                      'is_recursive'                          => 'bool,optional',
+                      'name'                                  => 'string,optional',
+                      'plugin_appliances_appliancetypes_id'   => 'integer,optional',
+                      'plugin_appliances_appliancetypes_name' => 'string,optional',
+                      'externalid'                            => 'string,optional',
+                      'id'                                    => 'string');
       }
+
       if (!isset($_SESSION['glpiID'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
+
       if (!isset($params['id']) || !is_numeric($params['id'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
       }
+
       if (isset($params['is_helpdesk_visible']) && !is_numeric($params['is_helpdesk_visible'])) {
-         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_helpdesk_visible');
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '',
+                                                     'is_helpdesk_visible');
       }
+
       if (isset($params['is_recursive']) && !is_numeric($params['is_recursive'])) {
-         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_recursive');
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '',
+                                                     'is_recursive');
       }
-      $id = intval($params['id']);
+
+      $id        = intval($params['id']);
       $appliance = new self();
       if (!$appliance->can($id, 'w')) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
+
       $input = array('id' => $id);
       if (isset($params['name'])) {
          $input['name'] = addslashes($params['name']);
       }
+
       if (isset($params['externalid'])) {
          if (empty($params['externalid'])) {
             $input['externalid'] = 'NULL';
@@ -1254,62 +1292,77 @@ class PluginAppliancesAppliance extends CommonDBTM {
             $input['externalid'] = addslashes($params['externalid']);
          }
       }
+
       foreach (array('comment', 'notes', 'serial', 'otherserial') as $field) {
          if (isset($params[$field])) {
             $input[$field] = addslashes($params[$field]);
          }
       }
+
       if (isset($params['is_helpdesk_visible'])) {
          $input['is_helpdesk_visible'] = ($params['is_helpdesk_visible'] ? 1 : 0);
       }
+
       if (isset($params['is_recursive'])) {
          $input['is_recursive'] = ($params['is_recursive'] ? 1 : 0);
       }
+
       if (isset($params['plugin_appliances_appliancetypes_name'])) {
-         $type = new PluginAppliancesApplianceType();
+         $type   = new PluginAppliancesApplianceType();
          $input2 = array();
-         $input2['entities_id']
-            = (isset($input['entities_id']) ? $input['entities_id'] : $appliance->fields['entities_id']);
-         $input2['is_recursive']
-            = (isset($input['is_recursive']) ? $input['is_recursive'] : $appliance->fields['entities_id']);
+         $input2['entities_id']  = (isset($input['entities_id'])? $input['entities_id']
+                                                                : $appliance->fields['entities_id']);
+         $input2['is_recursive'] = (isset($input['is_recursive'])? $input['is_recursive']
+                                                                 : $appliance->fields['entities_id']);
          $input2['name']         = addslashes($params['plugin_appliances_appliancetypes_name']);
          $input['plugin_appliances_appliancetypes_id'] = $type->import($input2);
+
       } else if (isset($params['plugin_appliances_appliancetypes_id'])) {
-         $input['plugin_appliances_appliancetypes_id'] = intval($params['plugin_appliances_appliancetypes_id']);
+         $input['plugin_appliances_appliancetypes_id']
+                     = intval($params['plugin_appliances_appliancetypes_id']);
       }
+
       if ($appliance->update($input)) {
          // Does not detect unicity error on externalid :(
-         return $appliance->methodGetAppliance(array('id'=>$id), $protocol);
+         return $appliance->methodGetAppliance(array('id' => $id), $protocol);
       }
+
       return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_FAILED);
    }
+
 
    static function methodAddAppliance($params, $protocol) {
       global $DB;
 
       // TODO : add more fields
       if (isset ($params['help'])) {
-         return array(  'help'                                  => 'bool,optional',
-                        'name'                                  => 'string',
-                        'entities_id'                           => 'integer,optional',
-                        'is_helpdesk_visible'                   => 'bool,optional',
-                        'is_recursive'                          => 'bool,optional',
-                        'comment'                               => 'string,optional',
-                        'externalid'                            => 'string,optional',
-                        'plugin_appliances_appliancetypes_id'   => 'integer,optional',
-                        'plugin_appliances_appliancetypes_name' => 'string,optional');
+         return array('help'                                  => 'bool,optional',
+                      'name'                                  => 'string',
+                      'entities_id'                           => 'integer,optional',
+                      'is_helpdesk_visible'                   => 'bool,optional',
+                      'is_recursive'                          => 'bool,optional',
+                      'comment'                               => 'string,optional',
+                      'externalid'                            => 'string,optional',
+                      'plugin_appliances_appliancetypes_id'   => 'integer,optional',
+                      'plugin_appliances_appliancetypes_name' => 'string,optional');
       }
+
       if (!isset($_SESSION['glpiID'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
+
       if (!isset($params['name'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
       }
+
       if (isset($params['is_helpdesk_visible']) && !is_numeric($params['is_helpdesk_visible'])) {
-         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_helpdesk_visible');
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '',
+                                                     'is_helpdesk_visible');
       }
+
       if (isset($params['is_recursive']) && !is_numeric($params['is_recursive'])) {
-         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '', 'is_recursive');
+         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_BADPARAMETER, '',
+                                                     'is_recursive');
       }
       $input = array();
       $input['name'] = addslashes($params['name']);
@@ -1319,43 +1372,54 @@ class PluginAppliancesAppliance extends CommonDBTM {
       } else {
          $input['entities_id'] = $_SESSION["glpiactive_entity"];
       }
+
       if (isset($params['is_recursive'])) {
          // TODO check if canUnrecurs
          $input['is_recursive'] = ($params['is_recursive'] ? 1 : 0);
       }
+
       if (isset($params['externalid']) && !empty($params['externalid'])) {
          $input['externalid'] = addslashes($params['externalid']);
       }
+
       if (isset($params['plugin_appliances_appliancetypes_name'])) {
-         $type = new PluginAppliancesApplianceType();
+         $type   = new PluginAppliancesApplianceType();
          $input2 = array();
          $input2['entities_id']  = $input['entities_id'];
          $input2['is_recursive'] = $input['is_recursive'];
          $input2['name']         = addslashes($params['plugin_appliances_appliancetypes_name']);
          $input['plugin_appliances_appliancetypes_id'] = $type->import($input2);
+
       } else if (isset($params['plugin_appliances_appliancetypes_id'])) {
          // TODO check if this id exists and is readable and is available in appliance entity
-         $input['plugin_appliances_appliancetypes_id'] = intval($params['plugin_appliances_appliancetypes_id']);
+         $input['plugin_appliances_appliancetypes_id']
+                  = intval($params['plugin_appliances_appliancetypes_id']);
       }
+
       if (isset($params['is_helpdesk_visible'])) {
          $input['is_helpdesk_visible'] = ($params['is_helpdesk_visible'] ? 1 : 0);
       }
+
       foreach (array('comment', 'notes', 'serial', 'otherserial') as $field) {
          if (isset($params[$field])) {
             $input[$field] = addslashes($params[$field]);
          }
       }
+
       $appliance = new self();
       if (!$appliance->can(-1, 'w', $input)) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
-      $id=$appliance->add($input);
+
+      $id = $appliance->add($input);
       if ($id) {
          // Return the newly created object
          return $appliance->methodGetAppliance(array('id'=>$id), $protocol);
       }
+
       return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_FAILED);
    }
+
 
    static function methodGetAppliance($params, $protocol) {
       global $DB;
@@ -1365,29 +1429,37 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         'id2name'            => 'bool,optional',
                         'externalid OR id'   => 'string' );
       }
+
       if (!isset($_SESSION['glpiID'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
+
       if (!isset($params['externalid']) && !isset($params['id'])) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_MISSINGPARAMETER);
       }
+
       $appli = new self();
       $found = false;
+
       if (isset($params['id'])) {
          $found = $appli->getFromDB(intval($params['id']));
 
       } else if (isset($params['externalid'])){
          $found = $appli->getFromDBbyExternalID(addslashes($params["externalid"]));
       }
+
       if (!$found || !$appli->can($appli->fields["id"],'r')) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTFOUND);
       }
       $resp = $appli->fields;
+
       if (isset($params['id2name'])) {
          $resp['plugin_appliances_appliancetypes_name']
-            = html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes', $resp['plugin_appliances_appliancetypes_id']));
+            = html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes',
+                                                   $resp['plugin_appliances_appliancetypes_id']));
          $resp['plugin_appliances_environments_name']
-            = html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments', $resp['plugin_appliances_environments_id']));
+            = html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments',
+                                                   $resp['plugin_appliances_environments_id']));
          $resp['users_name']
             = html_clean(Dropdown::getDropdownName('glpi_users', $resp['users_id']));
          $resp['groups_name']

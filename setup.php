@@ -42,9 +42,9 @@ function plugin_init_appliances() {
                          array('linkuser_types'         => true,
                                'linkgroup_types'        => true,
                                'infocom_types'          => true,
-                               'doc_types'              => true,
+                               'document_types'         => true,
                                'contract_types'         => true,
-                               'helpdesk_types'         => true,
+                               'ticket_types'           => true,
                                'helpdesk_visible_types' => true));
 
    Plugin::registerClass('PluginAppliancesEnvironment');
@@ -138,19 +138,19 @@ function plugin_version_appliances() {
    global $LANG;
 
    return array('name'           => $LANG['plugin_appliances']['title'][1],
-                'version'        => '1.6.0',
-                'oldname' => 'applicatifs',
+                'version'        => '1.7.0',
+                'oldname'        => 'applicatifs',
                 'author'         => 'Remi Collet, Xavier Caillaud, Nelly Lasson',
                 'homepage'       => 'https://forge.indepnet.net/projects/show/appliances',
-                'minGlpiVersion' => '0.78');
+                'minGlpiVersion' => '0.80');
 }
 
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_appliances_check_prerequisites() {
 
-   if (GLPI_VERSION < 0.78) {
-      echo "GLPI version not compatible need 0.78";
+   if (GLPI_VERSION < 0.80) {
+      echo "GLPI version not compatible need 0.80";
    } else {
       return true;
    }

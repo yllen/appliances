@@ -31,7 +31,6 @@ $title = "Appliance";
 
 $LANG['plugin_appliances']['title'][1] = "".$title."";
 
-$LANG['plugin_appliances'][2] = "Location";
 $LANG['plugin_appliances'][3] = "Environment";
 $LANG['plugin_appliances'][4] = "No ".$title." found";
 $LANG['plugin_appliances'][7] = "Associated items";

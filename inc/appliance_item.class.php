@@ -46,18 +46,15 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';
 
+
    function cleanDBonPurge() {
 
       $temp = new PluginAppliancesOptvalue_Item();
-      $temp->deleteByCriteria(
-         array('itemtype' => $this->fields['itemtype'],
-               'items_id' => $this->fields['items_id'])
-      );
+      $temp->deleteByCriteria(array('itemtype' => $this->fields['itemtype'],
+                                    'items_id' => $this->fields['items_id']));
 
       $temp = new PluginAppliancesRelation();
-      $temp->deleteByCriteria(
-         array('plugin_appliances_appliances_items_id' => $this->fields['id'])
-      );
+      $temp->deleteByCriteria(array('plugin_appliances_appliances_items_id' => $this->fields['id']));
    }
 }
 
