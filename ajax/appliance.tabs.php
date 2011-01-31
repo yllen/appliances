@@ -44,14 +44,17 @@ Plugin::load('appliances',true);
 if (!isset($_POST["id"])) {
    exit();
 }
+
 if (!isset($_POST["sort"])) {
    $_POST["sort"] = "";
 }
+
 if (!isset($_POST["order"])) {
    $_POST["order"] = "";
 }
+
 $appliance = new PluginAppliancesAppliance();
-$optvalue = new PluginAppliancesOptvalue();
+$optvalue  = new PluginAppliancesOptvalue();
 
 if ($_POST["id"] >0
     && $appliance->getFromDB($_POST["id"])
@@ -65,7 +68,7 @@ if ($_POST["id"] >0
          Infocom::showForItem($appliance);
          Contract::showAssociated($appliance);
          Document::showAssociated($appliance);
-         Plugin::displayAction($appliance,$_POST['glpi_tab']);
+         Plugin::displayAction($appliance, $_POST['glpi_tab']);
          break;
 
       case 2 :
@@ -86,7 +89,7 @@ if ($_POST["id"] >0
          break;
 
       case 11 :
-         showNotesForm($_POST['target'],'PluginAppliancesAppliance',$_POST["id"]);
+         showNotesForm($_POST['target'], 'PluginAppliancesAppliance', $_POST["id"]);
          break;
 
       case 12 :
@@ -94,7 +97,7 @@ if ($_POST["id"] >0
          break;
 
       default :
-         if (!Plugin::displayAction($appliance,$_POST['glpi_tab'])) {
+         if (!Plugin::displayAction($appliance, $_POST['glpi_tab'])) {
             $appliance->showItem();
          }
    }

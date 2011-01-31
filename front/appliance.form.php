@@ -45,20 +45,20 @@ if (!isset($_GET["withtemplate"])) {
 }
 
 $PluginAppliances = new PluginAppliancesAppliance();
-$PluginItem = new PluginAppliancesAppliance_Item();
+$PluginItem       = new PluginAppliancesAppliance_Item();
 
 if (isset($_POST["add"])) {
-   $PluginAppliances->check(-1,'w',$_POST);
+   $PluginAppliances->check(-1, 'w', $_POST);
    $newID = $PluginAppliances->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["update"])) {
-   $PluginAppliances->check($_POST['id'],'w');
+   $PluginAppliances->check($_POST['id'], 'w');
    $PluginAppliances->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $PluginAppliances->check($_POST['id'],'w');
+   $PluginAppliances->check($_POST['id'], 'w');
    $PluginAppliances->delete($_POST);
    glpi_header($CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.php");
 
@@ -68,8 +68,8 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["purge"])) {
-   $PluginAppliances->check($_POST['id'],'w');
-   $PluginAppliances->delete($_POST,1);
+   $PluginAppliances->check($_POST['id'], 'w');
+   $PluginAppliances->delete($_POST, 1);
 
    glpi_header($CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.php");
 
@@ -78,7 +78,7 @@ if (isset($_POST["add"])) {
    $relation = new PluginAppliancesRelation();
    if (isset($_POST['itemrelation'])) {
       foreach($_POST["itemrelation"] as $key => $val) {
-         $relation->delete(array('id'=>$key));
+         $relation->delete(array('id' => $key));
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -90,23 +90,23 @@ if (isset($_POST["add"])) {
       foreach($_POST["tablekey"] as $key => $val) {
          if ($val > 0) {
             $relation->add(array('plugin_appliances_appliances_items_id' => $key,
-                                 'relations_id'        => $val));
+                                 'relations_id'                          => $val));
          }
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST['update_optvalues'])) {
-   $PluginAppliances->check($_POST['plugin_appliances_appliances_id'],'w');
+   $PluginAppliances->check($_POST['plugin_appliances_appliances_id'], 'w');
 
    $Optvalue = new PluginAppliancesOptvalue();
    $Optvalue->updateList($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add_opt_val"])){
-   $PluginAppliances->check($_POST['plugin_appliances_appliances_id'],'r');
+   $PluginAppliances->check($_POST['plugin_appliances_appliances_id'], 'r');
    $item = new $_POST['itemtype']();
-   $item->check($_POST['items_id'],'w');
+   $item->check($_POST['items_id'], 'w');
 
    $OptvalueItem = new PluginAppliancesOptvalue_Item();
    $OptvalueItem->updateList($_POST);
@@ -115,10 +115,10 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["additem"])) {
    if ($_POST['itemtype'] && $_POST['item'] >0) {
       $input = array('plugin_appliances_appliances_id' => $_POST['conID'],
-                     'items_id'      => $_POST['item'],
-                     'itemtype'      => $_POST['itemtype']);
+                     'items_id'                        => $_POST['item'],
+                     'itemtype'                        => $_POST['itemtype']);
 
-      $PluginItem->check(-1,'w',$input);
+      $PluginItem->check(-1, 'w', $input);
       $newID = $PluginItem->add($input);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -127,7 +127,7 @@ if (isset($_POST["add"])) {
    foreach ($_POST["item"] as $key => $val) {
       $input = array('id' => $key);
       if ($val == 1) {
-         $PluginItem->check($key,'w');
+         $PluginItem->check($key, 'w');
          $PluginItem->delete($input);
       }
    }
@@ -135,7 +135,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_GET["deleteappliance"])) {
    $input = array('id' => $_GET["id"]);
-   $PluginItem->check($_GET["id"],'w');
+   $PluginItem->check($_GET["id"], 'w');
    $PluginItem->delete($input);
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -150,8 +150,8 @@ if (isset($_POST["add"])) {
 
    $plugin = new Plugin();
    if ($plugin->isActivated("environment")) {
-      commonHeader($LANG['plugin_appliances']['title'][1],$_SERVER['PHP_SELF'],"plugins",
-                   "environment","appliances");
+      commonHeader($LANG['plugin_appliances']['title'][1], $_SERVER['PHP_SELF'], "plugins",
+                   "environment", "appliances");
    } else {
       commonHeader($LANG['plugin_appliances']['title'][1],$_SERVER["PHP_SELF"],"plugins","appliances");
    }

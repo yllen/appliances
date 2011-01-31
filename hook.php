@@ -39,14 +39,21 @@ function plugin_appliances_registerMethods() {
    global $WEBSERVICES_METHOD;
 
    // Not authenticated method
-   $WEBSERVICES_METHOD['appliances.testAppliances']  = array('PluginAppliancesAppliance','methodTestAppliance');
+   $WEBSERVICES_METHOD['appliances.testAppliances']
+                                    = array('PluginAppliancesAppliance','methodTestAppliance');
    // Authenticated method
-   $WEBSERVICES_METHOD['appliances.listAppliances']  = array('PluginAppliancesAppliance','methodListAppliances');
-   $WEBSERVICES_METHOD['appliances.addAppliance']    = array('PluginAppliancesAppliance','methodAddAppliance');
-   $WEBSERVICES_METHOD['appliances.deleteAppliance'] = array('PluginAppliancesAppliance','methodDeleteAppliance');
-   $WEBSERVICES_METHOD['appliances.updateAppliance'] = array('PluginAppliancesAppliance','methodUpdateAppliance');
-   $WEBSERVICES_METHOD['appliances.getAppliance']    = array('PluginAppliancesAppliance','methodGetAppliance');
+   $WEBSERVICES_METHOD['appliances.listAppliances']
+                                    = array('PluginAppliancesAppliance','methodListAppliances');
+   $WEBSERVICES_METHOD['appliances.addAppliance']
+                                    = array('PluginAppliancesAppliance','methodAddAppliance');
+   $WEBSERVICES_METHOD['appliances.deleteAppliance']
+                                    = array('PluginAppliancesAppliance','methodDeleteAppliance');
+   $WEBSERVICES_METHOD['appliances.updateAppliance']
+                                    = array('PluginAppliancesAppliance','methodUpdateAppliance');
+   $WEBSERVICES_METHOD['appliances.getAppliance']
+                                    = array('PluginAppliancesAppliance','methodGetAppliance');
 }
+
 
 function plugin_appliances_AssignToTicket($types) {
    global $LANG;
@@ -56,6 +63,7 @@ function plugin_appliances_AssignToTicket($types) {
    }
    return $types;
 }
+
 
 function plugin_appliances_install() {
    global $DB;
@@ -79,20 +87,22 @@ function plugin_appliances_install() {
          $DB->query("ALTER TABLE `glpi_plugin_applicatifs` DROP `state`");
       }
       if (isIndex("glpi_plugin_applicatifs_optvalues_machines", "optvalue_ID")) { // in empty 1.5.0 not in update 1.5.0
-         $DB->query("ALTER TABLE `glpi_plugin_applicatifs_optvalues_machines` DROP KEY `optvalue_ID`");
+         $DB->query("ALTER TABLE `glpi_plugin_applicatifs_optvalues_machines`
+                     DROP KEY `optvalue_ID`");
       }
       $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.6.0.sql");
 
-      Plugin::migrateItemType(
-         array(1200=>'PluginAppliancesAppliance'),
-         array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences",
-               "glpi_documents_items", "glpi_infocoms", "glpi_logs", "glpi_tickets"),
-         array("glpi_plugin_appliances_appliances_items", "glpi_plugin_appliances_optvalues_items"));
+      Plugin::migrateItemType(array(1200 => 'PluginAppliancesAppliance'),
+                              array("glpi_bookmarks", "glpi_bookmarks_users",
+                                    "glpi_displaypreferences", "glpi_documents_items",
+                                    "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                              array("glpi_plugin_appliances_appliances_items",
+                                    "glpi_plugin_appliances_optvalues_items"));
 
-      Plugin::migrateItemType(
-         array(4450 => "PluginRacksRack"),
-         array("glpi_plugin_appliances_appliances_items"));
+      Plugin::migrateItemType(array(4450 => "PluginRacksRack"),
+                              array("glpi_plugin_appliances_appliances_items"));
    }
+
    if (!TableExists("glpi_plugin_appliances_appliances")) { // not installed
       $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/empty-1.6.0.sql");
    }
@@ -152,7 +162,9 @@ function plugin_appliances_uninstall() {
 }
 
 
-// Define Dropdown tables to be manage in GLPI :
+/**
+ * Define Dropdown tables to be manage in GLPI :
+**/
 function plugin_appliances_getDropdown(){
    global $LANG;
 
@@ -161,23 +173,26 @@ function plugin_appliances_getDropdown(){
 }
 
 
-// Define dropdown relations
+/**
+ * Define dropdown relations
+**/
 function plugin_appliances_getDatabaseRelations() {
 
    $plugin = new Plugin();
    if ($plugin->isActivated("appliances")) {
       return array('glpi_plugin_appliances_appliancetypes'
-                     => array('glpi_plugin_appliances_appliances' => 'plugin_appliances_appliancetypes_id'),
+                                     => array('glpi_plugin_appliances_appliances'
+                                              => 'plugin_appliances_appliancetypes_id'),
                    'glpi_plugin_appliances_environments'
-                     => array('glpi_plugin_appliances_appliances' => 'plugin_appliances_environments_id'),
-                   'glpi_entities'
-                     => array('glpi_plugin_appliances_appliances'     => 'entities_id',
-                              'glpi_plugin_appliances_appliancetypes' => 'entities_id'),
+                                     => array('glpi_plugin_appliances_appliances'
+                                              => 'plugin_appliances_environments_id'),
+                   'glpi_entities'   => array('glpi_plugin_appliances_appliances'     => 'entities_id',
+                                              'glpi_plugin_appliances_appliancetypes' => 'entities_id'),
                    'glpi_plugin_appliances_appliances'
-                     => array('glpi_plugin_appliances_appliances_items' => 'plugin_appliances_appliances_id'),
-                   '_virtual_device'
-                     => array('glpi_plugin_appliances_appliances_items' => array('items_id',
-                                                                                 'itemtype')));
+                                     => array('glpi_plugin_appliances_appliances_items'
+                                              => 'plugin_appliances_appliances_id'),
+                   '_virtual_device' => array('glpi_plugin_appliances_appliances_items'
+                                              => array('items_id', 'itemtype')));
    }
    return array();
 }
@@ -185,35 +200,37 @@ function plugin_appliances_getDatabaseRelations() {
 
 ////// SEARCH FUNCTIONS ///////(){
 
-// Define search option for types of the plugins
+/**
+ * Define search option for types of the plugins
+**/
 function plugin_appliances_getAddSearchOptions($itemtype) {
    global $LANG;
 
    $sopt = array();
    if (plugin_appliances_haveRight("appliance","r")) {
       if (in_array($itemtype, PluginAppliancesAppliance::getTypes(true))) {
-         $sopt[1210]['table']         = 'glpi_plugin_appliances_appliances';
-         $sopt[1210]['field']         = 'name';
-         $sopt[1210]['linkfield']     = '';
-         $sopt[1210]['name']          = $LANG['plugin_appliances']['title'][1]." - ".
-                                        $LANG['common'][16];
-         $sopt[1210]['forcegroupby']  = true;
-         $sopt[1210]['datatype']      = 'itemlink';
-         $sopt[1210]['itemlink_type'] = 'PluginAppliancesAppliance';
+         $sopt[1210]['table']          = 'glpi_plugin_appliances_appliances';
+         $sopt[1210]['field']          = 'name';
+         $sopt[1210]['massiveaction']  = false;
+         $sopt[1210]['name']           = $LANG['plugin_appliances']['title'][1]." - ".
+                                         $LANG['common'][16];
+         $sopt[1210]['forcegroupby']   = true;
+         $sopt[1210]['datatype']       = 'itemlink';
+         $sopt[1210]['itemlink_type']  = 'PluginAppliancesAppliance';
 
-         $sopt[1211]['table']        = 'glpi_plugin_appliances_appliancetypes';
-         $sopt[1211]['field']        = 'name';
-         $sopt[1211]['linkfield']    = '';
-         $sopt[1211]['name']         = $LANG['plugin_appliances']['title'][1]." - ".
-                                       $LANG['common'][17];
-         $sopt[1211]['forcegroupby'] =  true;
+         $sopt[1211]['table']         = 'glpi_plugin_appliances_appliancetypes';
+         $sopt[1211]['field']         = 'name';
+         $sopt[1211]['massiveaction'] = false;
+         $sopt[1211]['name']          = $LANG['plugin_appliances']['title'][1]." - ".
+                                        $LANG['common'][17];
+         $sopt[1211]['forcegroupby']  =  true;
       }
    }
    return $sopt;
 }
 
 
-function plugin_appliances_addLeftJoin($type,$ref_table,$new_table,$linkfield,
+function plugin_appliances_addLeftJoin($type, $ref_table, $new_table, $linkfield,
                                        &$already_link_tables) {
 
    switch ($new_table) {
@@ -226,13 +243,15 @@ function plugin_appliances_addLeftJoin($type,$ref_table,$new_table,$linkfield,
                      ON (`$ref_table`.`id` = `glpi_plugin_appliances_appliances_items`.`items_id`
                          AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type')
                   LEFT JOIN `glpi_plugin_appliances_appliances`
-                     ON (`glpi_plugin_appliances_appliances`.`id` = `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`) ";
+                     ON (`glpi_plugin_appliances_appliances`.`id`
+                         = `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`) ";
 
       case "glpi_plugin_appliances_appliancetypes" : // From items
          $out = Search::addLeftJoin($type,$ref_table,$already_link_tables,
                             "glpi_plugin_appliances_appliances",$linkfield);
          $out .= " LEFT JOIN `glpi_plugin_appliances_appliancetypes`
-                     ON (`glpi_plugin_appliances_appliancetypes`.`id` = `glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`) ";
+                     ON (`glpi_plugin_appliances_appliancetypes`.`id`
+                         = `glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`) ";
          return $out;
    }
    return "";
@@ -249,7 +268,7 @@ function plugin_appliances_forceGroupBy($type) {
 }
 
 
-function plugin_appliances_giveItem($type,$ID,$data,$num) {
+function plugin_appliances_giveItem($type, $ID, $data, $num) {
    global $DB, $CFG_GLPI, $LANG;
 
    $searchopt = &Search::getOptions($type);
@@ -285,8 +304,9 @@ function plugin_appliances_giveItem($type,$ID,$data,$num) {
                               ON (`glpi_entities`.`id` = `$table`.`entities_id`)
                             WHERE `$table`.`id` = `glpi_plugin_appliances_appliances_items`.`items_id`
                                  AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
-                                 AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id` = '$appliances_id'".
-                                 getEntitiesRestrictRequest(" AND ",$table,'','',
+                                 AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
+                                      = '$appliances_id'".
+                                 getEntitiesRestrictRequest(" AND ", $table, '', '',
                                                             $item->maybeRecursive());
 
                   if ($item->maybeTemplate()) {
@@ -380,9 +400,10 @@ function plugin_appliances_MassiveActionsProcess($data) {
             $PluginItem = new PluginAppliancesAppliance_Item();
             foreach ($data["item"] as $key => $val) {
                if ($val == 1) {
-                  $input = array('plugin_appliances_appliances_id' => $data['plugin_appliances_appliances_id'],
-                                 'items_id'      => $key,
-                                 'itemtype'      => $data['itemtype']);
+                  $input = array('plugin_appliances_appliances_id'
+                                             => $data['plugin_appliances_appliances_id'],
+                                 'items_id'  => $key,
+                                 'itemtype'  => $data['itemtype']);
                   if ($PluginItem->can(-1,'w',$input)) {
                      $PluginItem->add($input);
                   }
@@ -397,8 +418,8 @@ function plugin_appliances_MassiveActionsProcess($data) {
             foreach ($data["item"] as $key => $val) {
                if ($val == 1) {
                   $input = array('plugin_appliances_appliances_id' => $key,
-                                 'items_id'      => $data["item_item"],
-                                 'itemtype'      => $data['itemtype']);
+                                 'items_id'                        => $data["item_item"],
+                                 'itemtype'                        => $data['itemtype']);
                   if ($PluginItem->can(-1,'w',$input)) {
                      $newid = $PluginItem->add($input);
                   }
@@ -431,9 +452,9 @@ function plugin_appliances_MassiveActionsProcess($data) {
 
                   $type = PluginAppliancesApplianceType::transfer($appliance->fields["plugin_appliances_appliancetypes_id"],
                                                                   $data['entities_id']);
-                  $values["id"] = $key;
+                  $values["id"]                                  = $key;
                   $values["plugin_appliances_appliancetypes_id"] = $type;
-                  $values["entities_id"] = $data['entities_id'];
+                  $values["entities_id"]                         = $data['entities_id'];
                   $appliance->update($values);
                }
             }
@@ -446,7 +467,9 @@ function plugin_appliances_MassiveActionsProcess($data) {
 //////////////////////////////
 
 
-// Hook done on purge item case
+/**
+ * Hook done on purge item case
+**/
 function plugin_item_purge_appliances($item) {
 
    $type = get_class($item);
@@ -466,7 +489,9 @@ function plugin_item_purge_appliances($item) {
 }
 
 
-// Define headings added by the plugin
+/**
+ * Define headings added by the plugin
+**/
 function plugin_get_headings_appliances($item,$withtemplate) {
    global $LANG;
 
@@ -485,7 +510,9 @@ function plugin_get_headings_appliances($item,$withtemplate) {
 }
 
 
-// Define headings actions added by the plugin
+/**
+ * Define headings actions added by the plugin
+**/
 function plugin_headings_actions_appliances($item) {
 
    $type = get_Class($item);
@@ -493,16 +520,18 @@ function plugin_headings_actions_appliances($item) {
       return array(1 => "plugin_headings_appliances");
    }
    if (in_array($type,PluginAppliancesAppliance::getTypes(true))) {
-      return array(1 => array('PluginAppliancesAppliance','showAssociated'));
+      return array(1 => array('PluginAppliancesAppliance', 'showAssociated'));
    }
    return false;
 }
 
 
-// applicatifs of an action heading
-// Define headings actions added by the plugin
-function plugin_headings_appliances($item,$withtemplate=0) {
-   global $CFG_GLPI,$LANG;
+/**
+ * applicatifs of an action heading
+ * Define headings actions added by the plugin
+**/
+function plugin_headings_appliances($item, $withtemplate=0) {
+   global $CFG_GLPI, $LANG;
 
    $type = get_Class($item);
    $ID = $item->getField('id');
@@ -511,7 +540,8 @@ function plugin_headings_appliances($item,$withtemplate=0) {
          $prof = new PluginAppliancesProfile();
          if ($prof->GetfromDB($ID) || $prof->createUserAccess($item)) {
             $prof->showForm($ID,
-                            array('target' => $CFG_GLPI["root_doc"]."/plugins/appliances/front/profile.form.php"));
+                            array('target' => $CFG_GLPI["root_doc"].
+                                              "/plugins/appliances/front/profile.form.php"));
          }
          break;
 
@@ -519,7 +549,9 @@ function plugin_headings_appliances($item,$withtemplate=0) {
 }
 
 
-// Define PDF informations added by the plugin
+/**
+ * Define PDF informations added by the plugin
+**/
 function plugin_headings_actionpdf_appliances($item) {
    if (in_array(get_class($item),PluginAppliancesAppliance::getTypes(true))) {
       return array(1 => array('PluginAppliancesAppliance', 'showAssociated_PDF'));
@@ -527,13 +559,14 @@ function plugin_headings_actionpdf_appliances($item) {
    return false;
 }
 
+
 /**
  * Hook : options for one type
  *
- * @param $type of item
+ * @param $item
  *
  * @return array of string which describe the options
- */
+**/
 function plugin_appliances_prefPDF($item) {
    global $LANG;
 
@@ -541,7 +574,7 @@ function plugin_appliances_prefPDF($item) {
    switch (get_class($item)) {
       case 'PluginAppliancesAppliance' :
          $item->fields['id'] = 1; // really awfull :(
-         $tabs = $item->defineTabs();
+         $tabs               = $item->defineTabs();
          unset($tabs[2]); // Custom fields
          break;
    }
@@ -557,7 +590,7 @@ function plugin_appliances_prefPDF($item) {
  * - tab_id array of ID
  * - tab array of options to be printed
  * - page boolean true for landscape
- */
+**/
 function plugin_appliances_generatePDF($options) {
 
    $item   = $options['item'];
@@ -618,8 +651,10 @@ function plugin_appliances_generatePDF($options) {
    $pdf->render();
 }
 
+
 function plugin_datainjection_populate_appliances() {
    global $INJECTABLE_TYPES;
+
    $INJECTABLE_TYPES['PluginAppliancesApplianceInjection'] = 'appliances';
 }
 ?>

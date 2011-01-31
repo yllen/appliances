@@ -40,6 +40,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownappliances.php")) {
    header("Content-Type: text/html; charset=UTF-8");
    header_nocache();
 }
+
 if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
@@ -47,14 +48,15 @@ if (!defined('GLPI_ROOT')) {
 checkCentralAccess();
 // Make a select box with all glpi users
 
-$where=" WHERE (`glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id` = '".$_POST['type_appliances']."')
-               AND `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ";
+$where=" WHERE (`glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`
+                  = '".$_POST['type_appliances']."')
+                AND `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ";
 
 if (isset($_POST["entity_restrict"]) && $_POST["entity_restrict"] >=0) {
-   $where.=getEntitiesRestrictRequest("AND","glpi_plugin_appliances_appliances",'',
-                                      $_POST["entity_restrict"],true);
+   $where.=getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances", '',
+                                      $_POST["entity_restrict"], true);
 } else {
-   $where.=getEntitiesRestrictRequest("AND","glpi_plugin_appliances_appliances",'','',true);
+   $where.=getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances", '', '', true);
 }
 
 if (isset($_POST['used'])) {
@@ -63,11 +65,11 @@ if (isset($_POST['used'])) {
    } else {
       $used = unserialize(stripslashes($_POST['used']));
    }
-   $where .=" AND `id` NOT IN ('".implode("','",$used)."')";
+   $where .= " AND `id` NOT IN ('".implode("','",$used)."')";
 }
 
 if ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"]) {
-   $where.=" AND `glpi_plugin_appliances_appliances`.`name` ".makeTextSearch($_POST['searchText']);
+   $where .= " AND `glpi_plugin_appliances_appliances`.`name` ".makeTextSearch($_POST['searchText']);
 }
 $NBMAX = $CFG_GLPI["dropdown_max"];
 $LIMIT = "LIMIT 0,$NBMAX";
@@ -84,7 +86,7 @@ $result = $DB->query($query);
 
 echo "<select name='".$_POST['myname']."'>";
 
-echo "<option value='0'>------</option>";
+echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
 
 if ($DB->numrows($result)) {
    $prev = -1;
@@ -97,7 +99,7 @@ if ($DB->numrows($result)) {
          echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
       }
       $output = $data["name"];
-      echo "<option value='".$data["id"]."' title='$output'>".substr($output,0,
+      echo "<option value='".$data["id"]."' title='$output'>".substr($output, 0,
                                                                      $CFG_GLPI["cut"]).
             "</option>";
    }

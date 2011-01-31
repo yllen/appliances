@@ -36,9 +36,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+
 class PluginAppliancesAppliance extends CommonDBTM {
 
-   public $dohistory        = true;
+   public $dohistory = true;
 
 
    static function getTypeName() {
@@ -64,7 +65,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
     * @param $extid string externalid
     *
     * @return true if succeed else false
-    **/
+   **/
    function getFromDBbyExternalID($extid) {
       global $DB;
 
@@ -243,11 +244,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
     *
     * @return a SQL command which return a set of (itemtype, items_id)
    **/
-   function getSelectLinkedItem () {
+   function getSelectLinkedItem() {
 
       return "SELECT `itemtype`, `items_id`
               FROM `glpi_plugin_appliances_appliances_items`
-              WHERE `plugin_appliances_appliances_id`='" . $this->fields['id']."'";
+              WHERE `plugin_appliances_appliances_id` = '" . $this->fields['id']."'";
    }
 
 
@@ -257,7 +258,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if ($ID>0) {
          $this->check($ID,'r');
       } else {
-         $this->check(-1,'w');
+         $this->check(-1, 'w');
          $this->getEmpty();
       }
 
@@ -270,7 +271,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,"name",array('size' => 34));
+      autocompletionTextField($this, "name", array('size' => 34));
       echo "</td><td>".$LANG['common'][17]."&nbsp;:</td><td>";
       Dropdown::show('PluginAppliancesApplianceType',
                       array('value'  => $this->fields["plugin_appliances_appliancetypes_id"],
@@ -336,16 +337,16 @@ class PluginAppliancesAppliance extends CommonDBTM {
           && !($ID
                && countElementsInTable(array("glpi_plugin_appliances_relations",
                                              "glpi_plugin_appliances_appliances_items"),
-                         "glpi_plugin_appliances_relations.plugin_appliances_appliances_items_id
-                                 = glpi_plugin_appliances_appliances_items.id
-                         AND glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id
-                                 = $ID"))) {
-         PluginAppliancesRelation::dropdownType("relationtype",$this->fields["relationtype"]);
+                                       "glpi_plugin_appliances_relations.plugin_appliances_appliances_items_id
+                                          = glpi_plugin_appliances_appliances_items.id
+                                        AND glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id
+                                          = $ID"))) {
+         PluginAppliancesRelation::dropdownType("relationtype", $this->fields["relationtype"]);
       } else {
          echo PluginAppliancesRelation::getTypeName($this->fields["relationtype"]);
-         $rand = mt_rand();
+         $rand    = mt_rand();
          $comment = $LANG['common'][84];
-         $image = "/pics/lock.png";
+         $image   = "/pics/lock.png";
          echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"].$image.
                "' onmouseout=\"cleanhide('comment_relationtypes$rand')\" ".
                " onmouseover=\"cleandisplay('comment_relationtypes$rand')\">";
@@ -353,8 +354,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      $datestring = $LANG['common'][26].": ";
-      $date = convDateTime($this->fields["date_mod"]);
+      $datestring = $LANG['common'][26]."&nbsp;: ";
+      $date       = convDateTime($this->fields["date_mod"]);
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center'>".$datestring.$date;
       echo "</td></tr>";
@@ -388,21 +389,21 @@ class PluginAppliancesAppliance extends CommonDBTM {
          '<b><i>'.$LANG["common"][16].' :</i></b> '.$this->fields['name'],
          '<b><i>'.$LANG['common'][17].' :</i></b> '.
             html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes',
-                                       $this->fields['plugin_appliances_appliancetypes_id'])));
+                                                 $this->fields['plugin_appliances_appliancetypes_id'])));
       $pdf->displayLine(
          '<b><i>'.$LANG["common"][10].' :</i></b> '.getUserName($this->fields['users_id']),
          '<b><i>'.$LANG['plugin_appliances'][3].' :</i></b> '.
             html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments',
-                                       $this->fields['plugin_appliances_environments_id'])));
+                                                 $this->fields['plugin_appliances_environments_id'])));
 
       $pdf->displayLine(
          '<b><i>'.$LANG["common"][35].' :</i></b> '.
-            html_clean(Dropdown::getDropdownName('glpi_groups',$this->fields['groups_id'])),
+            html_clean(Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id'])),
          '<b><i>'.$LANG['common'][19].' :</i></b> '.$this->fields['serial']);
 
       $pdf->displayLine(
          '<b><i>'.$LANG["common"][15].' :</i></b> '.
-            html_clean(Dropdown::getDropdownName('glpi_locations',$this->fields['locations_id'])),
+            html_clean(Dropdown::getDropdownName('glpi_locations', $this->fields['locations_id'])),
          '<b><i>'.$LANG['common'][20].' :</i></b> '.$this->fields['otherserial']);
 
       $pdf->displayLine(
@@ -422,9 +423,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
          $opts[] = $data["champ"].($data["ddefault"] ? '='.$data["ddefault"] : '');
       }
       $pdf->setColumnsSize(100);
-      $pdf->displayLine("<b><i>".$LANG['plugin_appliances'][24].": </i></b>".implode(', ',$opts));
+      $pdf->displayLine("<b><i>".$LANG['plugin_appliances'][24]." : </i></b>".implode(', ',$opts));
 
-      $pdf->displayText('<b><i>'.$LANG["common"][25].' :</i></b>', $this->fields['comment']);
+      $pdf->displayText('<b><i>'.$LANG["common"][25].' : </i></b>', $this->fields['comment']);
 
       $pdf->displaySpace();
    }
@@ -477,8 +478,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo "<th>".$LANG['entity'][0]."</th>";
       }
       if ($this->fields["relationtype"]) {
-         echo "<th>".$LANG['plugin_appliances'][22].
-               "<br>".$LANG['plugin_appliances'][24]."</th>";
+         echo "<th>".$LANG['plugin_appliances'][22]."<br>".$LANG['plugin_appliances'][24]."</th>";
       }
       echo "<th>".$LANG['common'][19]."</th>";
       echo "<th>".$LANG['common'][20]."</th>";
@@ -584,7 +584,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td colspan='".(3+$colsup)."' class='center'>";
 
          echo "<input type='hidden' name='conID' value='$instID'>";
-         Dropdown::showAllItems("item",0,0,
+         Dropdown::showAllItems("item", 0, 0,
                                 ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
                                  $this->getTypes());
          echo "</td>";
@@ -698,25 +698,21 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
                         if (isMultiEntitiesMode()) {
                            $pdf->setColumnsSize(12,27,25,18,18);
-                           $pdf->displayLine(
-                                       $item->getTypeName(),
-                                       $name,
-                                       Dropdown::getDropdownName("glpi_entities",$data['entities_id']),
-                                       (isset($data["serial"])? "".$data["serial"]."" :"-"),
-                                       (isset($data["otherserial"])? "".$data["otherserial"]."" :"-"));
+                           $pdf->displayLine($item->getTypeName(), $name,
+                                             Dropdown::getDropdownName("glpi_entities",
+                                                                       $data['entities_id']),
+                                             (isset($data["serial"])? $data["serial"] :"-"),
+                                             (isset($data["otherserial"])?$data["otherserial"]:"-"));
                         } else {
                            $pdf->setColumnsSize(25,31,22,22);
-                           $pdf->displayTitle(
-                                       $item->getTypeName(),
-                                       $name,
-                                       (isset($data["serial"])? "".$data["serial"]."" :"-"),
-                                       (isset($data["otherserial"])? "".$data["otherserial"]."" :"-"));
+                           $pdf->displayTitle($item->getTypeName(), $name,
+                                              (isset($data["serial"])?$data["serial"]:"-"),
+                                              (isset($data["otherserial"])?$data["otherserial"]:"-"));
                         }
 
-                        PluginAppliancesRelation::showList_PDF($pdf,
-                                                               $this->fields["relationtype"],
+                        PluginAppliancesRelation::showList_PDF($pdf, $this->fields["relationtype"],
                                                                $data["IDD"]);
-                        PluginAppliancesOptvalue_Item::showList_PDF($pdf,$data["id"], $instID);
+                        PluginAppliancesOptvalue_Item::showList_PDF($pdf, $data["id"], $instID);
                      } // Each device
                   } // numrows device
                }
@@ -752,7 +748,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype'
                       AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
                            = `glpi_plugin_appliances_appliances`.`id`".
-                      getEntitiesRestrictRequest(" AND ","glpi_plugin_appliances_appliances",
+                      getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
                                                  'entities_id', $item->getEntityID(), true);
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -795,13 +791,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $used = array();
       while ($data = $DB->fetch_array($result)) {
          $appliancesID = $data["id"];
-         $used[] = $appliancesID;
+         $used[]       = $appliancesID;
 
          echo "<tr class='tab_bg_1".($data["is_deleted"]=='1'?"_2":"")."'>";
          if ($withtemplate !=3
              && $canread
-             && (in_array($data['entities_id'],
-                          $_SESSION['glpiactiveentities']) || $data["is_recursive"])) {
+             && (in_array($data['entities_id'], $_SESSION['glpiactiveentities'])
+                 || $data["is_recursive"])) {
 
             echo "<td class='center'><a href='".
                   $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php?id=".
@@ -822,10 +818,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
          }
          echo "</b></a></td>";
          if (isMultiEntitiesMode()) {
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data['entities_id'])."</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+                                                                 $data['entities_id'])."</td>";
          }
-         echo "<td class='center'>".Dropdown::getDropdownName("glpi_groups",
-                                                              $data["groups_id"])."</td>";
+         echo "<td class='center'>".Dropdown::getDropdownName("glpi_groups", $data["groups_id"]).
+              "</td>";
          echo "<td class='center'>".
                 Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
                                           $data["plugin_appliances_appliancetypes_id"])."</td>";
@@ -834,7 +831,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
             // add or delete a relation to an applicatifs
             echo "<td class='center'>";
             PluginAppliancesRelation::showList ($data["relationtype"], $data["entID"],
-                                                $item->fields["entities_id"],$canedit);
+                                                $item->fields["entities_id"], $canedit);
             echo "</td>";
          }
 
@@ -857,7 +854,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          } else {
             $entities = $item->getEntityID();
          }
-         $limit = getEntitiesRestrictRequest(" AND ", "glpi_plugin_appliances_appliances", '',
+         $limit = getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances", '',
                                              $entities, true);
 
          $q = "SELECT COUNT(*)
@@ -876,12 +873,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
             echo "<form method='post' action=\"".$CFG_GLPI["root_doc"].
                   "/plugins/appliances/front/appliance.form.php\">";
             echo "<input type='hidden' name='item' value='$ID'>".
-                  "<input type='hidden' name='itemtype' value='$itemtype'>";
+                 "<input type='hidden' name='itemtype' value='$itemtype'>";
             PluginAppliancesAppliance::dropdown(array('name'   => "conID",
                                                       'entity' => $entities,
                                                       'used'   => $used));
 
-            echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\"
+                   class='submit'>";
             echo "</form>";
 
             echo "</td>";
@@ -898,10 +896,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
     *
     * @param $pdf
     * @param $item
-    *
-    */
+   **/
    static function showAssociated_PDF($pdf, $item){
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
       $ID       = $item->getField('id');
       $itemtype = get_Class($item);
@@ -910,7 +907,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $pdf->setColumnsSize(100);
       $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][9].'</b>');
-
 
       $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
                        `glpi_plugin_appliances_appliances`.*
@@ -922,7 +918,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype'
                       AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
                            = `glpi_plugin_appliances_appliances`.`id`".
-                      getEntitiesRestrictRequest(" AND ","glpi_plugin_appliances_appliances",
+                      getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
                                                  'entities_id', $item->getEntityID(), true);
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -983,7 +979,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
     * @return nothing (HTML display)
    **/
    static function dropdown($options=array()) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       // Defautl values
       $p['name']     = 'plugin_appliances_appliances_id';
@@ -1028,7 +1024,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       'used'            => $p['used']);
 
       ajaxUpdateItemOnSelectEvent("type_appliances", "show_".$p['name'].$rand,
-                                  $CFG_GLPI["root_doc"]."/plugins/appliances/ajax/dropdownTypeAppliances.php",
+                                  $CFG_GLPI["root_doc"].
+                                    "/plugins/appliances/ajax/dropdownTypeAppliances.php",
                                   $params);
 
       echo "<span id='show_".$p['name']."$rand'>";
@@ -1050,7 +1047,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
     * @param $all boolean, all type, or only allowed ones
     *
     * @return array of types
-    */
+   **/
    static function getTypes($all=false) {
 
       static $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
@@ -1114,7 +1111,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         'limit'     => 'integer,optional' );
       }
 
-      if (!isset ($_SESSION['glpiID'])) {
+      if (!isset(getLoginUserID())) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
 
@@ -1143,8 +1140,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
             }
 
             //TODO A revoir
-            if (in_array($key, array('date_mod', 'entities_id', 'externalid', 'id', 'name',
-                                     'groups_id', 'users_id'))) {
+            if (in_array($key, array('date_mod', 'entities_id', 'externalid', 'groups_id', 'id',
+                                     'name', 'users_id'))) {
                $orders[] ="`$key` $val";
             } else {
                return PluginWebservicesMethodCommon::Error($protocol,
@@ -1160,7 +1157,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          $order = "`name` DESC";
       }
 
-      $where = getEntitiesRestrictRequest(' WHERE ', 'glpi_plugin_appliances_appliances');
+      $where = getEntitiesRestrictRequest(' WHERE', 'glpi_plugin_appliances_appliances');
 
       if (isset ($params['count'])) {
          $query = "SELECT COUNT(DISTINCT `id`) AS count
@@ -1213,7 +1210,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       'id'    => 'string' );
       }
 
-      if (!isset ($_SESSION['glpiID'])) {
+      if (!isset(getLoginUserID())) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
 
@@ -1256,7 +1253,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       'id'                                    => 'string');
       }
 
-      if (!isset($_SESSION['glpiID'])) {
+      if (!isset(getLoginUserID())) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
 
@@ -1347,7 +1344,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       'plugin_appliances_appliancetypes_name' => 'string,optional');
       }
 
-      if (!isset($_SESSION['glpiID'])) {
+      if (!isset(getLoginUserID())) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
 
@@ -1430,7 +1427,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         'externalid OR id'   => 'string' );
       }
 
-      if (!isset($_SESSION['glpiID'])) {
+      if (!isset(getLoginUserID())) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
 

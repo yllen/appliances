@@ -70,8 +70,11 @@ function plugin_init_appliances() {
    $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
 
    if (class_exists('PluginAppliancesAppliance')) { // only if plugin activated
-      $PLUGIN_HOOKS['pre_item_purge']['appliances'] = array('Profile'=>array('PluginAppliancesProfile', 'cleanProfiles'));
-      $PLUGIN_HOOKS['plugin_datainjection_populate']['appliances'] = 'plugin_datainjection_populate_appliances';
+      $PLUGIN_HOOKS['pre_item_purge']['appliances']
+                                       = array('Profile' => array('PluginAppliancesProfile',
+                                                                  'cleanProfiles'));
+      $PLUGIN_HOOKS['plugin_datainjection_populate']['appliances']
+                                       = 'plugin_datainjection_populate_appliances';
 
       $PLUGIN_HOOKS['item_purge']['appliances'] = array();
       foreach (PluginAppliancesAppliance::getTypes(true) as $type) {
@@ -88,22 +91,22 @@ function plugin_init_appliances() {
 
          // Display a menu entry ?
          if (plugin_appliances_haveRight("appliance","r")) {
-            $PLUGIN_HOOKS['menu_entry']['appliances']      = false;
+            $PLUGIN_HOOKS['menu_entry']['appliances'] = false;
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['title']
-                                                           = $LANG['plugin_appliances']['title'][1];
+                                                      = $LANG['plugin_appliances']['title'][1];
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['page']
-                                                           = '/plugins/appliances/front/appliance.php';
+                                                      = '/plugins/appliances/front/appliance.php';
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['search']
-                                                           = '/plugins/appliances/front/appliance.php';
-            $PLUGIN_HOOKS['headings']['appliances']        = 'plugin_get_headings_appliances';
+                                                      = '/plugins/appliances/front/appliance.php';
+            $PLUGIN_HOOKS['headings']['appliances']   = 'plugin_get_headings_appliances';
             $PLUGIN_HOOKS['headings_action']['appliances'] = 'plugin_headings_actions_appliances';
             $PLUGIN_HOOKS['headings_actionpdf']['appliances']
-                                                           = 'plugin_headings_actionpdf_appliances';
+                                                      = 'plugin_headings_actionpdf_appliances';
          }
 
          if (plugin_appliances_haveRight("appliance","w")) {
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['add']
-                                                      = '/plugins/appliances/front/appliance.form.php';
+                                          = '/plugins/appliances/front/appliance.form.php';
             $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
          }
 
@@ -140,7 +143,7 @@ function plugin_version_appliances() {
    return array('name'           => $LANG['plugin_appliances']['title'][1],
                 'version'        => '1.7.0',
                 'oldname'        => 'applicatifs',
-                'author'         => 'Remi Collet, Xavier Caillaud, Nelly Lasson',
+                'author'         => 'Remi Collet, Xavier Caillaud, Nelly Mahu Lasson',
                 'homepage'       => 'https://forge.indepnet.net/projects/show/appliances',
                 'minGlpiVersion' => '0.80');
 }
@@ -162,14 +165,14 @@ function plugin_appliances_check_config() {
    return true;
 }
 
+
 function plugin_appliances_haveRight($module,$right) {
 
    $matches = array(""  => array("","r","w"), // ne doit pas arriver normalement
                     "r" => array("r","w"),
                     "w" => array("w"),
                     "1" => array("1"),
-                    "0" => array("0",
-                                 "1")); // ne doit pas arriver non plus
+                    "0" => array("0", "1")); // ne doit pas arriver non plus
 
    if (isset($_SESSION["glpi_plugin_appliances_profiles"][$module])
        && in_array($_SESSION["glpi_plugin_appliances_profiles"][$module],$matches[$right])) {
@@ -178,7 +181,9 @@ function plugin_appliances_haveRight($module,$right) {
    return false;
 }
 
+
 function plugin_datainjection_migratetypes_appliances($types) {
+
    $types[1200] = 'PluginAppliancesAppliance';
    return $types;
 }
