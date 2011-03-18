@@ -35,6 +35,21 @@
 
 define("PLUGIN_APPLIANCES_RELATION_LOCATION",1);
 
+function plugin_appliances_postinit() {
+   global $CFG_GLPI, $PLUGIN_HOOKS;
+
+   $PLUGIN_HOOKS['plugin_uninstall_after']['appliances'] = array();
+   $PLUGIN_HOOKS['item_purge']['appliances'] = array();
+
+   foreach (PluginAppliancesAppliance::getTypes(true) as $type) {
+      $PLUGIN_HOOKS['plugin_uninstall_after']['appliances'][$type]
+         = array('PluginAppliancesAppliance_Item','cleanForItem');
+
+      $PLUGIN_HOOKS['item_purge']['appliances'][$type]
+         = array('PluginAppliancesAppliance_Item','cleanForItem');
+   }
+}
+
 function plugin_appliances_registerMethods() {
    global $WEBSERVICES_METHOD;
 
@@ -73,6 +88,7 @@ function plugin_appliances_install() {
          $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.3.sql");
       }
    }
+
    if (TableExists("glpi_plugin_applicatifs")) {
       if (!FieldExists("glpi_plugin_applicatifs","recursive")) { // version 1.3
          $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.4.sql");
@@ -465,28 +481,6 @@ function plugin_appliances_MassiveActionsProcess($data) {
 
 
 //////////////////////////////
-
-
-/**
- * Hook done on purge item case
-**/
-function plugin_item_purge_appliances($item) {
-
-   $type = get_class($item);
-   if (in_array($type, PluginAppliancesAppliance::getTypes(true))
-       || $type == 'Ticket') {
-
-      $temp = new PluginAppliancesAppliance_Item();
-      $temp->deleteByCriteria(array('itemtype' => $type,
-                                    'items_id' => $item->getField('id')));
-
-      $temp = new PluginAppliancesOptvalue_Item();
-      $temp->deleteByCriteria(array('itemtype' => $type,
-                                    'items_id' => $item->getField('id')));
-      return true;
-   }
-   return false;
-}
 
 
 /**

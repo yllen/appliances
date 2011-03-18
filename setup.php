@@ -75,11 +75,6 @@ function plugin_init_appliances() {
                                                                   'cleanProfiles'));
       $PLUGIN_HOOKS['plugin_datainjection_populate']['appliances']
                                        = 'plugin_datainjection_populate_appliances';
-
-      $PLUGIN_HOOKS['item_purge']['appliances'] = array();
-      foreach (PluginAppliancesAppliance::getTypes(true) as $type) {
-         $PLUGIN_HOOKS['item_purge']['appliances'][$type] = 'plugin_item_purge_appliances';
-      }
    }
 
    if (isset($_SESSION["glpiID"])) {
@@ -133,6 +128,9 @@ function plugin_init_appliances() {
 
    // Import webservice
    $PLUGIN_HOOKS['webservices']['appliances'] = 'plugin_appliances_registerMethods';
+
+   // End init, when all types are registered
+   $PLUGIN_HOOKS['post_init']['appliances'] = 'plugin_appliances_postinit';
 }
 
 

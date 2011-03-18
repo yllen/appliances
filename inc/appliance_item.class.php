@@ -56,6 +56,19 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       $temp = new PluginAppliancesRelation();
       $temp->deleteByCriteria(array('plugin_appliances_appliances_items_id' => $this->fields['id']));
    }
+
+
+   /**
+    * Hook called After an item is uninstall or purge
+    */
+   static function cleanForItem(CommonDBTM $item) {
+
+      $temp = new self();
+      $temp->deleteByCriteria(
+         array('itemtype' => $item->getType(),
+               'items_id' => $item->getField('id'))
+      );
+   }
 }
 
 ?>
