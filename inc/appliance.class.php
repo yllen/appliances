@@ -1290,7 +1290,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
          }
       }
 
-      foreach (array('comment', 'notes', 'serial', 'otherserial') as $field) {
+      // Old field name for compatibility
+      if (isset($params['notes'])) {
+         $input['notepad'] = addslashes($params['notes']);
+      }
+      foreach (array('comment', 'notepad', 'serial', 'otherserial') as $field) {
          if (isset($params[$field])) {
             $input[$field] = addslashes($params[$field]);
          }
@@ -1397,7 +1401,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
          $input['is_helpdesk_visible'] = ($params['is_helpdesk_visible'] ? 1 : 0);
       }
 
-      foreach (array('comment', 'notes', 'serial', 'otherserial') as $field) {
+      // Old field name for compatibility
+      if (isset($params['notes'])) {
+         $input['notepad'] = addslashes($params['notes']);
+      }
+      foreach (array('comment', 'notepad', 'serial', 'otherserial') as $field) {
          if (isset($params[$field])) {
             $input[$field] = addslashes($params[$field]);
          }

@@ -120,7 +120,10 @@ function plugin_appliances_install() {
    }
 
    if (!TableExists("glpi_plugin_appliances_appliances")) { // not installed
-      $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/empty-1.6.0.sql");
+      $DB->runFile(GLPI_ROOT . '/plugins/appliances/sql/empty-1.6.1.sql');
+
+   } else if (FieldExists('glpi_plugin_appliances_appliances', 'notes')) {
+      $DB->runFile(GLPI_ROOT . '/plugins/appliances/sql/update-1.6.1.sql');
    }
    // required cause autoload don't work for unactive plugin'
    include_once(GLPI_ROOT."/plugins/appliances/inc/profile.class.php");
