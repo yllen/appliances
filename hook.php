@@ -618,7 +618,6 @@ function plugin_appliances_generatePDF($options) {
 
                   case 6 :
                      plugin_pdf_ticket($pdf,$item);
-                     plugin_pdf_oldticket($pdf,$item);
                      break;
 
                   case 9 :
