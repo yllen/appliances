@@ -86,7 +86,7 @@ class PluginAppliancesProfile extends CommonDBTM {
             "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['plugin_appliances']['profile'][1]." :</td><td>";
+      echo "<td>".$LANG['plugin_appliances']['title'][1]." :</td><td>";
 
       if ($prof->fields['interface']!='helpdesk') {
          Profile::dropdownNoneReadWrite("appliance", $this->fields["appliance"], 1, 1, 1);

@@ -28,12 +28,14 @@
  --------------------------------------------------------------------------
  */
 //Français
-$title = "Applicatifs";
 
+// Plural
 $LANG['plugin_appliances']['title'][1] = "Applicatifs";
+// Singular
+$LANG['plugin_appliances'][1]  = "Applicatif";
 
 $LANG['plugin_appliances'][3]  = "Environnement";
-$LANG['plugin_appliances'][4]  = "Pas d'".$title." trouvé";
+$LANG['plugin_appliances'][4]  = "Pas d'applicatif trouvé";
 $LANG['plugin_appliances'][7]  = "Elément(s) associé(s)";
 $LANG['plugin_appliances'][9]  = "Applicatif(s) associé(s)";
 $LANG['plugin_appliances'][21] = "Responsable technique";
@@ -46,9 +48,8 @@ $LANG['plugin_appliances'][26] = "Valeur par défaut";
 $LANG['plugin_appliances'][30] = "Tickets en cours sur les éléments associés";
 
 $LANG['plugin_appliances']['profile'][0] = "Gestion des droits";
-$LANG['plugin_appliances']['profile'][1] = "$title";
 
-$LANG['plugin_appliances']['setup'][2] = "Type d'".$title."";
+$LANG['plugin_appliances']['setup'][2] = "Type d'applicatif";
 $LANG['plugin_appliances']['setup'][9] = "Associer";
 $LANG['plugin_appliances']['setup'][10] = "Dissocier";
 $LANG['plugin_appliances']['setup'][13] = "Associer à l'applicatif";

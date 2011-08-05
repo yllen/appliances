@@ -28,14 +28,16 @@
  --------------------------------------------------------------------------
  */
 //English
-$title = "Appliance";
 
-$LANG['plugin_appliances']['title'][1] = "".$title."";
+// Plural
+$LANG['plugin_appliances']['title'][1] = "Appliances";
+// Singular
+$LANG['plugin_appliances'][1]  = "Appliance";
 
-$LANG['plugin_appliances'][3] = "Environment";
-$LANG['plugin_appliances'][4] = "No ".$title." found";
-$LANG['plugin_appliances'][7] = "Associated items";
-$LANG['plugin_appliances'][9] = "Associated ".$title."(s)";
+$LANG['plugin_appliances'][3]  = "Environment";
+$LANG['plugin_appliances'][4]  = "No appliance found";
+$LANG['plugin_appliances'][7]  = "Associated items";
+$LANG['plugin_appliances'][9]  = "Associated appliances";
 $LANG['plugin_appliances'][21] = "Technical responsible";
 $LANG['plugin_appliances'][22] = "Item to link";
 $LANG['plugin_appliances'][23] = "Entity";
@@ -46,9 +48,8 @@ $LANG['plugin_appliances'][26] = "Default";
 $LANG['plugin_appliances'][30] = "Open tickets on associated equipments";
 
 $LANG['plugin_appliances']['profile'][0] = "Rights management";
-$LANG['plugin_appliances']['profile'][1] = "$title";
 
-$LANG['plugin_appliances']['setup'][2] = "Type of ".$title."";
+$LANG['plugin_appliances']['setup'][2] = "Type of appliance";
 $LANG['plugin_appliances']['setup'][9] = "Associate";
 $LANG['plugin_appliances']['setup'][10] = "Dissociate";
 $LANG['plugin_appliances']['setup'][13] = "Associate to appliance";
