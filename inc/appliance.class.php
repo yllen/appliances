@@ -46,7 +46,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['plugin_appliances']['title'][1];
+      return $LANG['plugin_appliances'][1];
    }
 
 
@@ -219,22 +219,17 @@ class PluginAppliancesAppliance extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong[1] = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
+         $ong[1] = $this->getTypeName();
          $ong[2] = $LANG['plugin_appliances'][24];
-         if (haveRight("show_all_ticket","1")) {
-            $ong[6] = $LANG['title'][28];
-         }
-         if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[9]=$LANG['Menu'][26];
-         }
-         if (haveRight("document","r")) {
-            $ong[10] = $LANG['Menu'][27];
-         }
-         if (haveRight("notes","r")) {
-            $ong[11] = $LANG['title'][37];
-         }
-         $ong[12] = $LANG['title'][38];
+         $this->addStandardTab('Ticket', $ong);
+         $this->addStandardTab('Infocom', $ong);
+         $this->addStandardTab('Contract_Item', $ong);
+         $this->addStandardTab('Document', $ong);
+         $this->addStandardTab('Note', $ong);
+         $this->addStandardTab('Log', $ong);
+      } else {
+         $ong['empty'] = $this->getTypeName();
       }
       return $ong;
    }

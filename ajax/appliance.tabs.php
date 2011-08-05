@@ -75,29 +75,8 @@ if ($_POST["id"] >0
          $optvalue->showList($appliance);
          break;
 
-      case 6 :
-         Ticket::showListForItem('PluginAppliancesAppliance', $_POST["id"]);
-         break;
-
-      case 9 :
-         Infocom::showForItem($appliance);
-         Contract::showAssociated($appliance);
-         break;
-
-      case 10 :
-         Document::showAssociated($appliance);
-         break;
-
-      case 11 :
-         showNotesForm($_POST['target'], 'PluginAppliancesAppliance', $_POST["id"]);
-         break;
-
-      case 12 :
-         Log::showForItem($appliance);
-         break;
-
       default :
-         if (!Plugin::displayAction($appliance, $_POST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($appliance, $_REQUEST['glpi_tab'])) {
             $appliance->showItem();
          }
    }
