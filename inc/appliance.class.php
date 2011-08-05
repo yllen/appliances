@@ -219,8 +219,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
+      $ong['empty'] = $this->getTypeName();
       if ($this->fields['id'] > 0) {
-         $ong[1] = $this->getTypeName();
+         $this->addStandardTab('PluginAppliancesAppliance_Item', $ong);
          $ong[2] = $LANG['plugin_appliances'][24];
          $this->addStandardTab('Ticket', $ong);
          $this->addStandardTab('Infocom', $ong);
@@ -228,8 +229,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
          $this->addStandardTab('Document', $ong);
          $this->addStandardTab('Note', $ong);
          $this->addStandardTab('Log', $ong);
-      } else {
-         $ong['empty'] = $this->getTypeName();
       }
       return $ong;
    }
@@ -424,178 +423,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $pdf->displayText('<b><i>'.$LANG["common"][25].' : </i></b>', $this->fields['comment']);
 
       $pdf->displaySpace();
-   }
-
-
-   /**
-    * Show the Device associated with an applicatif
-    *
-    * Called from the applicatif form
-   **/
-   function showItem() {
-      global $DB,$CFG_GLPI, $LANG;
-
-      $instID = $this->fields['id'];
-
-      if (!$this->can($instID,"r")) {
-         return false;
-      }
-      $rand = mt_rand();
-
-      $canedit = $this->can($instID,'w');
-
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_plugin_appliances_appliances_items`
-                WHERE `plugin_appliances_appliances_id` = '$instID'
-                ORDER BY `itemtype`";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-
-      $i = 0;
-
-      if (isMultiEntitiesMode()) {
-         $colsup = 1;
-      } else {
-         $colsup = 0;
-      }
-
-      echo "<form method='post' name='appliances_form$rand' id='appliances_form$rand' action=\"".
-            $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php\">";
-
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='".($canedit?(6+$colsup):(5+$colsup))."'>".
-            $LANG['plugin_appliances'][7]."&nbsp;:</th></tr><tr>";
-      if ($canedit) {
-         echo "<th>&nbsp;</th>";
-      }
-      echo "<th>".$LANG['common'][17]."</th>";
-      echo "<th>".$LANG['common'][16]."</th>";
-      if (isMultiEntitiesMode()) {
-         echo "<th>".$LANG['entity'][0]."</th>";
-      }
-      if ($this->fields["relationtype"]) {
-         echo "<th>".$LANG['plugin_appliances'][22]."<br>".$LANG['plugin_appliances'][24]."</th>";
-      }
-      echo "<th>".$LANG['common'][19]."</th>";
-      echo "<th>".$LANG['common'][20]."</th>";
-      echo "</tr>";
-
-      for ($i=0 ; $i < $number ; $i++) {
-         $type = $DB->result($result, $i, "itemtype");
-         if (!class_exists($type)) {
-            continue;
-         }
-         $item = new $type();
-         if ($item->canView()) {
-            $column = "name";
-            if ($type == 'Ticket') {
-               $column = "id";
-            }
-            if ($type == 'KnowbaseItem') {
-               $column = "question";
-            }
-
-            $query = "SELECT `".$item->getTable()."`.*,
-                             `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
-                             `glpi_entities`.`id` AS entity
-                      FROM `glpi_plugin_appliances_appliances_items`, ".getTableForItemType($type)."
-                      LEFT JOIN `glpi_entities`
-                           ON (`glpi_entities`.`id` = `".$item->getTable()."`.`entities_id`)
-                      WHERE `".$item->getTable()."`.`id`
-                                 = `glpi_plugin_appliances_appliances_items`.`items_id`
-                            AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type'
-                            AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
-                                 = '$instID' ".
-                            getEntitiesRestrictRequest(" AND ", $item->getTable());
-
-            if ($item->maybeTemplate()) {
-               $query .= " AND `".$item->getTable()."`.`is_template` = '0'";
-            }
-            $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->getTable()."`.$column";
-
-            if ($result_linked = $DB->query($query)) {
-               if ($DB->numrows($result_linked)) {
-                  initNavigateListItems($type,$LANG['plugin_appliances']['title'][1]." = ".
-                                              $this->fields['name']);
-
-                  while ($data = $DB->fetch_assoc($result_linked)) {
-                     $item->getFromDB($data["id"]);
-                     addToNavigateListItems($type,$data["id"]);
-                     $ID = "";
-                     if ($type == 'Ticket') {
-                        $data["name"] = $LANG['job'][38]." ".$data["id"];
-                     }
-                     if ($type == 'KnowbaseItem') {
-                        $data["name"] = $data["question"];
-                     }
-
-                     if($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                        $ID = " (".$data["id"].")";
-                     }
-                     $name= $item->getLink();
-
-                     echo "<tr class='tab_bg_1'>";
-                     if ($canedit) {
-                        echo "<td width='10'>";
-                        $sel = "";
-                        if (isset($_GET["select"]) && $_GET["select"] == "all") {
-                           $sel = "checked";
-                        }
-                        echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
-                        echo "</td>";
-                     }
-                     echo "<td class='center'>".$item->getTypeName()."</td>";
-                     echo "<td class='center' ".
-                           (isset($data['deleted']) && $data['deleted']?"class='tab_bg_2_2'":"").">".
-                           $name."</td>";
-                     if (isMultiEntitiesMode()) {
-                        echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
-                                                                             $data['entity']).
-                              "</td>";
-                     }
-
-                     if ($this->fields["relationtype"]) {
-                        echo "<td class='center'>".
-                           PluginAppliancesRelation::getTypeName($this->fields["relationtype"]).
-                           "&nbsp;:&nbsp;";
-                        PluginAppliancesRelation::showList($this->fields["relationtype"],
-                                                           $data["IDD"],
-                                                           $item->fields["entities_id"], false);
-                        PluginAppliancesOptvalue_Item::showList($type, $data["id"], $instID, false);
-                        echo "</td>";
-                     }
-
-                     echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"].""
-                                                                       :"-")."</td>";
-                     echo "<td class='center'>".
-                           (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
-                     echo "</tr>";
-                  }
-               }
-            }
-         }
-      }
-
-      if ($canedit) {
-         echo "<tr class='tab_bg_1'><td colspan='".(3+$colsup)."' class='center'>";
-
-         echo "<input type='hidden' name='conID' value='$instID'>";
-         Dropdown::showAllItems("item", 0, 0,
-                                ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
-                                 $this->getTypes());
-         echo "</td>";
-         echo "<td colspan='3' class='center' class='tab_bg_2'>";
-         echo "<input type='submit' name='additem' value='".$LANG['buttons'][8]."' class='submit'>";
-         echo "</td></tr>";
-         echo "</table></div>" ;
-
-         openArrowMassive("appliances_form$rand", true);
-         closeArrowMassive('deleteitem', $LANG['buttons'][6]);
-
-      } else {
-         echo "</table></div>";
-      }
-      echo "</form>";
    }
 
 

@@ -77,7 +77,6 @@ if ($_POST["id"] >0
 
       default :
          if (!CommonGLPI::displayStandardTab($appliance, $_REQUEST['glpi_tab'])) {
-            $appliance->showItem();
          }
    }
    ajaxFooter();
