@@ -55,7 +55,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
     *
     * @return nothing (display form)
     */
-   function showList (PluginAppliancesAppliance $appli) {
+   static function showForAppliance (PluginAppliancesAppliance $appli) {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!$appli->can($appli->fields['id'],'r')) {
@@ -160,6 +160,33 @@ class PluginAppliancesOptvalue extends CommonDBTM {
          }
       } // for
    }
-}
 
-?>
+
+   static function countForAppliance(PluginAppliancesAppliance $item) {
+
+      return countElementsInTable('glpi_plugin_appliances_optvalues',
+                                  "`plugin_appliances_appliances_id` = '".$item->getID()."'");
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if ($item->getType()=='PluginAppliancesAppliance') {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['plugin_appliances'][24], self::countForAppliance($item));
+         }
+         return $LANG['plugin_appliances'][24];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='PluginAppliancesAppliance') {
+         self::showForAppliance($item);
+      }
+      return true;
+   }
+}

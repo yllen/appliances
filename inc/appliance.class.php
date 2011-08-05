@@ -222,7 +222,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $ong['empty'] = $this->getTypeName();
       if ($this->fields['id'] > 0) {
          $this->addStandardTab('PluginAppliancesAppliance_Item', $ong);
-         $ong[2] = $LANG['plugin_appliances'][24];
+         $this->addStandardTab('PluginAppliancesOptvalue', $ong);
          $this->addStandardTab('Ticket', $ong);
          $this->addStandardTab('Infocom', $ong);
          $this->addStandardTab('Contract_Item', $ong);
