@@ -172,7 +172,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
                   while ($data = $DB->fetch_assoc($result_linked)) {
                      $item->getFromDB($data["id"]);
-                     addToNavigateListItems($type,$data["id"]);
+                     Toolbox::addToNavigateListItems($type,$data["id"]);
                      $ID = "";
                      if ($type == 'Ticket') {
                         $data["name"] = $LANG['job'][38]." ".$data["id"];
@@ -251,14 +251,16 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getType()=='PluginAppliancesAppliance') {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['title'][30], self::countForAppliance($item));
+      if (!$withtemplate) {
+         if ($item->getType()=='PluginAppliancesAppliance') {
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               return self::createTabEntry($LANG['title'][30], self::countForAppliance($item));
+            }
+            return $LANG['title'][30];
          }
-         return $LANG['title'][30];
       }
       return '';
    }

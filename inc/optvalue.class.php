@@ -169,7 +169,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
       if ($item->getType()=='PluginAppliancesAppliance') {

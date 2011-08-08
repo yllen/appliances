@@ -220,15 +220,15 @@ class PluginAppliancesAppliance extends CommonDBTM {
       global $LANG;
 
       $ong['empty'] = $this->getTypeName();
-      if ($this->fields['id'] > 0) {
-         $this->addStandardTab('PluginAppliancesAppliance_Item', $ong);
-         $this->addStandardTab('PluginAppliancesOptvalue', $ong);
-         $this->addStandardTab('Ticket', $ong);
-         $this->addStandardTab('Infocom', $ong);
-         $this->addStandardTab('Contract_Item', $ong);
-         $this->addStandardTab('Document', $ong);
-         $this->addStandardTab('Note', $ong);
-         $this->addStandardTab('Log', $ong);
+      if (!$this->isNewItem()) {
+         $this->addStandardTab('PluginAppliancesAppliance_Item', $ong, $options);
+         $this->addStandardTab('PluginAppliancesOptvalue', $ong, $options);
+         $this->addStandardTab('Ticket', $ong, $options);
+         $this->addStandardTab('Infocom', $ong, $options);
+         $this->addStandardTab('Contract_Item', $ong, $options);
+         $this->addStandardTab('Document', $ong, $options);
+         $this->addStandardTab('Note', $ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
       }
       return $ong;
    }
@@ -350,7 +350,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "</td></tr>";
 
       $datestring = $LANG['common'][26]."&nbsp;: ";
-      $date       = convDateTime($this->fields["date_mod"]);
+      $date       = Toolbox::convDateTime($this->fields["date_mod"]);
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center'>".$datestring.$date;
       echo "</td></tr>";
@@ -383,27 +383,27 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $pdf->displayLine(
          '<b><i>'.$LANG["common"][16].' :</i></b> '.$this->fields['name'],
          '<b><i>'.$LANG['common'][17].' :</i></b> '.
-            html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes',
+            Html::clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes',
                                                  $this->fields['plugin_appliances_appliancetypes_id'])));
       $pdf->displayLine(
          '<b><i>'.$LANG["common"][10].' :</i></b> '.getUserName($this->fields['users_id']),
          '<b><i>'.$LANG['plugin_appliances'][3].' :</i></b> '.
-            html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments',
+            Html::clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments',
                                                  $this->fields['plugin_appliances_environments_id'])));
 
       $pdf->displayLine(
          '<b><i>'.$LANG["common"][35].' :</i></b> '.
-            html_clean(Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id'])),
+            Html::clean(Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id'])),
          '<b><i>'.$LANG['common'][19].' :</i></b> '.$this->fields['serial']);
 
       $pdf->displayLine(
          '<b><i>'.$LANG["common"][15].' :</i></b> '.
-            html_clean(Dropdown::getDropdownName('glpi_locations', $this->fields['locations_id'])),
+            Html::clean(Dropdown::getDropdownName('glpi_locations', $this->fields['locations_id'])),
          '<b><i>'.$LANG['common'][20].' :</i></b> '.$this->fields['otherserial']);
 
       $pdf->displayLine(
          '<b><i>'.$LANG['plugin_appliances'][22].' :</i></b> '.
-            html_clean(PluginAppliancesRelation::getTypeName($this->fields["relationtype"])),
+            Html::clean(PluginAppliancesRelation::getTypeName($this->fields["relationtype"])),
          '<b><i>'.$LANG['software'][46].' :</i></b> '.
             Dropdown::getYesNo($this->fields["is_helpdesk_visible"]));
 
@@ -767,19 +767,19 @@ class PluginAppliancesAppliance extends CommonDBTM {
             if (isMultiEntitiesMode()) {
                $pdf->setColumnsSize(30,30,20,20);
                $pdf->displayLine($data["name"],
-                                 html_clean(Dropdown::getDropdownName("glpi_entities",
-                                                                      $data['entities_id'])),
-                                 html_clean(Dropdown::getDropdownName("glpi_groups",
-                                                                      $data["groups_id"])),
-                                 html_clean(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
-                                                                      $data["plugin_appliances_appliancetypes_id"])));
+                                 Html::clean(Dropdown::getDropdownName("glpi_entities",
+                                                                       $data['entities_id'])),
+                                 Html::clean(Dropdown::getDropdownName("glpi_groups",
+                                                                       $data["groups_id"])),
+                                 Html::clean(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
+                                                                       $data["plugin_appliances_appliancetypes_id"])));
             } else {
                $pdf->setColumnsSize(50,25,25);
                $pdf->displayLine($data["name"],
-                                 html_clean(Dropdown::getDropdownName("glpi_groups",
-                                                                      $data["groups_id"])),
-                                 html_clean(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
-                                                                      $data["plugin_appliances_appliancetypes_id"])));
+                                 Html::clean(Dropdown::getDropdownName("glpi_groups",
+                                                                       $data["groups_id"])),
+                                 Html::clean(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
+                                                                       $data["plugin_appliances_appliancetypes_id"])));
             }
             PluginAppliancesRelation::showList_PDF($pdf, $data["relationtype"], $data["entID"]);
             PluginAppliancesOptvalue_Item::showList_PDF($pdf, $ID, $appliancesID);
@@ -1283,15 +1283,15 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       if (isset($params['id2name'])) {
          $resp['plugin_appliances_appliancetypes_name']
-            = html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes',
-                                                   $resp['plugin_appliances_appliancetypes_id']));
+            = Html::clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes',
+                                                    $resp['plugin_appliances_appliancetypes_id']));
          $resp['plugin_appliances_environments_name']
-            = html_clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments',
-                                                   $resp['plugin_appliances_environments_id']));
+            = Html::clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments',
+                                                    $resp['plugin_appliances_environments_id']));
          $resp['users_name']
-            = html_clean(Dropdown::getDropdownName('glpi_users', $resp['users_id']));
+            = Html::clean(Dropdown::getDropdownName('glpi_users', $resp['users_id']));
          $resp['groups_name']
-            = html_clean(Dropdown::getDropdownName('glpi_groups', $resp['groups_id']));
+            = Html::clean(Dropdown::getDropdownName('glpi_groups', $resp['groups_id']));
       }
       return $resp;
    }
