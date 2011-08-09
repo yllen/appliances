@@ -47,16 +47,13 @@ function plugin_init_appliances() {
                                'ticket_types'           => true,
                                'helpdesk_visible_types' => true));
 
+   Plugin::registerClass('PluginAppliancesProfile',
+                         array('addtabon' => 'Profile'));
    Plugin::registerClass('PluginAppliancesEnvironment');
-
    Plugin::registerClass('PluginAppliancesApplianceType');
-
    Plugin::registerClass('PluginAppliancesAppliance_Item');
-
    Plugin::registerClass('PluginAppliancesOptvalue');
-
    Plugin::registerClass('PluginAppliancesOptvalue_Item');
-
    Plugin::registerClass('PluginAppliancesRelation');
 
    // Define the type for which we know how to generate PDF, need :

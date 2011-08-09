@@ -138,6 +138,29 @@ class PluginAppliancesProfile extends CommonDBTM {
                               'name' => $Profile->getField('name')));
    }
 
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if ($item->getType()=='Profile') {
+            return $LANG['plugin_appliances']['title'][1];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
+
+      if ($item->getType()=='Profile') {
+         $ID = $item->getField('id');
+         $prof = new self();
+         if ($prof->GetfromDB($ID) || $prof->createUserAccess($item)) {
+            $prof->showForm($ID);
+         }
+      }
+      return true;
+   }
 }
 
 ?>

@@ -493,11 +493,7 @@ function plugin_get_headings_appliances($item,$withtemplate) {
    global $LANG;
 
    $type = get_Class($item);
-   if ($type == 'Profile') {
-      if ($item->getField('id')) {
-         return array(1 => $LANG['plugin_appliances']['title'][1]);
-      }
-   } else if (in_array($type, PluginAppliancesAppliance::getTypes(true))) {
+   if (in_array($type, PluginAppliancesAppliance::getTypes(true))) {
       if (!$withtemplate) {
          // Non template case
          return array(1 => $LANG['plugin_appliances']['title'][1]);
@@ -513,36 +509,10 @@ function plugin_get_headings_appliances($item,$withtemplate) {
 function plugin_headings_actions_appliances($item) {
 
    $type = get_Class($item);
-   if ($type == 'Profile') {
-      return array(1 => "plugin_headings_appliances");
-   }
    if (in_array($type,PluginAppliancesAppliance::getTypes(true))) {
       return array(1 => array('PluginAppliancesAppliance', 'showAssociated'));
    }
    return false;
-}
-
-
-/**
- * applicatifs of an action heading
- * Define headings actions added by the plugin
-**/
-function plugin_headings_appliances($item, $withtemplate=0) {
-   global $CFG_GLPI, $LANG;
-
-   $type = get_Class($item);
-   $ID = $item->getField('id');
-   switch ($type) {
-      case 'Profile' :
-         $prof = new PluginAppliancesProfile();
-         if ($prof->GetfromDB($ID) || $prof->createUserAccess($item)) {
-            $prof->showForm($ID,
-                            array('target' => $CFG_GLPI["root_doc"].
-                                              "/plugins/appliances/front/profile.form.php"));
-         }
-         break;
-
-   }
 }
 
 
