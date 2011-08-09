@@ -90,8 +90,6 @@ function plugin_init_appliances() {
                                                       = '/plugins/appliances/front/appliance.php';
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['search']
                                                       = '/plugins/appliances/front/appliance.php';
-            $PLUGIN_HOOKS['headings']['appliances']   = 'plugin_get_headings_appliances';
-            $PLUGIN_HOOKS['headings_action']['appliances'] = 'plugin_headings_actions_appliances';
             $PLUGIN_HOOKS['headings_actionpdf']['appliances']
                                                       = 'plugin_headings_actionpdf_appliances';
          }
@@ -107,8 +105,6 @@ function plugin_init_appliances() {
          if (plugin_appliances_haveRight("appliance","r")) {
             $PLUGIN_HOOKS['menu_entry']['appliances']      = 'front/appliance.php';
             $PLUGIN_HOOKS['submenu_entry']['appliances']['search'] = 'front/appliance.php';
-            $PLUGIN_HOOKS['headings']['appliances']        = 'plugin_get_headings_appliances';
-            $PLUGIN_HOOKS['headings_action']['appliances'] = 'plugin_headings_actions_appliances';
             $PLUGIN_HOOKS['headings_actionpdf']['appliances']
                                                            = 'plugin_headings_actionpdf_appliances';
          }

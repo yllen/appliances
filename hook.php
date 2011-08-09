@@ -47,6 +47,8 @@ function plugin_appliances_postinit() {
 
       $PLUGIN_HOOKS['item_purge']['appliances'][$type]
          = array('PluginAppliancesAppliance_Item','cleanForItem');
+
+      CommonGLPI::registerStandardTab($type, 'PluginAppliancesAppliance_Item');
    }
 }
 
@@ -480,39 +482,6 @@ function plugin_appliances_MassiveActionsProcess($data) {
          }
          break;
    }
-}
-
-
-//////////////////////////////
-
-
-/**
- * Define headings added by the plugin
-**/
-function plugin_get_headings_appliances($item,$withtemplate) {
-   global $LANG;
-
-   $type = get_Class($item);
-   if (in_array($type, PluginAppliancesAppliance::getTypes(true))) {
-      if (!$withtemplate) {
-         // Non template case
-         return array(1 => $LANG['plugin_appliances']['title'][1]);
-      }
-   }
-   return false;
-}
-
-
-/**
- * Define headings actions added by the plugin
-**/
-function plugin_headings_actions_appliances($item) {
-
-   $type = get_Class($item);
-   if (in_array($type,PluginAppliancesAppliance::getTypes(true))) {
-      return array(1 => array('PluginAppliancesAppliance', 'showAssociated'));
-   }
-   return false;
 }
 
 

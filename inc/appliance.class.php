@@ -448,7 +448,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      if (isMultiEntitiesMode()) {
+      if (Toolbox::isMultiEntitiesMode()) {
          $pdf->setColumnsSize(12,27,25,18,18);
          $pdf->displayTitle('<b><i>'.$LANG['common'][17],
                                      $LANG['common'][16],
@@ -519,7 +519,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         }
                         $name = $data["name"].$ID;
 
-                        if (isMultiEntitiesMode()) {
+                        if (Toolbox::isMultiEntitiesMode()) {
                            $pdf->setColumnsSize(12,27,25,18,18);
                            $pdf->displayLine($item->getTypeName(), $name,
                                              Dropdown::getDropdownName("glpi_entities",
@@ -542,175 +542,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
             } // type right
          } // each type
       } // numrows type
-   }
-
-
-   /**
-    * Show the applicatif associated with a device
-    *
-    * Called from the device form (applicatif tab)
-    *
-    * @param $itemtype : type of the device
-    * @param $withtemplate : not used, always empty
-   **/
-   static function showAssociated($item, $withtemplate='') {
-      global $DB,$CFG_GLPI, $LANG;
-
-      $ID       = $item->getField('id');
-      $itemtype = get_Class($item);
-      $canread  = $item->can($ID,'r');
-      $canedit  = $item->can($ID,'w');
-
-      $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
-                       `glpi_plugin_appliances_appliances`.*
-                FROM `glpi_plugin_appliances_appliances_items`,
-                     `glpi_plugin_appliances_appliances`
-                LEFT JOIN `glpi_entities`
-                     ON (`glpi_entities`.`id` = `glpi_plugin_appliances_appliances`.`entities_id`)
-                WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '$ID'
-                      AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype'
-                      AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
-                           = `glpi_plugin_appliances_appliances`.`id`".
-                      getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
-                                                 'entities_id', $item->getEntityID(), true);
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-
-      $query_app = "SELECT `ID`
-                    FROM `glpi_plugin_appliances_appliances_items`
-                    WHERE `items_id` = '$ID'";
-      $result_app = $DB->query($query_app);
-      $number_app = $DB->numrows($result_app);
-
-      if ($number_app >0) {
-         $colsup = 1;
-      } else {
-         $colsup = 0;
-      }
-
-      if (isMultiEntitiesMode()) {
-         $colsup += 1;
-      }
-
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='".(5+$colsup)."'>".$LANG['plugin_appliances'][9]." :</th></tr>";
-      echo "<tr><th>".$LANG['common'][16]."</th>";
-      if (isMultiEntitiesMode()) {
-         echo "<th>".$LANG['entity'][0]."</th>";
-      }
-      echo "<th>".$LANG['common'][35]."</th>";
-      echo "<th>".$LANG['common'][17]."</th>";
-      if ($number_app >0) {
-         echo "<th>".$LANG['plugin_appliances'][22]."</th>";
-      }
-      echo "<th>".$LANG['common'][25]."<br>".$LANG['plugin_appliances'][24]."</th>";
-
-      if ($canedit) {
-         if ($withtemplate <2) {
-            echo "<th>&nbsp;</th>";
-         }
-      }
-      echo "</tr>";
-      $used = array();
-      while ($data = $DB->fetch_array($result)) {
-         $appliancesID = $data["id"];
-         $used[]       = $appliancesID;
-
-         echo "<tr class='tab_bg_1".($data["is_deleted"]=='1'?"_2":"")."'>";
-         if ($withtemplate !=3
-             && $canread
-             && (in_array($data['entities_id'], $_SESSION['glpiactiveentities'])
-                 || $data["is_recursive"])) {
-
-            echo "<td class='center'><a href='".
-                  $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php?id=".
-                  $data["id"]."'>".$data["name"];
-            if ($_SESSION["glpiis_ids_visible"]) {
-               echo " (".$data["id"].")";
-            }
-            echo "</a></td>";
-         } else {
-            echo "<td class='center'>".$data["name"];
-            if ($_SESSION["glpiis_ids_visible"]) {
-               echo " (".$data["id"].")";
-            }
-            echo "</td>";
-         }
-         if ($_SESSION["glpiis_ids_visible"]) {
-            echo " (".$data["id"].")";
-         }
-         echo "</b></a></td>";
-         if (isMultiEntitiesMode()) {
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
-                                                                 $data['entities_id'])."</td>";
-         }
-         echo "<td class='center'>".Dropdown::getDropdownName("glpi_groups", $data["groups_id"]).
-              "</td>";
-         echo "<td class='center'>".
-                Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
-                                          $data["plugin_appliances_appliancetypes_id"])."</td>";
-
-         if ($number_app >0) {
-            // add or delete a relation to an applicatifs
-            echo "<td class='center'>";
-            PluginAppliancesRelation::showList ($data["relationtype"], $data["entID"],
-                                                $item->fields["entities_id"], $canedit);
-            echo "</td>";
-         }
-
-         echo "<td class='center'>".$data["comment"];
-         PluginAppliancesOptvalue_Item::showList($itemtype, $ID, $appliancesID, $canedit);
-         echo "</td>";
-
-         if ($canedit) {
-            echo "<td class='center tab_bg_2'><a href='".$CFG_GLPI["root_doc"].
-                  "/plugins/appliances/front/appliance.form.php?deleteappliance=1".
-                  "&amp;id=".$data["entID"]."'><b>".$LANG['buttons'][6]."</b></a></td>";
-         }
-         echo "</tr>";
-      }
-
-      if ($canedit){
-         $entities = "";
-         if ($item->isRecursive()) {
-            $entities = getSonsOf('glpi_entities', $item->getEntityID());
-         } else {
-            $entities = $item->getEntityID();
-         }
-         $limit = getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances", '',
-                                             $entities, true);
-
-         $q = "SELECT COUNT(*)
-               FROM `glpi_plugin_appliances_appliances`
-               WHERE `is_deleted` = '0'
-               $limit";
-
-         $result = $DB->query($q);
-         $nb = $DB->result($result,0,0);
-
-         if ($withtemplate<2 && $nb>count($used)) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='right' colspan=5>";
-
-            // needed to use the button "additem"
-            echo "<form method='post' action=\"".$CFG_GLPI["root_doc"].
-                  "/plugins/appliances/front/appliance.form.php\">";
-            echo "<input type='hidden' name='item' value='$ID'>".
-                 "<input type='hidden' name='itemtype' value='$itemtype'>";
-            PluginAppliancesAppliance::dropdown(array('name'   => "conID",
-                                                      'entity' => $entities,
-                                                      'used'   => $used));
-
-            echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\"
-                   class='submit'>";
-            echo "</form>";
-
-            echo "</td>";
-            echo "<td class='right' colspan='".($colsup)."'></td>";
-            echo "</tr>";
-         }
-      }
-      echo "</table></div>";
    }
 
 
@@ -749,7 +580,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if (!$number) {
          $pdf->displayLine($LANG['search'][15]);
       } else {
-         if (isMultiEntitiesMode()) {
+         if (Toolbox::isMultiEntitiesMode()) {
             $pdf->setColumnsSize(30,30,20,20);
             $pdf->displayTitle('<b><i>'.$LANG['common'][16],
                                         $LANG['entity'][0],
@@ -764,7 +595,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
          while ($data = $DB->fetch_array($result)) {
             $appliancesID = $data["id"];
-            if (isMultiEntitiesMode()) {
+            if (Toolbox::isMultiEntitiesMode()) {
                $pdf->setColumnsSize(30,30,20,20);
                $pdf->displayLine($data["name"],
                                  Html::clean(Dropdown::getDropdownName("glpi_entities",
