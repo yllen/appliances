@@ -374,7 +374,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $pdf->setColumnsSize(50,50);
       $col1 = '<b>'.$LANG["common"][2].' '.$this->fields['id'].'</b>';
       if (isset($this->fields["date_mod"])) {
-         $col2 = $LANG["common"][26].' : '.convDateTime($this->fields["date_mod"]);
+         $col2 = $LANG["common"][26].' : '.Toolbox::convDateTime($this->fields["date_mod"]);
       } else {
          $col2 = '';
       }

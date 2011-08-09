@@ -257,9 +257,9 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       if (!$withtemplate) {
          if ($item->getType()=='PluginAppliancesAppliance') {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry($LANG['title'][30], self::countForAppliance($item));
+               return self::createTabEntry($LANG['document'][19], self::countForAppliance($item));
             }
-            return $LANG['title'][30];
+            return $LANG['document'][19];
          }
       }
       return '';
