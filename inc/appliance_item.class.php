@@ -74,8 +74,13 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
    static function countForAppliance(PluginAppliancesAppliance $item) {
 
+      $types = implode("','", $item->getTypes());
+      if (empty($types)) {
+         return 0;
+      }
       return countElementsInTable('glpi_plugin_appliances_appliances_items',
-                                  "`plugin_appliances_appliances_id` = '".$item->getID()."'");
+                                  "`itemtype` IN ('$types')
+                                   AND `plugin_appliances_appliances_id` = '".$item->getID()."'");
    }
 
 
@@ -432,7 +437,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       global $LANG;
 
       if (!$withtemplate) {
-         if ($item->getType()=='PluginAppliancesAppliance') {
+         if ($item->getType()=='PluginAppliancesAppliance'
+             && count(PluginAppliancesAppliance::getTypes(false))) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry($LANG['document'][19], self::countForAppliance($item));
             }
@@ -441,9 +447,9 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          } else if (in_array($item->getType(), PluginAppliancesAppliance::getTypes(true))
                     && plugin_appliances_haveRight('appliance', 'r')) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry($LANG['plugin_appliances']['title'][1], self::countForItem($item));
+               return self::createTabEntry(PluginAppliancesAppliance::getTypeName(2), self::countForItem($item));
             }
-            return $LANG['plugin_appliances']['title'][1];
+            return PluginAppliancesAppliance::getTypeName(2);
          }
       }
       return '';

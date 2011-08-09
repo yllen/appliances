@@ -46,9 +46,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
    public $dohistory = true;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['plugin_appliances']['title'][1];
+      }
       return $LANG['plugin_appliances'][1];
    }
 
@@ -222,17 +225,16 @@ class PluginAppliancesAppliance extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong['empty'] = $this->getTypeName();
-      if (!$this->isNewItem()) {
-         $this->addStandardTab('PluginAppliancesAppliance_Item', $ong, $options);
-         $this->addStandardTab('PluginAppliancesOptvalue', $ong, $options);
-         $this->addStandardTab('Ticket', $ong, $options);
-         $this->addStandardTab('Infocom', $ong, $options);
-         $this->addStandardTab('Contract_Item', $ong, $options);
-         $this->addStandardTab('Document', $ong, $options);
-         $this->addStandardTab('Note', $ong, $options);
-         $this->addStandardTab('Log', $ong, $options);
-      }
+      $ong = array();
+      $this->addStandardTab('PluginAppliancesAppliance_Item', $ong, $options);
+      $this->addStandardTab('PluginAppliancesOptvalue', $ong, $options);
+      $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Infocom', $ong, $options);
+      $this->addStandardTab('Contract_Item', $ong, $options);
+      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Note', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
+
       return $ong;
    }
 
