@@ -40,6 +40,9 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginAppliancesAppliance extends CommonDBTM {
 
+   static $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
+                         'Printer', 'Software');
+
    public $dohistory = true;
 
 
@@ -696,6 +699,20 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    /**
+    * For other plugins, add a type to the linkable types
+    *
+    * @since version 1.8.0
+    *
+    * @param $type string class name
+   **/
+   static function registerType($type) {
+      if (!in_array($type, self::$types)) {
+         self::$types[] = $type;
+      }
+   }
+
+
+   /**
     * Type than could be linked to a Appliance
     *
     * @param $all boolean, all type, or only allowed ones
@@ -704,21 +721,14 @@ class PluginAppliancesAppliance extends CommonDBTM {
    **/
    static function getTypes($all=false) {
 
-      static $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                            'Printer', 'Software');
-      // temporary disabled TRACKING_TYPE,
-
-      $plugin = new Plugin();
-      if ($plugin->isActivated("racks")) {
-         $types[] = 'PluginRacksRack';
-      }
-
       if ($all) {
-         return $types;
+         return self::$types;
       }
 
       // Only allowed types
-      foreach ($types as $key=>$type) {
+      $types = self::$types;
+
+      foreach ($types as $key => $type) {
          if (!class_exists($type)) {
             continue;
          }
