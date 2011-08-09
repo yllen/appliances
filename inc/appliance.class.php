@@ -453,7 +453,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      if (Toolbox::isMultiEntitiesMode()) {
+      if (Session::isMultiEntitiesMode()) {
          $pdf->setColumnsSize(12,27,25,18,18);
          $pdf->displayTitle('<b><i>'.$LANG['common'][17],
                                      $LANG['common'][16],
@@ -524,7 +524,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         }
                         $name = $data["name"].$ID;
 
-                        if (Toolbox::isMultiEntitiesMode()) {
+                        if (Session::isMultiEntitiesMode()) {
                            $pdf->setColumnsSize(12,27,25,18,18);
                            $pdf->displayLine($item->getTypeName(), $name,
                                              Dropdown::getDropdownName("glpi_entities",
@@ -585,7 +585,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if (!$number) {
          $pdf->displayLine($LANG['search'][15]);
       } else {
-         if (Toolbox::isMultiEntitiesMode()) {
+         if (Session::isMultiEntitiesMode()) {
             $pdf->setColumnsSize(30,30,20,20);
             $pdf->displayTitle('<b><i>'.$LANG['common'][16],
                                         $LANG['entity'][0],
@@ -600,7 +600,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
          while ($data = $DB->fetch_array($result)) {
             $appliancesID = $data["id"];
-            if (Toolbox::isMultiEntitiesMode()) {
+            if (Session::isMultiEntitiesMode()) {
                $pdf->setColumnsSize(30,30,20,20);
                $pdf->displayLine($data["name"],
                                  Html::clean(Dropdown::getDropdownName("glpi_entities",

@@ -135,14 +135,14 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          $colsup = 0;
       }
 
-      if (Toolbox::isMultiEntitiesMode()) {
+      if (Session::isMultiEntitiesMode()) {
          $colsup += 1;
       }
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".(5+$colsup)."'>".$LANG['plugin_appliances'][9]." :</th></tr>";
       echo "<tr><th>".$LANG['common'][16]."</th>";
-      if (Toolbox::isMultiEntitiesMode()) {
+      if (Session::isMultiEntitiesMode()) {
          echo "<th>".$LANG['entity'][0]."</th>";
       }
       echo "<th>".$LANG['common'][35]."</th>";
@@ -187,7 +187,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             echo " (".$data["id"].")";
          }
          echo "</b></a></td>";
-         if (Toolbox::isMultiEntitiesMode()) {
+         if (Session::isMultiEntitiesMode()) {
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                  $data['entities_id'])."</td>";
          }
@@ -287,7 +287,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
       $i = 0;
 
-      if (Toolbox::isMultiEntitiesMode()) {
+      if (Session::isMultiEntitiesMode()) {
          $colsup = 1;
       } else {
          $colsup = 0;
@@ -304,7 +304,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       }
       echo "<th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['common'][16]."</th>";
-      if (Toolbox::isMultiEntitiesMode()) {
+      if (Session::isMultiEntitiesMode()) {
          echo "<th>".$LANG['entity'][0]."</th>";
       }
       if ($appli->fields["relationtype"]) {
@@ -382,7 +382,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                      echo "<td class='center' ".
                            (isset($data['deleted']) && $data['deleted']?"class='tab_bg_2_2'":"").">".
                            $name."</td>";
-                     if (Toolbox::isMultiEntitiesMode()) {
+                     if (Session::isMultiEntitiesMode()) {
                         echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                              $data['entity']).
                               "</td>";
