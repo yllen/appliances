@@ -66,7 +66,7 @@ if (isset($_POST["type_appliances"])) {
                    'used'            => $_POST['used']);
 
    $default = "<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
-   ajaxDropdown($use_ajax, "/plugins/appliances/ajax/dropdownappliances.php", $params, $default,
+   Ajax::dropdown($use_ajax, "/plugins/appliances/ajax/dropdownappliances.php", $params, $default,
                 $rand);
 
 }

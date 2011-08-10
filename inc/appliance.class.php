@@ -355,7 +355,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "</td></tr>";
 
       $datestring = $LANG['common'][26]."&nbsp;: ";
-      $date       = Toolbox::convDateTime($this->fields["date_mod"]);
+      $date       = Html::convDateTime($this->fields["date_mod"]);
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center'>".$datestring.$date;
       echo "</td></tr>";
@@ -379,7 +379,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $pdf->setColumnsSize(50,50);
       $col1 = '<b>'.$LANG["common"][2].' '.$this->fields['id'].'</b>';
       if (isset($this->fields["date_mod"])) {
-         $col2 = $LANG["common"][26].' : '.Toolbox::convDateTime($this->fields["date_mod"]);
+         $col2 = $LANG["common"][26].' : '.Html::convDateTime($this->fields["date_mod"]);
       } else {
          $col2 = '';
       }
@@ -682,7 +682,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       'myname'          => $p['name'],
                       'used'            => $p['used']);
 
-      ajaxUpdateItemOnSelectEvent("type_appliances", "show_".$p['name'].$rand,
+      Ajax::updateItemOnSelectEvent("type_appliances", "show_".$p['name'].$rand,
                                   $CFG_GLPI["root_doc"].
                                     "/plugins/appliances/ajax/dropdownTypeAppliances.php",
                                   $params);

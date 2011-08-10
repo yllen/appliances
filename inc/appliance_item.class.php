@@ -349,12 +349,12 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
             if ($result_linked = $DB->query($query)) {
                if ($DB->numrows($result_linked)) {
-                  initNavigateListItems($type,$LANG['plugin_appliances']['title'][1]." = ".
-                                              $appli->getNameID());
+                  Session::initNavigateListItems($type,$LANG['plugin_appliances']['title'][1]." = ".
+                                                 $appli->getNameID());
 
                   while ($data = $DB->fetch_assoc($result_linked)) {
                      $item->getFromDB($data["id"]);
-                     Toolbox::addToNavigateListItems($type,$data["id"]);
+                     Session::addToNavigateListItems($type,$data["id"]);
                      $ID = "";
                      if ($type == 'Ticket') {
                         $data["name"] = $LANG['job'][38]." ".$data["id"];
