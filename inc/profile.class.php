@@ -73,7 +73,7 @@ class PluginAppliancesProfile extends CommonDBTM {
          return false;
       }
 
-      $canedit = haveRight("profile","w");
+      $canedit = Session::haveRight("profile", "w");
       $prof = new Profile();
       if ($ID) {
          $this->getFromDB($ID);

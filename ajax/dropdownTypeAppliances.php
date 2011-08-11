@@ -40,7 +40,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownTypeAppliances.php")) {
    header_nocache();
 }
 
-checkCentralAccess();
+Session::checkCentralAccess();
 
 // Make a select box
 

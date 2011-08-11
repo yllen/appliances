@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-checkCentralAccess();
+Session::checkCentralAccess();
 // Make a select box with all glpi users
 
 $where=" WHERE (`glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`

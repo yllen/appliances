@@ -46,7 +46,7 @@ if ($plugin->isActivated("environment")) {
                 "appliances");
 }
 
-if (plugin_appliances_haveRight("appliance","r") || haveRight("config","w")) {
+if (plugin_appliances_haveRight("appliance","r") || Session::haveRight("config","w")) {
    Search::show('PluginAppliancesAppliance');
 
 } else {
