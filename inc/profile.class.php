@@ -69,7 +69,7 @@ class PluginAppliancesProfile extends CommonDBTM {
         $target = $options['target'];
       }
 
-      if (!haveRight("profile","r")) {
+      if (!Session::haveRight("profile","r")) {
          return false;
       }
 
