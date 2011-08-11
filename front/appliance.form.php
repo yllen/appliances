@@ -51,28 +51,28 @@ $PluginItem       = new PluginAppliancesAppliance_Item();
 if (isset($_POST["add"])) {
    $PluginAppliances->check(-1, 'w', $_POST);
    $newID = $PluginAppliances->add($_POST);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["update"])) {
    $PluginAppliances->check($_POST['id'], 'w');
    $PluginAppliances->update($_POST);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $PluginAppliances->check($_POST['id'], 'w');
    $PluginAppliances->delete($_POST);
-   Html::header($CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.php");
+   Html::redirect($CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.php");
 
 } else if (isset($_POST["restore"])) {
    $PluginAppliances->check($_POST['id'],'w');
    $PluginAppliances->restore($_POST);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["purge"])) {
    $PluginAppliances->check($_POST['id'], 'w');
    $PluginAppliances->delete($_POST, 1);
 
-   Html::header($CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.php");
+   Html::redirect($CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.php");
 
 // delete a relation
 } else if (isset($_POST["dellieu"])) {
@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
          $relation->delete(array('id' => $key));
       }
    }
-   Html::header();
+   Html::back();
 
 // add a relation
 } else if (isset($_POST["addlieu"])) {
@@ -95,14 +95,14 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST['update_optvalues'])) {
    $PluginAppliances->check($_POST['plugin_appliances_appliances_id'], 'w');
 
    $Optvalue = new PluginAppliancesOptvalue();
    $Optvalue->updateList($_POST);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["add_opt_val"])){
    $PluginAppliances->check($_POST['plugin_appliances_appliances_id'], 'r');
@@ -111,7 +111,7 @@ if (isset($_POST["add"])) {
 
    $OptvalueItem = new PluginAppliancesOptvalue_Item();
    $OptvalueItem->updateList($_POST);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["additem"])) {
    if ($_POST['itemtype'] && $_POST['item'] >0) {
@@ -122,7 +122,7 @@ if (isset($_POST["add"])) {
       $PluginItem->check(-1, 'w', $input);
       $newID = $PluginItem->add($input);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["deleteitem"])){
    foreach ($_POST["item"] as $key => $val) {
@@ -132,13 +132,13 @@ if (isset($_POST["add"])) {
          $PluginItem->delete($input);
       }
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_GET["deleteappliance"])) {
    $input = array('id' => $_GET["id"]);
    $PluginItem->check($_GET["id"], 'w');
    $PluginItem->delete($input);
-   Html::header();
+   Html::back();
 
 } else {
    $PluginAppliances->checkGlobal('r');

@@ -777,7 +777,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         'limit'     => 'integer,optional' );
       }
 
-      if (!getLoginUserID()) {
+      if (!Session::getLoginUserID()) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
 
@@ -876,7 +876,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       'id'    => 'string' );
       }
 
-      if (!getLoginUserID()) {
+      if (!Session::getLoginUserID()) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
 
@@ -919,7 +919,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       'id'                                    => 'string');
       }
 
-      if (!getLoginUserID()) {
+      if (!Session::getLoginUserID()) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
 
@@ -1014,7 +1014,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       'plugin_appliances_appliancetypes_name' => 'string,optional');
       }
 
-      if (!getLoginUserID()) {
+      if (!Session::getLoginUserID()) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
 
@@ -1101,7 +1101,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                         'externalid OR id'   => 'string' );
       }
 
-      if (!getLoginUserID()) {
+      if (!Session::getLoginUserID()) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
 
