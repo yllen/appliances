@@ -39,10 +39,10 @@ include (GLPI_ROOT."/inc/includes.php");
 $plugin = new Plugin();
 
 if ($plugin->isActivated("environment")) {
-   commonHeader($LANG['plugin_appliances']['title'][1], $_SERVER['PHP_SELF'], "plugins",
+   Html::header($LANG['plugin_appliances']['title'][1], $_SERVER['PHP_SELF'], "plugins",
                 "environment", "appliances");
 } else {
-   commonHeader($LANG['plugin_appliances']['title'][1], $_SERVER['PHP_SELF'], "plugins",
+   Html::header($LANG['plugin_appliances']['title'][1], $_SERVER['PHP_SELF'], "plugins",
                 "appliances");
 }
 
@@ -54,6 +54,5 @@ if (plugin_appliances_haveRight("appliance","r") || Session::haveRight("config",
          "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br><br>".
          "<b>".$LANG['login'][5]."</b></div>";
 }
-commonFooter();
-
+Html::footer();
 ?>
