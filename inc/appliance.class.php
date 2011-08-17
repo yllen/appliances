@@ -271,7 +271,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "name", array('size' => 34));
+      Html::autocompletionTextField($this, "name", array('size' => 34));
       echo "</td><td>".$LANG['common'][17]."&nbsp;:</td><td>";
       Dropdown::show('PluginAppliancesApplianceType',
                       array('value'  => $this->fields["plugin_appliances_appliancetypes_id"],
@@ -304,7 +304,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField($this,'serial');
+      Html::autocompletionTextField($this,'serial');
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -318,7 +318,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][20]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,'otherserial');
+      Html::autocompletionTextField($this,'otherserial');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
