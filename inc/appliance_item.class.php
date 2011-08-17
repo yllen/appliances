@@ -423,8 +423,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          echo "</td></tr>";
          echo "</table></div>" ;
 
-         openArrowMassive("appliances_form$rand", true);
-         closeArrowMassive('deleteitem', $LANG['buttons'][6]);
+         Html::openArrowMassives("appliances_form$rand", true);
+         Html::closeArrowMassives(array('deleteitem' => $LANG['buttons'][6]));
 
       } else {
          echo "</table></div>";
