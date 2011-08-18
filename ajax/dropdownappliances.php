@@ -69,7 +69,8 @@ if (isset($_POST['used'])) {
 }
 
 if ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"]) {
-   $where .= " AND `glpi_plugin_appliances_appliances`.`name` ".Search::makeTextSearch($_POST['searchText']);
+   $where .= " AND `glpi_plugin_appliances_appliances`.`name` ".
+                    Search::makeTextSearch($_POST['searchText']);
 }
 $NBMAX = $CFG_GLPI["dropdown_max"];
 $LIMIT = "LIMIT 0,$NBMAX";
@@ -86,7 +87,7 @@ $result = $DB->query($query);
 
 echo "<select name='".$_POST['myname']."'>";
 
-echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
+echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
 if ($DB->numrows($result)) {
    $prev = -1;
