@@ -260,6 +260,79 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       echo "</table></div>";
    }
 
+   /**
+    * show for PDF the applicatif associated with a device
+    *
+    * @param $pdf
+    * @param $item
+   **/
+   static function pdfForItem($pdf, $item){
+      global $DB, $CFG_GLPI, $LANG;
+
+      $ID       = $item->getField('id');
+      $itemtype = get_Class($item);
+      $canread  = $item->can($ID,'r');
+      $canedit  = $item->can($ID,'w');
+
+      $pdf->setColumnsSize(100);
+      $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][9].'</b>');
+
+      $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
+                       `glpi_plugin_appliances_appliances`.*
+                FROM `glpi_plugin_appliances_appliances_items`,
+                     `glpi_plugin_appliances_appliances`
+                LEFT JOIN `glpi_entities`
+                     ON (`glpi_entities`.`id` = `glpi_plugin_appliances_appliances`.`entities_id`)
+                WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '$ID'
+                      AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype'
+                      AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
+                           = `glpi_plugin_appliances_appliances`.`id`".
+                      getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
+                                                 'entities_id', $item->getEntityID(), true);
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      if (!$number) {
+         $pdf->displayLine($LANG['search'][15]);
+      } else {
+         if (Session::isMultiEntitiesMode()) {
+            $pdf->setColumnsSize(30,30,20,20);
+            $pdf->displayTitle('<b><i>'.$LANG['common'][16],
+                                        $LANG['entity'][0],
+                                        $LANG['common'][35],
+                                        $LANG['common'][17].'</i></b>');
+         } else {
+            $pdf->setColumnsSize(50,25,25);
+            $pdf->displayTitle('<b><i>'.$LANG['common'][16],
+                                        $LANG['common'][35],
+                                        $LANG['common'][17].'</i></b>');
+         }
+
+         while ($data = $DB->fetch_array($result)) {
+            $appliancesID = $data["id"];
+            if (Session::isMultiEntitiesMode()) {
+               $pdf->setColumnsSize(30,30,20,20);
+               $pdf->displayLine($data["name"],
+                                 Html::clean(Dropdown::getDropdownName("glpi_entities",
+                                                                       $data['entities_id'])),
+                                 Html::clean(Dropdown::getDropdownName("glpi_groups",
+                                                                       $data["groups_id"])),
+                                 Html::clean(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
+                                                                       $data["plugin_appliances_appliancetypes_id"])));
+            } else {
+               $pdf->setColumnsSize(50,25,25);
+               $pdf->displayLine($data["name"],
+                                 Html::clean(Dropdown::getDropdownName("glpi_groups",
+                                                                       $data["groups_id"])),
+                                 Html::clean(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
+                                                                       $data["plugin_appliances_appliancetypes_id"])));
+            }
+            PluginAppliancesRelation::showList_PDF($pdf, $data["relationtype"], $data["entID"]);
+            PluginAppliancesOptvalue_Item::showList_PDF($pdf, $ID, $appliancesID);
+         }
+      }
+   }
+
 
    /**
     * Show the Device associated with an applicatif
@@ -466,5 +539,15 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
       }
       return true;
+   }
+
+
+   static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
+
+      if (in_array($item->getType(), PluginAppliancesAppliance::getTypes(true))) {
+         self::pdfForItem($pdf, $item);
+         return true;
+      }
+      return false;
    }
 }

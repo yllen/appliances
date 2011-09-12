@@ -486,17 +486,6 @@ function plugin_appliances_MassiveActionsProcess($data) {
 
 
 /**
- * Define PDF informations added by the plugin
-**/
-function plugin_headings_actionpdf_appliances($item) {
-   if (in_array(get_class($item),PluginAppliancesAppliance::getTypes(true))) {
-      return array(1 => array('PluginAppliancesAppliance', 'showAssociated_PDF'));
-   }
-   return false;
-}
-
-
-/**
  * Hook : options for one type
  *
  * @param $item
