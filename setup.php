@@ -57,9 +57,7 @@ function plugin_init_appliances() {
    Plugin::registerClass('PluginAppliancesRelation');
 
    // Define the type for which we know how to generate PDF, need :
-   // - plugin_appliances_prefPDF($type)
-   // - plugin_appliances_generatePDF($type, $tab_id, $tab, $page=0)
-   $PLUGIN_HOOKS['plugin_pdf']['PluginAppliancesAppliance'] = 'appliances';
+   $PLUGIN_HOOKS['plugin_pdf']['PluginAppliancesAppliance'] = 'PluginAppliancesAppliancePDF';
 
    $PLUGIN_HOOKS['migratetypes']['appliances'] = 'plugin_datainjection_migratetypes_appliances';
 

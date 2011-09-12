@@ -114,6 +114,30 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       return true;
    }
 
+   static function pdfForAppliance(PluginPdfSimplePDF $pdf, PluginAppliancesAppliance $appli) {
+      global $DB, $LANG;
+
+      $pdf->setColumnsSize(100);
+      $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][24].'</b>');
+
+      $query_app = "SELECT `champ`, `ddefault`
+                    FROM `glpi_plugin_appliances_optvalues`
+                    WHERE `plugin_appliances_appliances_id` = '".$appli->getID()."'
+                    ORDER BY `vvalues`";
+      $result_app = $DB->query($query_app);
+
+      $opts = array();
+      while ($data = $DB->fetch_array($result_app)) {
+         $opts[] = '<b>'.$data["champ"].'</b>'.($data["ddefault"] ? '='.$data["ddefault"] : '');
+      }
+      if (count($opts)) {
+         $pdf->displayLine(implode(',  ',$opts));
+      } else {
+         $pdf->displayLine($LANG['search'][15]);
+      }
+
+      $pdf->displaySpace();
+   }
 
    /**
     * Update the list of Optvalues defined for an appliance
@@ -186,6 +210,18 @@ class PluginAppliancesOptvalue extends CommonDBTM {
 
       if ($item->getType()=='PluginAppliancesAppliance') {
          self::showForAppliance($item);
+      }
+      return true;
+   }
+
+
+   static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
+
+      if ($item->getType()=='PluginAppliancesAppliance') {
+         self::pdfForAppliance($pdf, $item);
+
+      } else {
+         return false;
       }
       return true;
    }
