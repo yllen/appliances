@@ -402,33 +402,44 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $pdf->displayTitle($col1, $col2);
 
       $pdf->displayLine(
-         '<b><i>'.$LANG["common"][16].' :</i></b> '.$this->fields['name'],
+         '<b><i>'.$LANG['common'][16].' :</i></b> '.$this->fields['name'],
+         '<b><i>'.$LANG['state'][0].' :</i></b> '.
+               Html::clean(Dropdown::getDropdownName('glpi_states', $this->fields['states_id'])));
+
+      $pdf->displayLine(
+         '<b><i>'.$LANG['common'][15].' :</i></b> '.
+            Html::clean(Dropdown::getDropdownName('glpi_locations', $this->fields['locations_id'])),
          '<b><i>'.$LANG['common'][17].' :</i></b> '.
             Html::clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes',
                                                  $this->fields['plugin_appliances_appliancetypes_id'])));
+
       $pdf->displayLine(
-         '<b><i>'.$LANG["common"][10].' :</i></b> '.getUserName($this->fields['users_id']),
+         '<b><i>'.$LANG['common'][10].' :</i></b> '.getUserName($this->fields['users_id_tech']),
          '<b><i>'.$LANG['plugin_appliances'][3].' :</i></b> '.
             Html::clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments',
                                                  $this->fields['plugin_appliances_environments_id'])));
 
       $pdf->displayLine(
-         '<b><i>'.$LANG["common"][35].' :</i></b> '.
-            Html::clean(Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id'])),
+         '<b><i>'.$LANG['common'][109].' :</i></b> '.
+            Html::clean(Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id_tech'])),
          '<b><i>'.$LANG['common'][19].' :</i></b> '.$this->fields['serial']);
 
       $pdf->displayLine(
-         '<b><i>'.$LANG["common"][15].' :</i></b> '.
-            Html::clean(Dropdown::getDropdownName('glpi_locations', $this->fields['locations_id'])),
+         '<b><i>'.$LANG['common'][34].' :</i></b> '.getUserName($this->fields['users_id']),
          '<b><i>'.$LANG['common'][20].' :</i></b> '.$this->fields['otherserial']);
 
       $pdf->displayLine(
-         '<b><i>'.$LANG['plugin_appliances'][22].' :</i></b> '.
-            Html::clean(PluginAppliancesRelation::getTypeName($this->fields["relationtype"])),
-         '<b><i>'.$LANG['software'][46].' :</i></b> '.
-            Dropdown::getYesNo($this->fields["is_helpdesk_visible"]));
+         '<b><i>'.$LANG['common'][35].' :</i></b> '.
+            Html::clean(Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id'])),
+         '');
 
-      $pdf->displayText('<b><i>'.$LANG["common"][25].' : </i></b>', $this->fields['comment']);
+      $pdf->displayLine(
+         '<b><i>'.$LANG['software'][46].' :</i></b> '.
+            Dropdown::getYesNo($this->fields['is_helpdesk_visible']),
+         '<b><i>'.$LANG['plugin_appliances'][22].' :</i></b> '.
+            Html::clean(PluginAppliancesRelation::getTypeName($this->fields['relationtype'])));
+
+      $pdf->displayText('<b><i>'.$LANG['common'][25].' : </i></b>', $this->fields['comment']);
 
       $pdf->displaySpace();
    }
