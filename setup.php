@@ -40,7 +40,9 @@ function plugin_init_appliances() {
    // Params : plugin name - string type - number - attributes
    Plugin::registerClass('PluginAppliancesAppliance',
                          array('linkuser_types'         => true,
+                               'linkuser_tech_types'    => true,
                                'linkgroup_types'        => true,
+                               'linkgroup_tech_types'   => true,
                                'infocom_types'          => true,
                                'document_types'         => true,
                                'contract_types'         => true,
