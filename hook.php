@@ -124,8 +124,14 @@ function plugin_appliances_install() {
    if (!TableExists("glpi_plugin_appliances_appliances")) { // not installed
       $DB->runFile(GLPI_ROOT . '/plugins/appliances/sql/empty-1.6.1.sql');
 
-   } else if (FieldExists('glpi_plugin_appliances_appliances', 'notes')) {
-      $DB->runFile(GLPI_ROOT . '/plugins/appliances/sql/update-1.6.1.sql');
+   } else {
+      $migration = new Migration(180);
+
+      include_once(GLPI_ROOT."/plugins/appliances/inc/appliance.class.php");
+      PluginAppliancesAppliance::updateSchema($migration);
+
+      $migration->executeMigration();
+
    }
    // required cause autoload don't work for unactive plugin'
    include_once(GLPI_ROOT."/plugins/appliances/inc/profile.class.php");

@@ -932,6 +932,29 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       return $resp;
    }
+
+   static function updateSchema(Migration $migration) {
+      global $LANG;
+
+      $migration->displayTitle($LANG['install'][4].' : '.self::getTypeName(9));
+      $table = getTableForItemType(__CLASS__);
+
+      // Version 1.6.1
+      $migration->changeField($table, 'notes', 'notepad', 'text');
+
+      // Version 1.8.0
+      $migration->addKey($table, 'users_id');
+      $migration->addKey($table, 'groups_id');
+      $migration->addKey($table, 'plugin_appliances_appliancetypes_id');
+      $migration->addKey($table, 'plugin_appliances_environments_id');
+      $migration->addKey($table, 'states_id');
+
+      $migration->addField($table, 'users_id_tech', 'integer', array('after' => 'users_id'));
+      $migration->addKey($table, 'users_id_tech');
+
+      $migration->addField($table, 'groups_id_tech', 'integer', array('after' => 'groups_id'));
+      $migration->addKey($table, 'groups_id_tech');
+   }
 }
 
 ?>
