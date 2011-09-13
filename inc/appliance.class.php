@@ -269,42 +269,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
-      echo "<td>";
+      echo "<td>".$LANG['common'][16]."&nbsp;:</td><td>";
       Html::autocompletionTextField($this, "name", array('size' => 34));
-      echo "</td><td>".$LANG['common'][17]."&nbsp;:</td><td>";
-      Dropdown::show('PluginAppliancesApplianceType',
-                      array('value'  => $this->fields["plugin_appliances_appliancetypes_id"],
-                            'entity' => $this->fields["entities_id"]));
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][10]."&nbsp;:</td><td>";
-      if ($canedit) {
-         User::dropdown(array('value'  => $this->fields["users_id"],
-                              'right'  => 'all',
-                              'entity' => $this->fields["entities_id"]));
-      } else {
-         echo getUsername($this->fields["users_id"]);
-      }
-      echo "</td>";
-      echo "<td>".$LANG['plugin_appliances'][3]."&nbsp;:</td><td>";
-      Dropdown::show('PluginAppliancesEnvironment',
-                     array('value' => $this->fields["plugin_appliances_environments_id"]));
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][35]."&nbsp;:</td><td>";
-      if ($canedit) {
-         Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
-                                       'entity' =>$this->fields["entities_id"]));
-      } else {
-         echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id"]);
-      }
-      echo "</td>";
-      echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
-      echo "<td >";
-      Html::autocompletionTextField($this,'serial');
+      echo "</td><td>".$LANG['state'][0]."&nbsp;:</td><td>";
+      Dropdown::show('State', array('value' => $this->fields["states_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -315,19 +283,67 @@ class PluginAppliancesAppliance extends CommonDBTM {
       } else {
          echo Dropdown::getDropdownName("glpi_locations",$this->fields["locations_id"]);
       }
-      echo "</td>";
-      echo "<td>".$LANG['common'][20]."&nbsp;:</td>";
+      echo "</td><td>".$LANG['common'][17]."&nbsp;:</td><td>";
+      Dropdown::show('PluginAppliancesApplianceType',
+                      array('value'  => $this->fields["plugin_appliances_appliancetypes_id"],
+                            'entity' => $this->fields["entities_id"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][10]."&nbsp;:</td><td>";
+      if ($canedit) {
+         User::dropdown(array('name'   => 'users_id_tech',
+                              'value'  => $this->fields['users_id_tech'],
+                              'right'  => 'interface',
+                              'entity' => $this->fields['entities_id']));
+      } else {
+         echo getUsername($this->fields['users_id_tech']);
+      }
+      echo "</td><td>".$LANG['plugin_appliances'][3]."&nbsp;:</td><td>";
+      Dropdown::show('PluginAppliancesEnvironment',
+                     array('value' => $this->fields["plugin_appliances_environments_id"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][109]."&nbsp;:</td><td>";
+      if ($canedit) {
+         Dropdown::show('Group', array('name'      => 'groups_id_tech',
+                                       'value'     => $this->fields['groups_id_tech'],
+                                       'entity'    => $this->fields['entities_id'],
+                                       'condition' => '`is_assign`'));
+      } else {
+         echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id"]);
+      }
+      echo "</td><td>".$LANG['common'][19]."&nbsp;:</td><td>";
+      Html::autocompletionTextField($this,'serial');
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][34]."&nbsp;:</td>";
       echo "<td>";
+      User::dropdown(array('value'  => $this->fields["users_id"],
+                           'entity' => $this->fields["entities_id"],
+                           'right'  => 'all'));
+      echo "</td><td>".$LANG['common'][20]."&nbsp;:</td><td>";
       Html::autocompletionTextField($this,'otherserial');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::show('Group', array('value'     => $this->fields["groups_id"],
+                                    'entity'    => $this->fields["entities_id"],
+                                    'condition' => '`is_itemgroup`'));
+      echo "</td>";
+      echo "<td rowspan='4'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='4' class='middle'>";
+      echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>";
+
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
       Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
-      echo "</td>";
-      echo "<td rowspan='3'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='3' class='middle'>";
-      echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -947,6 +963,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $migration->addKey($table, 'groups_id');
       $migration->addKey($table, 'plugin_appliances_appliancetypes_id');
       $migration->addKey($table, 'plugin_appliances_environments_id');
+
+      $migration->addField($table, 'states_id', 'integer', array('after' => 'date_mod'));
       $migration->addKey($table, 'states_id');
 
       $migration->addField($table, 'users_id_tech', 'integer', array('after' => 'users_id'));
