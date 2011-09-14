@@ -38,14 +38,10 @@ $LANG['plugin_appliances'][3]  = "Environnement";
 $LANG['plugin_appliances'][4]  = "Pas d'applicatif trouvé";
 $LANG['plugin_appliances'][7]  = "Elément(s) associé(s)";
 $LANG['plugin_appliances'][9]  = "Applicatif(s) associé(s)";
-$LANG['plugin_appliances'][21] = "Responsable technique";
 $LANG['plugin_appliances'][22] = "Composants à relier";
-$LANG['plugin_appliances'][23] = "Entité";
 $LANG['plugin_appliances'][24] = "Champs personnalisables";
 $LANG['plugin_appliances'][25] = "Nom du champ";
 $LANG['plugin_appliances'][26] = "Valeur par défaut";
-
-$LANG['plugin_appliances'][30] = "Tickets en cours sur les éléments associés";
 
 $LANG['plugin_appliances']['profile'][0] = "Gestion des droits";
 

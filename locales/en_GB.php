@@ -38,14 +38,10 @@ $LANG['plugin_appliances'][3]  = "Environment";
 $LANG['plugin_appliances'][4]  = "No appliance found";
 $LANG['plugin_appliances'][7]  = "Associated items";
 $LANG['plugin_appliances'][9]  = "Associated appliances";
-$LANG['plugin_appliances'][21] = "Technical responsible";
 $LANG['plugin_appliances'][22] = "Item to link";
-$LANG['plugin_appliances'][23] = "Entity";
 $LANG['plugin_appliances'][24] = "User fields";
 $LANG['plugin_appliances'][25] = "Field";
 $LANG['plugin_appliances'][26] = "Default";
-
-$LANG['plugin_appliances'][30] = "Open tickets on associated equipments";
 
 $LANG['plugin_appliances']['profile'][0] = "Rights management";
 

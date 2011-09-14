@@ -38,14 +38,10 @@ $LANG['plugin_appliances'][3] = "Entorno";
 $LANG['plugin_appliances'][4] = "No se encuentra el aplicativo";
 $LANG['plugin_appliances'][7] = "Elementos asociados";
 $LANG['plugin_appliances'][9] = "Aplicativo(s) asociado(s)";
-$LANG['plugin_appliances'][21] = "Responsable técnico";
 $LANG['plugin_appliances'][22] = "Item a vincular";
-$LANG['plugin_appliances'][23] = "Entidad";
 $LANG['plugin_appliances'][24] = "Campos de usuario";
 $LANG['plugin_appliances'][25] = "Campo";
 $LANG['plugin_appliances'][26] = "Defecto";
-
-$LANG['plugin_appliances'][30] = "Incidencias abiertas en equipos asociados";
 
 $LANG['plugin_appliances']['profile'][0] = "Permisos de uso";
 
