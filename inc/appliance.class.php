@@ -116,6 +116,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[2]['checktype']    = 'text';
       $tab[2]['injectable']   = true;
 
+      $tab[32]['table']       = 'glpi_states';
+      $tab[32]['field']       = 'completename';
+      $tab[32]['name']        = $LANG['state'][0];
+      $tab[32]['displaytype'] = 'dropdown';
+      $tab[32]['checktype']   = 'text';
+      $tab[32]['injectable']  = true;
+
       $tab += Location::getSearchOptionsToAdd();
 
       $tab[3]['displaytype']  = 'dropdown';
@@ -138,26 +145,35 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $tab[6]['table']        = 'glpi_users';
       $tab[6]['field']        = 'name';
-      $tab[6]['name']         = $LANG['plugin_appliances'][21];
+      $tab[6]['name']         = $LANG['common'][34];
       $tab[6]['displaytype']  = 'user';
       $tab[6]['checktype']    = 'text';
       $tab[6]['injectable']   = true;
 
-      $tab[7]['table']         = 'glpi_plugin_appliances_appliances';
-      $tab[7]['field']         = 'is_recursive';
-      $tab[7]['name']          = $LANG['entity'][9];
-      $tab[7]['massiveaction'] = false;
-      $tab[7]['datatype']      = 'bool';
-      $tab[7]['displaytype']   = 'bool';
-      $tab[7]['checktype']     = 'decimal';
-      $tab[7]['injectable']    = true;
-
       $tab[8]['table']        = 'glpi_groups';
       $tab[8]['field']        = 'name';
       $tab[8]['name']         = $LANG['common'][35];
+      $tab[8]['condition']    = '`is_itemgroup`';
       $tab[8]['displaytype']  = 'dropdown';
       $tab[8]['checktype']    = 'text';
       $tab[8]['injectable']   = true;
+
+      $tab[24]['table']       = 'glpi_users';
+      $tab[24]['field']       = 'name';
+      $tab[24]['linkfield']   = 'users_id_tech';
+      $tab[24]['name']        = $LANG['common'][10];
+      $tab[24]['displaytype'] = 'user';
+      $tab[24]['checktype']   = 'text';
+      $tab[24]['injectable']  = true;
+
+      $tab[49]['table']       = 'glpi_groups';
+      $tab[49]['field']       = 'name';
+      $tab[49]['linkfield']   = 'groups_id_tech';
+      $tab[49]['name']        = $LANG['common'][109];
+      $tab[49]['condition']   = '`is_assign`';
+      $tab[49]['displaytype'] = 'dropdown';
+      $tab[49]['checktype']   = 'text';
+      $tab[49]['injectable']  = true;
 
       $tab[9]['table']         = 'glpi_plugin_appliances_appliances';
       $tab[9]['field']         = 'date_mod';
@@ -207,6 +223,15 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[80]['field']       = 'completename';
       $tab[80]['name']        = $LANG['entity'][0];
       $tab[80]['injectable']  = false;
+
+      $tab[7]['table']         = 'glpi_plugin_appliances_appliances';
+      $tab[7]['field']         = 'is_recursive';
+      $tab[7]['name']          = $LANG['entity'][9];
+      $tab[7]['massiveaction'] = false;
+      $tab[7]['datatype']      = 'bool';
+      $tab[7]['displaytype']   = 'bool';
+      $tab[7]['checktype']     = 'decimal';
+      $tab[7]['injectable']    = true;
 
       return $tab;
    }
