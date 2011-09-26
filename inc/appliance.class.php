@@ -577,11 +577,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $types = self::$types;
 
       foreach ($types as $key => $type) {
-         if (!class_exists($type)) {
+         if (!($item = getItemForItemtype($type))) {
             continue;
          }
 
-         $item = new $type();
          if (!$item->canView()) {
             unset($types[$key]);
          }

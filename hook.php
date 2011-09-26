@@ -180,8 +180,7 @@ function plugin_appliances_uninstall() {
              WHERE `itemtype` = 'PluginAppliancesAppliance'";
    $DB->query($query);
 
-   if (class_exists('PluginDatainjectionModel')) {
-      $temp = new PluginDatainjectionModel();
+   if ($temp = getItemForItemtype('PluginDatainjectionModel')) {
       $temp->deleteByCriteria(array('itemtype'=>'PluginAppliancesAppliance'));
    }
 
@@ -319,10 +318,9 @@ function plugin_appliances_giveItem($type, $ID, $data, $num) {
                   $column = "id";
                }
                $type = $DB->result($result_device, $y, "itemtype");
-               if (!class_exists($type)) {
+               if (!($item = getItemForItemtype($type))) {
                      continue;
                }
-               $item = new $type();
                $table = $item->getTable();
                if (!empty($table)) {
                   $query = "SELECT `$table`.`id`

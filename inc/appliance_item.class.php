@@ -376,10 +376,9 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       } else {
          for ($i=0 ; $i < $number ; $i++) {
             $type = $DB->result($result, $i, "itemtype");
-            if (!class_exists($type)) {
+            if (!($item = getItemForItemtype($type))) {
                continue;
             }
-            $item = new $type();
 
             if ($item->canView()) {
                $column = "name";
@@ -510,10 +509,9 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
       for ($i=0 ; $i < $number ; $i++) {
          $type = $DB->result($result, $i, "itemtype");
-         if (!class_exists($type)) {
+         if (!($item = getItemForItemtype($type))) {
             continue;
          }
-         $item = new $type();
          if ($item->canView()) {
             $column = "name";
             if ($type == 'Ticket') {
