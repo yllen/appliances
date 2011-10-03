@@ -57,11 +57,11 @@ function plugin_init_appliances() {
    Plugin::registerClass('PluginAppliancesOptvalue');
    Plugin::registerClass('PluginAppliancesOptvalue_Item');
    Plugin::registerClass('PluginAppliancesRelation');
-   
+
    if (class_exists('PluginAccountsAccount')) {
       PluginAccountsAccount::registerType('PluginAppliancesAppliance');
    }
-   
+
    // Define the type for which we know how to generate PDF, need :
    $PLUGIN_HOOKS['plugin_pdf']['PluginAppliancesAppliance'] = 'PluginAppliancesAppliancePDF';
 
@@ -94,8 +94,6 @@ function plugin_init_appliances() {
                                                       = '/plugins/appliances/front/appliance.php';
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['search']
                                                       = '/plugins/appliances/front/appliance.php';
-            $PLUGIN_HOOKS['headings_actionpdf']['appliances']
-                                                      = 'plugin_headings_actionpdf_appliances';
          }
 
          if (plugin_appliances_haveRight("appliance","w")) {
@@ -109,8 +107,6 @@ function plugin_init_appliances() {
          if (plugin_appliances_haveRight("appliance","r")) {
             $PLUGIN_HOOKS['menu_entry']['appliances']      = 'front/appliance.php';
             $PLUGIN_HOOKS['submenu_entry']['appliances']['search'] = 'front/appliance.php';
-            $PLUGIN_HOOKS['headings_actionpdf']['appliances']
-                                                           = 'plugin_headings_actionpdf_appliances';
          }
 
          if (plugin_appliances_haveRight("appliance","w")) {
