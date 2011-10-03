@@ -122,7 +122,7 @@ function plugin_appliances_install() {
    }
 
    if (!TableExists("glpi_plugin_appliances_appliances")) { // not installed
-      $DB->runFile(GLPI_ROOT . '/plugins/appliances/sql/empty-1.6.1.sql');
+      $DB->runFile(GLPI_ROOT . '/plugins/appliances/sql/empty-1.8.0.sql');
 
    } else {
       $migration = new Migration(180);

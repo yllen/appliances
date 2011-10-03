@@ -57,7 +57,11 @@ function plugin_init_appliances() {
    Plugin::registerClass('PluginAppliancesOptvalue');
    Plugin::registerClass('PluginAppliancesOptvalue_Item');
    Plugin::registerClass('PluginAppliancesRelation');
-
+   
+   if (class_exists('PluginAccountsAccount')) {
+      PluginAccountsAccount::registerType('PluginAppliancesAppliance');
+   }
+   
    // Define the type for which we know how to generate PDF, need :
    $PLUGIN_HOOKS['plugin_pdf']['PluginAppliancesAppliance'] = 'PluginAppliancesAppliancePDF';
 
