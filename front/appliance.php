@@ -50,9 +50,7 @@ if (plugin_appliances_haveRight("appliance","r") || Session::haveRight("config",
    Search::show('PluginAppliancesAppliance');
 
 } else {
-   echo "<div class='center'><br><br>".
-         "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br><br>".
-         "<b>".$LANG['login'][5]."</b></div>";
+   Html::displayRightError();
 }
 Html::footer();
 ?>
