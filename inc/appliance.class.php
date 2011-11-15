@@ -150,7 +150,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[6]['injectable']   = true;
 
       $tab[8]['table']        = 'glpi_groups';
-      $tab[8]['field']        = 'name';
+      $tab[8]['field']        = 'completename';
       $tab[8]['name']         = $LANG['common'][35];
       $tab[8]['condition']    = '`is_itemgroup`';
       $tab[8]['displaytype']  = 'dropdown';
@@ -166,7 +166,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[24]['injectable']  = true;
 
       $tab[49]['table']       = 'glpi_groups';
-      $tab[49]['field']       = 'name';
+      $tab[49]['field']       = 'completename';
       $tab[49]['linkfield']   = 'groups_id_tech';
       $tab[49]['name']        = $LANG['common'][109];
       $tab[49]['condition']   = '`is_assign`';
