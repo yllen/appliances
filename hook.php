@@ -242,6 +242,9 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
          $sopt[1210]['forcegroupby']   = true;
          $sopt[1210]['datatype']       = 'itemlink';
          $sopt[1210]['itemlink_type']  = 'PluginAppliancesAppliance';
+         $sopt[1210]['joinparams']     = array('beforejoin'
+                                                => array('table'      => 'glpi_plugin_appliances_appliances_items',
+                                                         'joinparams' => array('jointype' => 'itemtype_item')));
 
          $sopt[1211]['table']         = 'glpi_plugin_appliances_appliancetypes';
          $sopt[1211]['field']         = 'name';
@@ -249,37 +252,12 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
          $sopt[1211]['name']          = $LANG['plugin_appliances']['title'][1]." - ".
                                         $LANG['common'][17];
          $sopt[1211]['forcegroupby']  =  true;
+         $sopt[1211]['joinparams']    = array('beforejoin' => array(
+                                                   array('table'      => 'glpi_plugin_appliances_appliances',
+                                                         'joinparams' => $sopt[1210]['joinparams'])));
       }
    }
    return $sopt;
-}
-
-
-function plugin_appliances_addLeftJoin($type, $ref_table, $new_table, $linkfield,
-                                       &$already_link_tables) {
-
-   switch ($new_table) {
-      case "glpi_plugin_appliances_appliances_items" :
-         return " LEFT JOIN `$new_table`
-                     ON (`$ref_table`.`id` = `$new_table`.`plugin_appliances_appliances_id`) ";
-
-      case "glpi_plugin_appliances_appliances" : // From items
-         return " LEFT JOIN `glpi_plugin_appliances_appliances_items`
-                     ON (`$ref_table`.`id` = `glpi_plugin_appliances_appliances_items`.`items_id`
-                         AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$type')
-                  LEFT JOIN `glpi_plugin_appliances_appliances`
-                     ON (`glpi_plugin_appliances_appliances`.`id`
-                         = `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`) ";
-
-      case "glpi_plugin_appliances_appliancetypes" : // From items
-         $out = Search::addLeftJoin($type,$ref_table,$already_link_tables,
-                            "glpi_plugin_appliances_appliances",$linkfield);
-         $out .= " LEFT JOIN `glpi_plugin_appliances_appliancetypes`
-                     ON (`glpi_plugin_appliances_appliancetypes`.`id`
-                         = `glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`) ";
-         return $out;
-   }
-   return "";
 }
 
 

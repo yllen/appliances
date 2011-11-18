@@ -141,6 +141,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[5]['massiveaction'] = false;
       $tab[5]['forcegroupby']  =  true;
       $tab[5]['injectable']    = false;
+      $tab[5]['joinparams']    = array('jointype' => 'child');
 
       $tab[6]['table']        = 'glpi_users';
       $tab[6]['field']        = 'name';
