@@ -72,6 +72,10 @@ function plugin_init_appliances() {
    if (class_exists('PluginDomainsDomain')) {
       PluginDomainsDomain::registerType('PluginAppliancesAppliance');
    }
+   
+   if (class_exists('PluginWebapplicationsWebapplication')) {
+      PluginWebapplicationsWebapplication::registerType('PluginAppliancesAppliance');
+   }
 
    // Define the type for which we know how to generate PDF, need :
    $PLUGIN_HOOKS['plugin_pdf']['PluginAppliancesAppliance'] = 'PluginAppliancesAppliancePDF';
