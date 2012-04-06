@@ -34,7 +34,7 @@
 class PluginAppliancesAppliancePDF extends PluginPdfCommon {
 
 
-   function __construct(PluginAppliancesAppliance $obj=NULL) {
+   function __construct(CommonGLPI $obj=NULL) {
 
       $this->obj = ($obj ? $obj : new PluginAppliancesAppliance());
    }
