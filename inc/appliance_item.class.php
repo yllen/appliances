@@ -209,9 +209,11 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          echo "</td>";
 
          if ($canedit) {
-            echo "<td class='center tab_bg_2'><a href='".$CFG_GLPI["root_doc"].
-                  "/plugins/appliances/front/appliance.form.php?deleteappliance=1".
-                  "&amp;id=".$data["entID"]."'><b>".$LANG['buttons'][6]."</b></a></td>";
+            echo "<td class='center tab_bg_2'>";
+            Html::showMinimalForm($CFG_GLPI['root_doc'].'/plugins/appliances/front/appliance.form.php',
+                                  'deleteappliance', $LANG['buttons'][6],
+                                  array('id' => $data['entID']));
+            echo "</td>";
          }
          echo "</tr>";
       }

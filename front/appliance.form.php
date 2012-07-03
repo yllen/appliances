@@ -133,9 +133,9 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_GET["deleteappliance"])) {
-   $input = array('id' => $_GET["id"]);
-   $PluginItem->check($_GET["id"], 'w');
+} else if (isset($_POST["deleteappliance"])) {
+   $input = array('id' => $_POST["id"]);
+   $PluginItem->check($_POST["id"], 'w');
    $PluginItem->delete($input);
    Html::back();
 
