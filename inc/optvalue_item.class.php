@@ -105,7 +105,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
          echo "<input type='hidden' name='plugin_appliances_appliances_id' value='$appliances_id'>";
          echo "<input type='hidden' name='number_champs' value='$number_champs'>";
          echo "<input type='submit' name='add_opt_val' value='".$LANG['buttons'][7]."' class='submit'>";
-         echo "</form>";
+         Html::closeForm();
       }
    }
 

@@ -197,7 +197,7 @@ class PluginAppliancesRelation extends CommonDBTM {
                                          'used'   => $used));
          echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value=\"".$LANG['buttons'][8].
                "\" class='submit'><br>&nbsp;";
-         echo "</form>";
+         Html::closeForm();
 
       } else if ($number_loc > 0) {
          while ($res = $DB->fetch_array($result_loc)) {

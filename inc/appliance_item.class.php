@@ -249,7 +249,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
             echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\"
                    class='submit'>";
-            echo "</form>";
+            Html::closeForm();
 
             echo "</td>";
             echo "<td class='right' colspan='".($colsup)."'></td>";
@@ -620,7 +620,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       } else {
          echo "</table></div>";
       }
-      echo "</form>";
+      Html::closeForm();
    }
 
 

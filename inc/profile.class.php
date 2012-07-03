@@ -111,7 +111,8 @@ class PluginAppliancesProfile extends CommonDBTM {
                class='submit'>";
          echo "</td></tr>";
       }
-      echo "</table></form>";
+      echo "</table>";
+      Html::closeForm();
    }
 
 
