@@ -36,6 +36,8 @@
 function plugin_init_appliances() {
    global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
 
+   $PLUGIN_HOOKS['csrf_compliant']['appliances'] = true;
+
    // Params : plugin name - string type - number - attributes
    Plugin::registerClass('PluginAppliancesAppliance',
                          array('linkuser_types'         => true,
