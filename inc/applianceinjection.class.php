@@ -62,10 +62,11 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
       $tab = Search::getOptions(get_parent_class($this));
 
       //Specific to location
-      $tab[3]['linkfield'] = 'locations_id';
+      //$tab[3]['linkfield'] = 'locations_id';
       //$blacklist = PluginDatainjectionCommonInjectionLib::getBlacklistedOptions();
       //Remove some options because some fields cannot be imported
-      $notimportable = array(5,9,31,80);
+      $notimportable = array(5, 9, 29, 30, 31, 50, 53, 56, 57, 58, 59, 60, 80, 91, 92,
+                             122, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140);
       $options['ignore_fields'] = $notimportable;
       $options['displaytype'] = array("dropdown"       => array(2,32,3,8,49,10),
                                       "user"           => array(6,24),
