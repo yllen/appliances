@@ -90,7 +90,10 @@ function plugin_init_appliances() {
    if (class_exists('PluginAppliancesAppliance')) { // only if plugin activated
       $PLUGIN_HOOKS['pre_item_purge']['appliances']
                                        = array('Profile' => array('PluginAppliancesProfile',
-                                                                  'cleanProfiles'));
+                                                                  'cleanProfile'));
+      $PLUGIN_HOOKS['item_clone']['appliances']
+                                       = array('Profile' => array('PluginAppliancesProfile',
+                                                                  'cloneProfile'));
       $PLUGIN_HOOKS['plugin_datainjection_populate']['appliances']
                                        = 'plugin_datainjection_populate_appliances';
    }

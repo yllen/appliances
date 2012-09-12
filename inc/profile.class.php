@@ -40,11 +40,23 @@ if (!defined('GLPI_ROOT')) {
 class PluginAppliancesProfile extends CommonDBTM {
 
 
-   //if profile deleted
-   static function cleanProfiles(Profile $prof) {
+   // if profile deleted
+   static function cleanProfile(Profile $prof) {
 
       $plugprof = new self();
-      $plugprof->delete(array('id' => $prof->getField("id")));
+      $plugprof->delete(array('id' => $prof->getID()));
+   }
+
+
+   // if profile cloned
+   static function cloneProfile(Profile $prof) {
+
+      $plugprof = new self();
+      if ($plugprof->getFromDB($prof->input['_old_id'])) {
+         $input = ToolBox::addslashes_deep($plugprof->fields);
+         $input['id'] = $prof->getID();
+         $plugprof->add($input);
+      }
    }
 
 
