@@ -275,7 +275,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       if ($canedit) {
          User::dropdown(array('name'   => 'users_id_tech',
                               'value'  => $this->fields['users_id_tech'],
-                              'right'  => 'interface',
+                              'right'  => 'own_ticket',
                               'entity' => $this->fields['entities_id']));
       } else {
          echo getUsername($this->fields['users_id_tech']);
