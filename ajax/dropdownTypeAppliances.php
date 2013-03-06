@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -27,14 +27,8 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 if (strpos($_SERVER['PHP_SELF'],"dropdownTypeAppliances.php")) {
-   define('GLPI_ROOT', '../../..');
-   include (GLPI_ROOT."/inc/includes.php");
+   include ("../../../inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
 }
@@ -48,12 +42,12 @@ if (isset($_POST["type_appliances"])) {
 
    $use_ajax = false;
    if ($CFG_GLPI["use_ajax"]
-       && countElementsInTable('glpi_plugin_appliances_appliances',
-                               "plugin_appliances_appliancetypes_id ='".$_POST["type_appliances"].
-                                "' ".getEntitiesRestrictRequest(" AND",
-                                                                "glpi_plugin_appliances_appliances",
-                                                                "", $_POST["entity_restrict"], true)
-                              )>$CFG_GLPI["ajax_limit_count"]) {
+       && (countElementsInTable('glpi_plugin_appliances_appliances',
+                                "plugin_appliances_appliancetypes_id ='".$_POST["type_appliances"].
+                                 "' ".getEntitiesRestrictRequest(" AND",
+                                                                 "glpi_plugin_appliances_appliances",
+                                                                 "", $_POST["entity_restrict"], true)
+                               ) > $CFG_GLPI["ajax_limit_count"])) {
       $use_ajax = true;
    }
 
@@ -64,10 +58,10 @@ if (isset($_POST["type_appliances"])) {
                    'myname'          => $_POST['myname'],
                    'used'            => $_POST['used']);
 
-   $default = "<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
+   $default = "<select name='".$_POST["myname"]."'>
+               <option value='0'>".Dropdown::EMPTY_VALUE."</option></select>";
    Ajax::dropdown($use_ajax, "/plugins/appliances/ajax/dropdownappliances.php", $params, $default,
                 $rand);
 
 }
-
 ?>

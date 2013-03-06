@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -27,11 +27,6 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: GRISARD Jean Marc & CAILLAUD Xavier
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
@@ -46,12 +41,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb>1) {
-         return $LANG['plugin_appliances']['title'][1];
+      if ($nb > 1) {
+         return _n('Appliance', 'Appliances', 2, 'appliances');
       }
-      return $LANG['plugin_appliances'][1];
+      return _n('Appliance', 'Appliances', 1, 'appliances');
    }
 
 
@@ -77,7 +71,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $query = "SELECT *
                 FROM `".$this->getTable()."`
-                WHERE `externalid` = '$extid'";
+                WHERE `externalid` = '".$extid."'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result) != 1) {
@@ -93,25 +87,24 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
 
-      $tab['common'] = $LANG['plugin_appliances']['title'][1];
+      $tab['common']           = _n('Appliance', 'Appliances', 2, 'appliances');
 
       $tab[1]['table']         = 'glpi_plugin_appliances_appliances';
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
 
       $tab[2]['table']        = 'glpi_plugin_appliances_appliancetypes';
       $tab[2]['field']        = 'name';
-      $tab[2]['name']         = $LANG['common'][17];
+      $tab[2]['name']         = __('Type');
 
       $tab[32]['table']       = 'glpi_states';
       $tab[32]['field']       = 'completename';
-      $tab[32]['name']        = $LANG['state'][0];
+      $tab[32]['name']        = _n('Status', 'Statuses', 1);
       $tab[32]['displaytype'] = 'dropdown';
       $tab[32]['checktype']   = 'text';
       $tab[32]['injectable']  = true;
@@ -120,71 +113,71 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $tab[4]['table']        = 'glpi_plugin_appliances_appliances';
       $tab[4]['field']        =  'comment';
-      $tab[4]['name']         =  $LANG['common'][25];
+      $tab[4]['name']         =  __('Comments');
       $tab[4]['datatype']     =  'text';
 
       $tab[5]['table']         = 'glpi_plugin_appliances_appliances_items';
       $tab[5]['field']         = 'items_id';
-      $tab[5]['name']          = $LANG['plugin_appliances'][7];
+      $tab[5]['name']          = __('Associated items', 'appliances');
       $tab[5]['massiveaction'] = false;
       $tab[5]['forcegroupby']  =  true;
       $tab[5]['joinparams']    = array('jointype' => 'child');
 
       $tab[6]['table']        = 'glpi_users';
       $tab[6]['field']        = 'name';
-      $tab[6]['name']         = $LANG['common'][34];
+      $tab[6]['name']         = __('User');
 
       $tab[8]['table']        = 'glpi_groups';
       $tab[8]['field']        = 'completename';
-      $tab[8]['name']         = $LANG['common'][35];
+      $tab[8]['name']         = __('Group');
       $tab[8]['condition']    = '`is_itemgroup`';
 
       $tab[24]['table']       = 'glpi_users';
       $tab[24]['field']       = 'name';
       $tab[24]['linkfield']   = 'users_id_tech';
-      $tab[24]['name']        = $LANG['common'][10];
+      $tab[24]['name']        = __('Technician in charge of the hardware');
 
       $tab[49]['table']       = 'glpi_groups';
       $tab[49]['field']       = 'completename';
       $tab[49]['linkfield']   = 'groups_id_tech';
-      $tab[49]['name']        = $LANG['common'][109];
+      $tab[49]['name']        = __('Group in charge of the hardware');
       $tab[49]['condition']   = '`is_assign`';
 
       $tab[9]['table']         = 'glpi_plugin_appliances_appliances';
       $tab[9]['field']         = 'date_mod';
-      $tab[9]['name']          = $LANG['common'][26];
+      $tab[9]['name']          = __('Last update');
       $tab[9]['massiveaction'] = false;
       $tab[9]['datatype']      = 'datetime';
 
       $tab[10]['table']       = 'glpi_plugin_appliances_environments';
       $tab[10]['field']       = 'name';
-      $tab[10]['name']        = $LANG['plugin_appliances'][3];
+      $tab[10]['name']        = __('Environment', 'appliance');
 
       $tab[11]['table']       = 'glpi_plugin_appliances_appliances';
       $tab[11]['field']       = 'is_helpdesk_visible';
-      $tab[11]['name']        = $LANG['software'][46];
+      $tab[11]['name']        = __('Associable to a ticket');
       $tab[11]['datatype']    = 'bool';
 
       $tab[12]['table']       = 'glpi_plugin_appliances_appliances';
       $tab[12]['field']       = 'serial';
-      $tab[12]['name']        = $LANG['common'][19];
+      $tab[12]['name']        = __('Serial number');
 
       $tab[13]['table']       = 'glpi_plugin_appliances_appliances';
       $tab[13]['field']       = 'otherserial';
-      $tab[13]['name']        = $LANG['common'][20];
+      $tab[13]['name']        = __('Inventory number');
 
       $tab[31]['table']       = 'glpi_plugin_appliances_appliances';
       $tab[31]['field']        = 'id';
-      $tab[31]['name']         = $LANG['common'][2];
+      $tab[31]['name']         = __('ID');
       $tab[31]['massiveaction'] = false;
 
       $tab[80]['table']       = 'glpi_entities';
       $tab[80]['field']       = 'completename';
-      $tab[80]['name']        = $LANG['entity'][0];
+      $tab[80]['name']        = __('Entity');
 
       $tab[7]['table']         = 'glpi_plugin_appliances_appliances';
       $tab[7]['field']         = 'is_recursive';
-      $tab[7]['name']          = $LANG['entity'][9];
+      $tab[7]['name']          = __('Child entities');
       $tab[7]['massiveaction'] = false;
       $tab[7]['datatype']      = 'bool';
 
@@ -203,7 +196,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('PluginAppliancesAppliance_Item', $ong, $options);
@@ -234,7 +226,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    function showForm ($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if ($ID>0) {
          $this->check($ID,'r');
@@ -250,28 +242,28 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:</td><td>";
+      echo "<td>".__('Name')."</td><td>";
       Html::autocompletionTextField($this, "name", array('size' => 34));
-      echo "</td><td>".$LANG['state'][0]."&nbsp;:</td><td>";
-      Dropdown::show('State', array('value' => $this->fields["states_id"]));
+      echo "</td><td>"._n('Status', 'Statuses', 1)."</td><td>";
+      State::dropdown(array('value' => $this->fields["states_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][15]."&nbsp;:</td><td>";
+      echo "<td>".__('Location')."</td><td>";
       if ($canedit) {
-         Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
-                                          'entity' => $this->fields["entities_id"]));
+         Location::dropdown(array('value'  => $this->fields["locations_id"],
+                                  'entity' => $this->fields["entities_id"]));
       } else {
          echo Dropdown::getDropdownName("glpi_locations",$this->fields["locations_id"]);
       }
-      echo "</td><td>".$LANG['common'][17]."&nbsp;:</td><td>";
+      echo "</td><td>".__('Type')."</td><td>";
       Dropdown::show('PluginAppliancesApplianceType',
                       array('value'  => $this->fields["plugin_appliances_appliancetypes_id"],
                             'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][10]."&nbsp;:</td><td>";
+      echo "<td>".__('Technician in charge of the hardware')."</td><td>";
       if ($canedit) {
          User::dropdown(array('name'   => 'users_id_tech',
                               'value'  => $this->fields['users_id_tech'],
@@ -280,56 +272,56 @@ class PluginAppliancesAppliance extends CommonDBTM {
       } else {
          echo getUsername($this->fields['users_id_tech']);
       }
-      echo "</td><td>".$LANG['plugin_appliances'][3]."&nbsp;:</td><td>";
+      echo "</td><td>".__('Environment', 'appliances')."</td><td>";
       Dropdown::show('PluginAppliancesEnvironment',
                      array('value' => $this->fields["plugin_appliances_environments_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][109]."&nbsp;:</td><td>";
+      echo "<td>".__('Group in charge of the hardware')."</td><td>";
       if ($canedit) {
-         Dropdown::show('Group', array('name'      => 'groups_id_tech',
-                                       'value'     => $this->fields['groups_id_tech'],
-                                       'entity'    => $this->fields['entities_id'],
-                                       'condition' => '`is_assign`'));
+         Group::dropdown(array('name'      => 'groups_id_tech',
+                               'value'     => $this->fields['groups_id_tech'],
+                               'entity'    => $this->fields['entities_id'],
+                               'condition' => '`is_assign`'));
       } else {
          echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id"]);
       }
-      echo "</td><td>".$LANG['common'][19]."&nbsp;:</td><td>";
+      echo "</td><td>".__('Serial number')."</td><td>";
       Html::autocompletionTextField($this,'serial');
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][34]."&nbsp;:</td>";
+      echo "<td>".__('User')."</td>";
       echo "<td>";
       User::dropdown(array('value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
-      echo "</td><td>".$LANG['common'][20]."&nbsp;:</td><td>";
+      echo "</td><td>".__('Inventory number')."</td><td>";
       Html::autocompletionTextField($this,'otherserial');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
+      echo "<td>".__('Group')."</td>";
       echo "<td>";
-      Dropdown::show('Group', array('value'     => $this->fields["groups_id"],
-                                    'entity'    => $this->fields["entities_id"],
-                                    'condition' => '`is_itemgroup`'));
+      Group::dropdown(array('value'     => $this->fields["groups_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => '`is_itemgroup`'));
       echo "</td>";
-      echo "<td rowspan='4'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='4'>".__('Comments')."</td>";
       echo "<td rowspan='4' class='middle'>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
+      echo "<td>".__('Associable to a ticket')."</td><td>";
       Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       // dropdown relationtype added
-      echo "<td>".$LANG['plugin_appliances'][22]."&nbsp;:</td><td>";
+      echo "<td>".__('Item to link', 'appliances')."</td><td>";
       if ($canedit
           && !($ID
                && countElementsInTable(array("glpi_plugin_appliances_relations",
@@ -342,7 +334,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       } else {
          echo PluginAppliancesRelation::getTypeName($this->fields["relationtype"]);
          $rand    = mt_rand();
-         $comment = $LANG['common'][84];
+         $comment = __('Flag change forbidden. Linked items found.');
          $image   = "/pics/lock.png";
          echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"].$image.
                "' onmouseout=\"cleanhide('comment_relationtypes$rand')\" ".
@@ -351,10 +343,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      $datestring = $LANG['common'][26]."&nbsp;: ";
-      $date       = Html::convDateTime($this->fields["date_mod"]);
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2' class='center'>".$datestring.$date;
+      echo "<td colspan='2' class='center'>".sprintf(__('%1$s: %2$s'), __('Last update'),
+                                                     Html::convDateTime($this->fields["date_mod"]));
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -371,19 +362,20 @@ class PluginAppliancesAppliance extends CommonDBTM {
     * @param $pdf object for the output
    **/
    function show_PDF ($pdf) {
-      global $LANG, $DB;
+      global $DB;
 
       $pdf->setColumnsSize(50,50);
-      $col1 = '<b>'.$LANG["common"][2].' '.$this->fields['id'].'</b>';
+      $col1 = '<b>'.sprintf(__('%1$s %2$s'), __('ID'), $this->fields['id']).'</b>';
       if (isset($this->fields["date_mod"])) {
-         $col2 = $LANG["common"][26].' : '.Html::convDateTime($this->fields["date_mod"]);
+         $col2 = sprintf(__('%1$s: %2$s'), __('Last update'),
+                         Html::convDateTime($this->fields["date_mod"]));
       } else {
          $col2 = '';
       }
       $pdf->displayTitle($col1, $col2);
 
-      $pdf->displayLine(
-         '<b><i>'.$LANG['common'][16].' :</i></b> '.$this->fields['name'],
+      $pdf->displayLine(sprintf(__('%1$s: %2$s'), '<b><i>'.__('Name').'</i></b>',
+                                $this->fields['name']),
          '<b><i>'.$LANG['state'][0].' :</i></b> '.
                Html::clean(Dropdown::getDropdownName('glpi_states', $this->fields['states_id'])));
 

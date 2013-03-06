@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -27,15 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"dropdownappliances.php")) {
-   define('GLPI_ROOT', '../../..');
-   include (GLPI_ROOT."/inc/includes.php");
+   include ("../../../inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
 }
@@ -77,10 +71,10 @@ if ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"]) {
    $LIMIT = "";
 }
 $query = "SELECT *
-          FROM `glpi_plugin_appliances_appliances`
-          $where
-          ORDER BY `entities_id`, `name`
-          $LIMIT";
+          FROM `glpi_plugin_appliances_appliances` ".
+          $where."
+          ORDER BY `entities_id`, `name` ".
+          $LIMIT;
 
 $result = $DB->query($query);
 
@@ -108,5 +102,4 @@ if ($DB->numrows($result)) {
    }
 }
 echo "</select>";
-
 ?>

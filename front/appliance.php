@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -27,25 +27,20 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: GRISARD Jean Marc & CAILLAUD Xavier
-// Purpose of file:
-// ----------------------------------------------------------------------
-
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
+include ("../../../inc/includes.php");
 
 $plugin = new Plugin();
 
 if ($plugin->isActivated("environment")) {
-   Html::header($LANG['plugin_appliances']['title'][1], $_SERVER['PHP_SELF'], "plugins",
+   Html::header(_n('Appliance', 'Appliances', 2, 'appliances'), $_SERVER['PHP_SELF'], "plugins",
                 "environment", "appliances");
 } else {
-   Html::header($LANG['plugin_appliances']['title'][1], $_SERVER['PHP_SELF'], "plugins",
+   Html::header(_n('Appliance', 'Appliances', 2, 'appliances'), $_SERVER['PHP_SELF'], "plugins",
                 "appliances");
 }
 
-if (plugin_appliances_haveRight("appliance","r") || Session::haveRight("config","w")) {
+if (plugin_appliances_haveRight("appliance","r")
+    || Session::haveRight("config","w")) {
    Search::show('PluginAppliancesAppliance');
 
 } else {

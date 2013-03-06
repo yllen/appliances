@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -27,31 +27,24 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: GRISARD Jean Marc & CAILLAUD Xavier
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 // Init the hooks of the plugins -Needed
 function plugin_init_appliances() {
-   global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
+   global $PLUGIN_HOOKS,$CFG_GLPI;
 
    $PLUGIN_HOOKS['csrf_compliant']['appliances'] = true;
 
    // Params : plugin name - string type - number - attributes
-   Plugin::registerClass('PluginAppliancesAppliance',
-                         array('linkuser_types'         => true,
-                               'linkuser_tech_types'    => true,
-                               'linkgroup_types'        => true,
-                               'linkgroup_tech_types'   => true,
-                               'infocom_types'          => true,
-                               'document_types'         => true,
-                               'contract_types'         => true,
-                               'ticket_types'           => true,
-                               'helpdesk_visible_types' => true));
+   Plugin::registerClass('PluginAppliancesAppliance', array('linkuser_types'         => true,
+                                                            'linkuser_tech_types'    => true,
+                                                            'linkgroup_types'        => true,
+                                                            'linkgroup_tech_types'   => true,
+                                                            'infocom_types'          => true,
+                                                            'document_types'         => true,
+                                                            'contract_types'         => true,
+                                                            'ticket_types'           => true,
+                                                            'helpdesk_visible_types' => true));
 
-   Plugin::registerClass('PluginAppliancesProfile',
-                         array('addtabon' => 'Profile'));
+   Plugin::registerClass('PluginAppliancesProfile', array('addtabon' => 'Profile'));
    Plugin::registerClass('PluginAppliancesEnvironment');
    Plugin::registerClass('PluginAppliancesApplianceType');
    Plugin::registerClass('PluginAppliancesAppliance_Item');
@@ -100,8 +93,8 @@ function plugin_init_appliances() {
 
    if (isset($_SESSION["glpiID"])) {
 
-      if ((isset($_SESSION["glpi_plugin_environment_installed"])
-           && $_SESSION["glpi_plugin_environment_installed"] == 1)) {
+      if (isset($_SESSION["glpi_plugin_environment_installed"])
+          && ($_SESSION["glpi_plugin_environment_installed"] == 1)) {
 
          $_SESSION["glpi_plugin_environment_appliances"] = 1;
 
@@ -109,7 +102,7 @@ function plugin_init_appliances() {
          if (plugin_appliances_haveRight("appliance","r")) {
             $PLUGIN_HOOKS['menu_entry']['appliances'] = false;
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['title']
-                                                      = $LANG['plugin_appliances']['title'][1];
+                                                      = _n('Appliance', 'Appliances', 2, 'appliances');
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['page']
                                                       = '/plugins/appliances/front/appliance.php';
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['search']
@@ -149,23 +142,22 @@ function plugin_init_appliances() {
 
 // Get the name and the version of the plugin - Needed
 function plugin_version_appliances() {
-   global $LANG;
 
-   return array('name'           => $LANG['plugin_appliances']['title'][1],
-                'version'        => '1.8.1',
+   return array('name'           => _n('Appliance', 'Appliances', 2, 'appliances'),
+                'version'        => '1.9.0',
                 'oldname'        => 'applicatifs',
-                'author'         => 'Remi Collet, Xavier Caillaud, Nelly Mahu Lasson',
+                'author'         => 'Remi Collet, Xavier Caillaud, Nelly Mahu-Lasson',
                 'license'        => 'GPLv2+',
                 'homepage'       => 'https://forge.indepnet.net/projects/show/appliances',
-                'minGlpiVersion' => '0.83.3');
+                'minGlpiVersion' => '0.84');
 }
 
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_appliances_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.83.3','lt') || version_compare(GLPI_VERSION,'0.84','ge')) {
-      echo "This plugin requires GLPI >= 0.83.3 and GLPI < 0.84";
+   if (version_compare(GLPI_VERSION,'0.84','lt') || version_compare(GLPI_VERSION,'0.85','ge')) {
+      echo "This plugin requires GLPI >= 0.84 and GLPI < 0.85";
       return false;
    }
    return true;
@@ -199,5 +191,4 @@ function plugin_datainjection_migratetypes_appliances($types) {
    $types[1200] = 'PluginAppliancesAppliance';
    return $types;
 }
-
 ?>
