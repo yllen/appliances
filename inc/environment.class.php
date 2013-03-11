@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -27,11 +27,6 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: GRISARD Jean Marc & CAILLAUD Xavier
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
@@ -40,11 +35,8 @@ if (!defined('GLPI_ROOT')) {
 class PluginAppliancesEnvironment extends CommonDropdown {
 
 
-   static function getTypeName() {
-      global $LANG;
-
-      return $LANG['plugin_appliances'][3];
+   static function getTypeName($nb=0) {
+      return __('Environment', 'appliances');
    }
 }
-
 ?>

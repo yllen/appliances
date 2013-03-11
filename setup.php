@@ -143,7 +143,7 @@ function plugin_init_appliances() {
 // Get the name and the version of the plugin - Needed
 function plugin_version_appliances() {
 
-   return array('name'           => _n('Appliance', 'Appliances', 2, 'appliances'),
+   return array('name'           => __('Appliances', 'appliances'),
                 'version'        => '1.9.0',
                 'oldname'        => 'applicatifs',
                 'author'         => 'Remi Collet, Xavier Caillaud, Nelly Mahu-Lasson',

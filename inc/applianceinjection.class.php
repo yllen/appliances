@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -26,11 +26,6 @@
  along with appliances. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-
-// ----------------------------------------------------------------------
-// Original Author of file: Walid Nouh
-// Purpose of file:
-// ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
@@ -68,11 +63,11 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
       $notimportable = array(5, 9, 29, 30, 31, 50, 53, 56, 57, 58, 59, 60, 80, 91, 92,
                              122, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140);
       $options['ignore_fields'] = $notimportable;
-      $options['displaytype'] = array("dropdown"       => array(2,32,3,8,49,10),
-                                      "user"           => array(6,24),
-                                      "multiline_text" => array(4),
-                                      "date"           => array(9),
-                                      "bool"           => array(11,7));
+      $options['displaytype']   = array("dropdown"       => array(2,32,3,8,49,10),
+                                        "user"           => array(6,24),
+                                        "multiline_text" => array(4),
+                                        "date"           => array(9),
+                                        "bool"           => array(11,7));
 
       $tab = PluginDatainjectionCommonInjectionLib::addToSearchOptions($tab, $options, $this);
 
@@ -94,6 +89,7 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
       return $lib->getInjectionResults();
    }
 
+
    /**
     * Standard method to add an object into glpi
     * WILL BE INTEGRATED INTO THE CORE IN 0.80
@@ -112,5 +108,4 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
    }
 
 }
-
 ?>

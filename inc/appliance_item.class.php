@@ -35,11 +35,11 @@ if (!defined('GLPI_ROOT')) {
 class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'PluginAppliancesAppliance';
-   public $items_id_1 = 'plugin_appliances_appliances_id';
+   static public $itemtype_1 = 'PluginAppliancesAppliance';
+   static public $items_id_1 = 'plugin_appliances_appliances_id';
 
-   public $itemtype_2 = 'itemtype';
-   public $items_id_2 = 'items_id';
+   static public $itemtype_2 = 'itemtype';
+   static public $items_id_2 = 'items_id';
 
 
    function cleanDBonPurge() {
@@ -615,7 +615,6 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          if (($item->getType() == 'PluginAppliancesAppliance')

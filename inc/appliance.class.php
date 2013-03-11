@@ -49,12 +49,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return plugin_appliances_haveRight('appliance', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return plugin_appliances_haveRight('appliance', 'r');
    }
 
@@ -151,7 +151,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $tab[10]['table']       = 'glpi_plugin_appliances_environments';
       $tab[10]['field']       = 'name';
-      $tab[10]['name']        = __('Environment', 'appliance');
+      $tab[10]['name']        = __('Environment', 'appliances');
 
       $tab[11]['table']       = 'glpi_plugin_appliances_appliances';
       $tab[11]['field']       = 'is_helpdesk_visible';
@@ -376,43 +376,50 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $pdf->displayLine(sprintf(__('%1$s: %2$s'), '<b><i>'.__('Name').'</i></b>',
                                 $this->fields['name']),
-         '<b><i>'.$LANG['state'][0].' :</i></b> '.
-               Html::clean(Dropdown::getDropdownName('glpi_states', $this->fields['states_id'])));
+                        sprintf(__('%1$s: %2$s'), '<b><i>'.-n('Status', 'Statuses', 1).'</i></b>',
+                                Html::clean(Dropdown::getDropdownName('glpi_states',
+                                                                      $this->fields['states_id']))));
 
-      $pdf->displayLine(
-         '<b><i>'.$LANG['common'][15].' :</i></b> '.
-            Html::clean(Dropdown::getDropdownName('glpi_locations', $this->fields['locations_id'])),
-         '<b><i>'.$LANG['common'][17].' :</i></b> '.
-            Html::clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes',
-                                                 $this->fields['plugin_appliances_appliancetypes_id'])));
+      $pdf->displayLine(sprintf(__('%1$s: %2$s'), '<b><i>'.__('Location').'</i></b>',
+                                Html::clean(Dropdown::getDropdownName('glpi_locations',
+                                                                      $this->fields['locations_id']))),
+                        sprintf(__('%1$s: %2$s'), '<b><i>'.__('Type').'</i></b>',
+                                Html::clean(Dropdown::getDropdownName('glpi_plugin_appliances_appliancetypes',
+                                                                      $this->fields['plugin_appliances_appliancetypes_id']))));
 
-      $pdf->displayLine(
-         '<b><i>'.$LANG['common'][10].' :</i></b> '.getUserName($this->fields['users_id_tech']),
-         '<b><i>'.$LANG['plugin_appliances'][3].' :</i></b> '.
-            Html::clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments',
-                                                 $this->fields['plugin_appliances_environments_id'])));
+      $pdf->displayLine(sprintf(__('%1$s: %2$s'),
+                                '<b><i>'.__('Technician in charge of the hardware').'</i></b>',
+                                getUserName($this->fields['users_id_tech'])),
+                        sprintf(__('%1$s: %2$s'),
+                                '<b><i>'.__('Environment', 'appliances').'</i></b>',
+                                Html::clean(Dropdown::getDropdownName('glpi_plugin_appliances_environments',
+                                                                      $this->fields['plugin_appliances_environments_id']))));
 
-      $pdf->displayLine(
-         '<b><i>'.$LANG['common'][109].' :</i></b> '.
-            Html::clean(Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id_tech'])),
-         '<b><i>'.$LANG['common'][19].' :</i></b> '.$this->fields['serial']);
+      $pdf->displayLine(sprintf(__('%1$s: %2$s'),
+                                '<b><i>'.__('Group in charge of the hardware').'</i></b>',
+                                Html::clean(Dropdown::getDropdownName('glpi_groups',
+                                                                      $this->fields['groups_id_tech']))),
+                        sprintf(__('%1$s: %2$s'), '<b><i>'.__('Serial number').'</i></b>',
+                                $this->fields['serial']));
 
-      $pdf->displayLine(
-         '<b><i>'.$LANG['common'][34].' :</i></b> '.getUserName($this->fields['users_id']),
-         '<b><i>'.$LANG['common'][20].' :</i></b> '.$this->fields['otherserial']);
+      $pdf->displayLine(sprintf(__('%1$s: %2$s'), '<b><i>'.__('User').'</i></b>',
+                                getUserName($this->fields['users_id'])),
+                        sprintf(__('%1$s: %2$s'),
+                                '<b><i>'.__('Inventory number').'</i></b>',
+                                $this->fields['otherserial']));
 
-      $pdf->displayLine(
-         '<b><i>'.$LANG['common'][35].' :</i></b> '.
-            Html::clean(Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id'])),
-         '');
+      $pdf->displayLine(sprintf(__('%1$s: %2$s'), '<b><i>'.__('Group').'</i></b>',
+                                Html::clean(Dropdown::getDropdownName('glpi_groups',
+                                                                      $this->fields['groups_id']))),
+                        '');
 
-      $pdf->displayLine(
-         '<b><i>'.$LANG['software'][46].' :</i></b> '.
-            Dropdown::getYesNo($this->fields['is_helpdesk_visible']),
-         '<b><i>'.$LANG['plugin_appliances'][22].' :</i></b> '.
-            Html::clean(PluginAppliancesRelation::getTypeName($this->fields['relationtype'])));
+      $pdf->displayLine(sprintf(__('%1$s: %2$s'), '<b><i>'.__('Associable to a ticket').'</i></b>',
+                                Dropdown::getYesNo($this->fields['is_helpdesk_visible'])),
+                        sprintf(__('%1$s: %2$s'),'<b><i>'.__('Item to link').'</i></b>',
+                                Html::clean(PluginAppliancesRelation::getTypeName($this->fields['relationtype']))));
 
-      $pdf->displayText('<b><i>'.$LANG['common'][25].' : </i></b>', $this->fields['comment']);
+      $pdf->displayText(sprintf(__('%1$s: %2$s'), '<b><i>'.__('Comments').'</i></b>',
+                                $this->fields['comment']));
 
       $pdf->displaySpace();
    }
@@ -441,7 +448,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
-            $p[$key]=$val;
+            $p[$key] = $val;
          }
       }
 
@@ -458,13 +465,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $query = "SELECT *
                 FROM `glpi_plugin_appliances_appliancetypes`
                 WHERE `id` IN (SELECT DISTINCT `plugin_appliances_appliancetypes_id`
-                               FROM `glpi_plugin_appliances_appliances`
-                               $where)
+                               FROM `glpi_plugin_appliances_appliances` ".
+                               $where.")
                 GROUP BY `name`";
       $result = $DB->query($query);
 
       echo "<select name='_type' id='type_appliances'>\n";
-      echo "<option value='0'>------</option>\n";
+      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>\n";
       while ($data = $DB->fetch_assoc($result)) {
          echo "<option value='".$data['id']."'>".$data['name']."</option>\n";
       }
@@ -477,8 +484,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       'used'            => $p['used']);
 
       Ajax::updateItemOnSelectEvent("type_appliances", "show_".$p['name'].$rand,
-                                  $CFG_GLPI["root_doc"].
-                                    "/plugins/appliances/ajax/dropdownTypeAppliances.php",
+                                    $CFG_GLPI["root_doc"].
+                                       "/plugins/appliances/ajax/dropdownTypeAppliances.php",
                                   $params);
 
       echo "<span id='show_".$p['name']."$rand'>";
@@ -502,6 +509,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
     * @param $type string class name
    **/
    static function registerType($type) {
+
       if (!in_array($type, self::$types)) {
          self::$types[] = $type;
       }
@@ -511,7 +519,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
    /**
     * Type than could be linked to a Appliance
     *
-    * @param $all boolean, all type, or only allowed ones
+    * @param $all boolean, all type, or only allowed ones (false by default)
     *
     * @return array of types
    **/
@@ -537,6 +545,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
+   /**
+    * @param $params
+    * @param $protocol
+   **/
    static function methodTestAppliance($params, $protocol) {
       global $PLUGIN_HOOKS;
 
@@ -557,6 +569,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
+   /**
+    * @param $params
+    * @param $protocol
+   **/
    static function methodListAppliances($params, $protocol) {
       global $DB, $CFG_GLPI;
 
@@ -620,8 +636,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       if (isset ($params['count'])) {
          $query = "SELECT COUNT(DISTINCT `id`) AS count
-                   FROM `glpi_plugin_appliances_appliances`
-                   $where";
+                   FROM `glpi_plugin_appliances_appliances` ".
+                   $where;
 
          foreach ($DB->request($query) as $data) {
             $resp = $data;
@@ -632,24 +648,26 @@ class PluginAppliancesAppliance extends CommonDBTM {
          if (isset ($params['id2name'])) {
             // TODO : users_name and groups_name ?
             $query = "SELECT `glpi_plugin_appliances_appliances`.*,
-                             `glpi_plugin_appliances_appliancetypes`.`name` AS plugin_appliances_appliancetypes_name,
-                             `glpi_plugin_appliances_environments`.`name` AS plugin_appliances_environments_name
+                             `glpi_plugin_appliances_appliancetypes`.`name`
+                                    AS plugin_appliances_appliancetypes_name,
+                             `glpi_plugin_appliances_environments`.`name`
+                                    AS plugin_appliances_environments_name
                       FROM `glpi_plugin_appliances_appliances`
                       LEFT JOIN `glpi_plugin_appliances_appliancetypes`
-                           ON `glpi_plugin_appliances_appliancetypes`.`id`
-                                 =`glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`
+                        ON `glpi_plugin_appliances_appliancetypes`.`id`
+                           =`glpi_plugin_appliances_appliances`.`plugin_appliances_appliancetypes_id`
                       LEFT JOIN `glpi_plugin_appliances_environments`
-                           ON `glpi_plugin_appliances_environments`.`id`
-                                 =`glpi_plugin_appliances_appliances`.`plugin_appliances_environments_id`
-                      ORDER BY $order
-                      LIMIT $start,$limit";
+                        ON `glpi_plugin_appliances_environments`.`id`
+                           =`glpi_plugin_appliances_appliances`.`plugin_appliances_environments_id`
+                      ORDER BY ".$order."
+                      LIMIT ".$start.", ".$limit;
 
          } else {
             // TODO review list of fields (should probably be minimal, or configurable)
             $query = "SELECT `glpi_plugin_appliances_appliances`.*
                       FROM `glpi_plugin_appliances_appliances`
-                      ORDER BY $order
-                      LIMIT $start,$limit";
+                      ORDER BY ".$order."
+                      LIMIT ".$start.", ".$limit;
          }
 
          foreach ($DB->request($query) as $data) {
@@ -932,10 +950,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
       return $resp;
    }
 
-   static function updateSchema(Migration $migration) {
-      global $LANG;
 
-      $migration->displayTitle($LANG['install'][4].' : '.self::getTypeName(9));
+   static function updateSchema(Migration $migration) {
+
+      $migration->displayTitle(sprintf(__('%1$s: %2$s'), __('Update'), self::getTypeName(9)));
       $table = getTableForItemType(__CLASS__);
 
       // Version 1.6.1
@@ -957,5 +975,4 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $migration->addKey($table, 'groups_id_tech');
    }
 }
-
 ?>

@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -26,11 +26,6 @@
  along with appliances. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-
-// ----------------------------------------------------------------------
-// Original Author of file: GRISARD Jean Marc & CAILLAUD Xavier
-// Purpose of file:
-// ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -73,7 +68,6 @@ class PluginAppliancesProfile extends CommonDBTM {
 
    //profiles modification
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       $target = $this->getFormURL();
       if (isset($options['target'])) {
@@ -93,21 +87,22 @@ class PluginAppliancesProfile extends CommonDBTM {
       echo "<form action='".$target."' method='post'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='2'>".$LANG['plugin_appliances']['profile'][0]." ".$this->fields["name"].
-            "</th></tr>";
+      echo "<tr><th colspan='2'>".sprintf(__('%1$s %2$s'), __('Rights management', 'appliances'),
+                                          $this->fields["name"]);
+      echo "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['plugin_appliances']['title'][1]." :</td><td>";
+      echo "<td>".__('Appliances', 'appliances')."</td><td>";
 
-      if ($prof->fields['interface']!='helpdesk') {
+      if ($prof->fields['interface'] != 'helpdesk') {
          Profile::dropdownNoneReadWrite("appliance", $this->fields["appliance"], 1, 1, 1);
       } else {
-         echo $LANG['profiles'][12]; // No access;
+         _e('No access');
       }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['setup'][352]." - ".$LANG['plugin_appliances']['title'][1]." : </td><td>";
+      echo "<td>".__('Linkable items to a ticket - Appliances')."</td><td>";
       if ($prof->fields['create_ticket']) {
          Dropdown::showYesNo("open_ticket", $this->fields["open_ticket"]);
       } else {
@@ -118,8 +113,8 @@ class PluginAppliancesProfile extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center' colspan='2'>";
-         echo "<input type='hidden' name='id' value=$ID>";
-         echo "<input type='submit' name='update_user_profile' value=\"".$LANG['buttons'][7]."\"
+         echo "<input type='hidden' name='id' value='".$ID."'>";
+         echo "<input type='submit' name='update_user_profile' value=\""._sx('button', 'Update')."\"
                class='submit'>";
          echo "</td></tr>";
       }
@@ -152,10 +147,9 @@ class PluginAppliancesProfile extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if ($item->getType()=='Profile') {
-            return $LANG['plugin_appliances']['title'][1];
+         return __('Appliances', 'appliances');
       }
       return '';
    }
@@ -174,5 +168,4 @@ class PluginAppliancesProfile extends CommonDBTM {
       return true;
    }
 }
-
 ?>

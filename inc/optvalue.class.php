@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -26,11 +26,6 @@
  along with appliances. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-
-// ----------------------------------------------------------------------
-// Original Author of file: GRISARD Jean Marc & CAILLAUD Xavier
-// Purpose of file:
-// ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -55,7 +50,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
     * @return nothing (display form)
     */
    static function showForAppliance (PluginAppliancesAppliance $appli) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!$appli->can($appli->fields['id'],'r')) {
          return false;
@@ -69,7 +64,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       }
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".$LANG['plugin_appliances'][24]."</th></tr>\n";
+      echo "<tr><th colspan='4'>".__('User fields', 'appliances')."</th></tr>\n";
 
       $query_app = "SELECT *
                     FROM `glpi_plugin_appliances_optvalues`
@@ -81,30 +76,30 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       $number_champs++;
       for ($i=1 ; $i <= $number_champs ; $i++) {
          if ($data = $DB->fetch_array($result_app)) {
-            $champ = $data["champ"];
+            $champ    = $data["champ"];
             $ddefault = $data["ddefault"];
          } else {
-            $champ = '';
+            $champ    = '';
             $ddefault = '';
          }
          echo "<tr class='top tab_bg_1'>";
 
          if ($i == 1) {
-            echo "<td rowspan='$number_champs'>".$LANG['plugin_appliances'][25]."&nbsp;:</td>";
+            echo "<td rowspan='".$number_champs."'>"._n('Field', 'Fields', 1)."</td>";
          }
-         echo "<td><input type='text' name='champ$i' value='$champ' size='35'></td>\n";
+         echo "<td><input type='text' name='champ$i' value='".$champ."' size='35'></td>\n";
          if ($i == 1) {
-            echo "<td rowspan='$number_champs'>".$LANG['plugin_appliances'][26]."&nbsp;:</td>";
+            echo "<td rowspan='".$number_champs."'>".__('Default', 'appliances')."</td>";
          }
-         echo "<td><input type='text' name='ddefault$i' value='$ddefault' size='35'></td></tr>\n";
+         echo "<td><input type='text' name='ddefault$i' value='".$ddefault."' size='35'></td></tr>\n";
       }
 
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
          echo "<input type='hidden' name='plugin_appliances_appliances_id' value='".
                 $appli->fields['id']."'>\n";
-         echo "<input type='hidden' name='number_champs' value='$number_champs'>\n";
-         echo "<input type='submit' name='update_optvalues' value=\"".$LANG['buttons'][7]."\"
+         echo "<input type='hidden' name='number_champs' value='".$number_champs."'>\n";
+         echo "<input type='submit' name='update_optvalues' value=\""._sx('button', 'Update')."\"
                 class='submit'>";
          echo "</td></tr>\n</table></div>";
          Html::closeForm();
@@ -114,11 +109,12 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       return true;
    }
 
+
    static function pdfForAppliance(PluginPdfSimplePDF $pdf, PluginAppliancesAppliance $appli) {
-      global $DB, $LANG;
+      global $DB;
 
       $pdf->setColumnsSize(100);
-      $pdf->displayTitle('<b>'.$LANG['plugin_appliances'][24].'</b>');
+      $pdf->displayTitle('<b>'.__('User fields', 'appliances').'</b>');
 
       $query_app = "SELECT `champ`, `ddefault`
                     FROM `glpi_plugin_appliances_optvalues`
@@ -133,11 +129,12 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       if (count($opts)) {
          $pdf->displayLine(implode(',  ',$opts));
       } else {
-         $pdf->displayLine($LANG['search'][15]);
+         $pdf->displayLine(__('No item found'));
       }
 
       $pdf->displaySpace();
    }
+
 
    /**
     * Update the list of Optvalues defined for an appliance
@@ -160,7 +157,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
                        FROM `glpi_plugin_appliances_optvalues`
                        WHERE `plugin_appliances_appliances_id`
                                  = '".$input['plugin_appliances_appliances_id']."'
-                             AND `vvalues` = '$i'";
+                             AND `vvalues` = '".$i."'";
          $result_app = $DB->query($query_app);
 
          if ($data = $DB->fetch_array($result_app)) {
@@ -168,7 +165,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
             if (empty($input[$champ])) {
                $this->delete($data);
             } else {
-               $data['champ'] = $input[$champ];
+               $data['champ']    = $input[$champ];
                $data['ddefault'] = $input[$ddefault];
                $this->update($data);
             }
@@ -194,13 +191,12 @@ class PluginAppliancesOptvalue extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if ($item->getType()=='PluginAppliancesAppliance') {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['plugin_appliances'][24], self::countForAppliance($item));
+            return self::createTabEntry(_n('Field', 'Fields', 2), self::countForAppliance($item));
          }
-         return $LANG['plugin_appliances'][24];
+         return _n('Field', 'Fields', 2);
       }
       return '';
    }

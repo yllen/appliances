@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -27,11 +27,6 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: GRISARD Jean Marc & CAILLAUD Xavier
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
@@ -40,19 +35,17 @@ if (!defined('GLPI_ROOT')) {
 class PluginAppliancesApplianceType extends CommonDropdown {
 
 
-   static function getTypeName() {
-      global $LANG;
-
-      return $LANG['plugin_appliances']['setup'][2];
+   static function getTypeName($nb=0) {
+      return __('Type of appliance', 'appliances');
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('entity_dropdown', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('entity_dropdown', 'r');
    }
 
@@ -71,13 +64,13 @@ class PluginAppliancesApplianceType extends CommonDropdown {
       global $DB;
 
       $temp = new self();
-      if ($ID<=0 || !$temp->getFromDB($ID)) {
+      if (($ID <= 0) || !$temp->getFromDB($ID)) {
          return 0;
       }
 
       $query = "SELECT `id`
                 FROM `".$temp->getTable()."`
-                WHERE `entities_id` = '$entity'
+                WHERE `entities_id` = '".$entity."'
                       AND `name` = '".addslashes($temp->fields['name'])."'";
 
       foreach ($DB->request($query) as $data) {
@@ -89,5 +82,4 @@ class PluginAppliancesApplianceType extends CommonDropdown {
       return $temp->add($input);
    }
 }
-
 ?>

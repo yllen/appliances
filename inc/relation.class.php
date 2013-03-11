@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -27,20 +27,15 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: GRISARD Jean Marc & CAILLAUD Xavier
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/*
+/**
  * This is a special relation between
  *    a glpi_application_items
  *    a dropdwn (glpi_locations, glpi_domains, glpi_networks)
- */
+**/
 class PluginAppliancesRelation extends CommonDBTM {
 
 
@@ -89,19 +84,18 @@ class PluginAppliancesRelation extends CommonDBTM {
 
 
    static function getTypeName($value=0) {
-      global $LANG;
 
       switch ($value) {
          case 1 : // Location
-            $name = $LANG['common'][15];
+            $name = __('Location');
             break;
 
          case 2 : // Réseau
-            $name = $LANG['setup'][88];
+            $name = _n('Network', 'Networks', 1);
             break;
 
          case 3 : // Domain
-            $name = $LANG['setup'][89];
+            $name = _n('Domain', 'Domains', 1);
             break;
 
          default :
@@ -112,12 +106,11 @@ class PluginAppliancesRelation extends CommonDBTM {
 
 
    static function dropdownType($myname, $value=0) {
-      global $LANG;
 
       Dropdown::showFromArray($myname, array (0 => Dropdown::EMPTY_VALUE,
-                                              1 => $LANG['common'][15],  // Location
-                                              2 => $LANG['setup'][88],   // Réseau
-                                              3 => $LANG['setup'][89]),  // Domain
+                                              1 => __('Location'),
+                                              2 => _n('Network', 'Networks', 1),
+                                              3 => _n('Domain', 'Domains', 1)),
                               array ('value' => $value));
    }
 
@@ -134,8 +127,8 @@ class PluginAppliancesRelation extends CommonDBTM {
     *    - canedit the device if called from the device form
     *    - must be false if called from the applicatif form
    **/
-   static function showList ($relationtype, $relID, $entity, $canedit) {
-      global $DB, $CFG_GLPI, $LANG;
+   static function showList($relationtype, $relID, $entity, $canedit) {
+      global $DB, $CFG_GLPI;
 
       if (!$relationtype) {
          return false;
@@ -159,7 +152,7 @@ class PluginAppliancesRelation extends CommonDBTM {
                                     = `glpi_plugin_appliances_relations`.`relations_id`
                          AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
                                     = `glpi_plugin_appliances_appliances_items`.`id`
-                         AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
+                         AND `glpi_plugin_appliances_appliances_items`.`id` = '".$relID."'";
 
       $result_loc = $DB->query($sql_loc);
       $number_loc = $DB->numrows($result_loc);
@@ -167,7 +160,7 @@ class PluginAppliancesRelation extends CommonDBTM {
       if ($canedit) {
          echo "<form method='post' name='relation' action='".
                $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php'>";
-         echo "<br><input type='hidden' name='deviceID' value='$relID'>";
+         echo "<br><input type='hidden' name='deviceID' value='".$relID."'>";
 
          $i        = 0;
          $itemlist = "";
@@ -186,7 +179,8 @@ class PluginAppliancesRelation extends CommonDBTM {
                $i++;
             }
             echo "</table>";
-            echo "<input type='submit' name='dellieu' value='".$LANG['buttons'][6]."' class='submit'>".
+            echo "<input type='submit' name='dellieu' value='"._sx('button', 'Delete permanently')."'
+                   class='submit'>".
                   "<br><br>";
          }
 
@@ -195,7 +189,7 @@ class PluginAppliancesRelation extends CommonDBTM {
          Dropdown::show($itemtype, array('name'   => "tablekey[" . $relID . "]",
                                          'entity' => $entity,
                                          'used'   => $used));
-         echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value=\"".$LANG['buttons'][8].
+         echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value=\""._sx('button', 'Add').
                "\" class='submit'><br>&nbsp;";
          Html::closeForm();
 
@@ -208,6 +202,7 @@ class PluginAppliancesRelation extends CommonDBTM {
       }
    }
 
+
    /**
     * Show for PDF the relation for a device/applicatif
     *
@@ -215,8 +210,8 @@ class PluginAppliancesRelation extends CommonDBTM {
     * @param $drelation_type : type of the relation
     * @param $relID ID of the relation
    **/
-   static function showList_PDF ($pdf, $relationtype, $relID) {
-      global $DB, $CFG_GLPI, $LANG;
+   static function showList_PDF($pdf, $relationtype, $relID) {
+      global $DB, $CFG_GLPI;
 
       if (!$relationtype) {
          return false;
@@ -239,7 +234,7 @@ class PluginAppliancesRelation extends CommonDBTM {
                    WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
                          AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
                                  = `glpi_plugin_appliances_appliances_items`.`id`
-                         AND `glpi_plugin_appliances_appliances_items`.`id` = '$relID'";
+                         AND `glpi_plugin_appliances_appliances_items`.`id` = '".$relID."'";
       $result_loc = $DB->query($sql_loc);
 
       $opts = array();
@@ -247,11 +242,11 @@ class PluginAppliancesRelation extends CommonDBTM {
          $opts[] = $res["dispname"];
       }
       $pdf->setColumnsSize(100);
-      $pdf->displayLine("<b><i>".$LANG['plugin_appliances'][22]." :</i> $title :</b> ".
-                         implode(', ',$opts));
+      $pdf->displayLine(sprintf(__('%1$s: %2$s'),
+                                "<b><i>".__('Item to link', 'appliances')."$title </i> </b>",
+                                implode(', ',$opts)));
 
    }
 
 }
-
 ?>

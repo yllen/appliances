@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2011 by the appliances Development Team.
+ Copyright (C) 2003-2013 by the appliances Development Team.
 
  https://forge.indepnet.net/projects/appliances
  -------------------------------------------------------------------------
@@ -27,11 +27,6 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: GRISARD Jean Marc & CAILLAUD Xavier
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
@@ -51,11 +46,11 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
     *    - must be false if called from the applicatif form
     */
    static function showList ($itemtype, $items_id, $appliances_id, $canedit) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $query_app_opt = "SELECT *
                         FROM `glpi_plugin_appliances_optvalues`
-                        WHERE `plugin_appliances_appliances_id` = '$appliances_id'
+                        WHERE `plugin_appliances_appliances_id` = '".$appliances_id."'
                         ORDER BY `vvalues`";
 
       $result_app_opt = $DB->query($query_app_opt);
@@ -64,7 +59,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
       if ($canedit)  {
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
                "/plugins/appliances/front/appliance.form.php'>";
-         echo "<input type='hidden' name='number_champs' value='$number_champs'>";
+         echo "<input type='hidden' name='number_champs' value='".$number_champs."'>";
       }
       echo "<table>";
 
@@ -73,7 +68,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
             $query_val = "SELECT `vvalue`
                           FROM `glpi_plugin_appliances_optvalues_items`
                           WHERE `plugin_appliances_optvalues_id` = '".$data_opt["id"]."'
-                                AND `items_id` = '$items_id'";
+                                AND `items_id` = '".$items_id."'";
 
             $result_val = $DB->query($query_val);
             $data_val   = $DB->fetch_array($result_val);
@@ -82,7 +77,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                $vvalue = $data_opt['ddefault'];
             }
 
-            echo "<tr><td>".$data_opt['champ']."&nbsp;: </td><td>";
+            echo "<tr><td>".$data_opt['champ']."&nbsp;</td><td>";
             if ($canedit) {
                echo "<input type='hidden' name='opt_id$i' value='".$data_opt["id"]."'>";
                echo "<input type='hidden' name='ddefault$i' value='".$data_opt["ddefault"]."'>";
@@ -100,11 +95,12 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
       echo "</table>";
 
       if ($canedit) {
-         echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-         echo "<input type='hidden' name='items_id' value='$items_id'>";
-         echo "<input type='hidden' name='plugin_appliances_appliances_id' value='$appliances_id'>";
-         echo "<input type='hidden' name='number_champs' value='$number_champs'>";
-         echo "<input type='submit' name='add_opt_val' value='".$LANG['buttons'][7]."' class='submit'>";
+         echo "<input type='hidden' name='itemtype' value='".$itemtype."'>";
+         echo "<input type='hidden' name='items_id' value='".$items_id."'>";
+         echo "<input type='hidden' name='plugin_appliances_appliances_id' value='".$appliances_id."'>";
+         echo "<input type='hidden' name='number_champs' value='".$number_champs."'>";
+         echo "<input type='submit' name='add_opt_val' value='"._sx('button', 'Update')."'
+                class='submit'>";
          Html::closeForm();
       }
    }
@@ -118,11 +114,11 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
     * @param $appliancesID, ID of the applicatif
     */
    static function showList_PDF ($pdf, $ID, $appliancesID) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $query_app_opt = "SELECT `id`, `champ`, `ddefault`
                         FROM `glpi_plugin_appliances_optvalues`
-                        WHERE `plugin_appliances_appliances_id` = '$appliancesID'
+                        WHERE `plugin_appliances_appliances_id` = '".$appliancesID."'
                         ORDER BY `vvalues`";
 
       $result_app_opt = $DB->query($query_app_opt);
@@ -138,7 +134,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
             $query_val = "SELECT `vvalue`
                           FROM `glpi_plugin_appliances_optvalues_items`
                           WHERE `plugin_appliances_optvalues_id` = '".$data_opt["id"]."'
-                                AND `items_id` = '$ID'";
+                                AND `items_id` = '".$ID."'";
 
             $result_val = $DB->query($query_val);
             $data_val = $DB->fetch_array($result_val);
@@ -151,7 +147,8 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
       } // For
 
       $pdf->setColumnsSize(100);
-      $pdf->displayLine("<b><i>".$LANG['plugin_appliances'][24]." : </i></b>".implode(', ',$opts));
+      $pdf->displayLine(sprintf(__('%1$s: %2$s'), "<b><i>".__('User fields', 'appliances')."</i></b>",
+                                implode(', ',$opts)));
    }
 
 
@@ -179,7 +176,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
          if ($data = $DB->fetch_array($result_app)) {
             // l'entrée existe déjà, il faut faire un update ou un delete
             if (empty($input[$vvalue])
-                || $input[$vvalue] == $input[$ddefault]) {
+                || ($input[$vvalue] == $input[$ddefault])) {
                $this->delete($data);
             } else {
                $data['vvalue'] = $input[$vvalue];
@@ -187,7 +184,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
             }
 
          } else if (!empty($input[$vvalue])
-                    && $input[$vvalue] != $input[$ddefault]) {
+                    && ($input[$vvalue] != $input[$ddefault])) {
             // l'entrée n'existe pas
             // et la valeur saisie est non nulle -> on fait un insert
             $data = array('plugin_appliances_optvalues_id' => $input[$opt_id],
@@ -200,5 +197,4 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
    }
 
 }
-
 ?>
