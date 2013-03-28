@@ -390,7 +390,7 @@ function plugin_appliances_MassiveActionsDisplay($options) {
 
       default :
          if (in_array($options['itemtype'], PluginAppliancesAppliance::getTypes(true))) {
-            PluginAppliancesAppliance::dropdown();
+            Dropdown::show('PluginAppliancesAppliance');
             echo "<input type='submit' name='massiveaction' class='submit\' ".
                   "value='"._x('button', 'Post')."'>";
          }

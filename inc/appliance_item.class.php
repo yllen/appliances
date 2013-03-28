@@ -239,9 +239,9 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                   "/plugins/appliances/front/appliance.form.php\">";
             echo "<input type='hidden' name='item' value='".$ID."'>".
                  "<input type='hidden' name='itemtype' value='$itemtype'>";
-            PluginAppliancesAppliance::dropdown(array('name'   => "conID",
-                                                      'entity' => $entities,
-                                                      'used'   => $used));
+            Dropdown::show('PluginAppliancesAppliance', array('name'   => "conID",
+                                                              'entity' => $entities,
+                                                              'used'   => $used));
 
             echo "<input type='submit' name='additem' value='".__('Add')."class='submit'>";
             Html::closeForm();
