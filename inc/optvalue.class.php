@@ -87,11 +87,11 @@ class PluginAppliancesOptvalue extends CommonDBTM {
          if ($i == 1) {
             echo "<td rowspan='".$number_champs."'>"._n('Field', 'Fields', 1)."</td>";
          }
-         echo "<td><input type='text' name='champ$i' value='".$champ."' size='35'></td>\n";
+         echo "<td><input type='text' name='champ$i' value=\"".$champ."\" size='35'></td>\n";
          if ($i == 1) {
             echo "<td rowspan='".$number_champs."'>".__('Default', 'appliances')."</td>";
          }
-         echo "<td><input type='text' name='ddefault$i' value='".$ddefault."' size='35'></td></tr>\n";
+         echo "<td><input type='text' name='ddefault$i' value=\"".$ddefault."\" size='35'></td></tr>\n";
       }
 
       if ($canedit) {
