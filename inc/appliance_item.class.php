@@ -119,7 +119,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
       $query_app = "SELECT `ID`
                     FROM `glpi_plugin_appliances_appliances_items`
-                    WHERE `items_id` = '".$ID;
+                    WHERE `items_id` = '".$ID."'";
       $result_app = $DB->query($query_app);
       $number_app = $DB->numrows($result_app);
 
