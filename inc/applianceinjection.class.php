@@ -36,9 +36,11 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
    implements PluginDatainjectionInjectionInterface {
 
 
-   function __construct() {
-      //Needed for getSearchOptions !
-      $this->table = getTableForItemType('PluginAppliancesAppliance');
+   static function getTable() {
+   
+      $parenttype = get_parent_class();
+      return $parenttype::getTable();
+      
    }
 
 
@@ -57,17 +59,20 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
       $tab = Search::getOptions(get_parent_class($this));
 
       //Specific to location
-      //$tab[3]['linkfield'] = 'locations_id';
-      //$blacklist = PluginDatainjectionCommonInjectionLib::getBlacklistedOptions();
+      $tab[3]['linkfield'] = 'locations_id';
+      
       //Remove some options because some fields cannot be imported
-      $notimportable = array(5, 9, 29, 30, 31, 50, 53, 56, 57, 58, 59, 60, 80, 91, 92,
-                             122, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140);
-      $options['ignore_fields'] = $notimportable;
-      $options['displaytype']   = array("dropdown"       => array(2,32,3,8,49,10),
-                                        "user"           => array(6,24),
+      $blacklist = PluginDatainjectionCommonInjectionLib::getBlacklistedOptions(get_parent_class($this));
+      $notimportable = array(5, 9, 31, 91, 92, 93);
+      $options['ignore_fields'] = array_merge($blacklist, $notimportable);
+      
+      $key = array_search(2, $options['ignore_fields']);
+      unset($options['ignore_fields'][$key]);
+
+      $options['displaytype']   = array("dropdown"       => array(2, 3, 8, 10, 32, 49),
+                                        "user"           => array(6, 24),
                                         "multiline_text" => array(4),
-                                        "date"           => array(9),
-                                        "bool"           => array(11,7));
+                                        "bool"           => array(7, 11));
 
       $tab = PluginDatainjectionCommonInjectionLib::addToSearchOptions($tab, $options, $this);
 
