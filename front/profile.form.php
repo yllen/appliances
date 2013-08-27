@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-dinclude ("../../../inc/includes.php");
+include ("../../../inc/includes.php");
 Session::checkRight("profile", "r");
 
 $prof = new PluginAppliancesProfile();
