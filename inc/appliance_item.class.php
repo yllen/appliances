@@ -243,7 +243,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                                                               'entity' => $entities,
                                                               'used'   => $used));
 
-            echo "<input type='submit' name='additem' value='".__('Add')."class='submit'>";
+            echo "<input type='submit' name='additem' value='".__('Add')."' class='submit'>";
             Html::closeForm();
 
             echo "</td>";

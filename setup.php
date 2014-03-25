@@ -144,7 +144,7 @@ function plugin_init_appliances() {
 function plugin_version_appliances() {
 
    return array('name'           => __('Appliances', 'appliances'),
-                'version'        => '1.9.0',
+                'version'        => '1.9.1',
                 'oldname'        => 'applicatifs',
                 'author'         => 'Remi Collet, Xavier Caillaud, Nelly Mahu-Lasson',
                 'license'        => 'GPLv2+',
