@@ -47,7 +47,7 @@ function plugin_init_appliances() {
    Plugin::registerClass('PluginAppliancesProfile', array('addtabon' => 'Profile'));
    Plugin::registerClass('PluginAppliancesEnvironment');
    Plugin::registerClass('PluginAppliancesApplianceType');
-   Plugin::registerClass('PluginAppliancesAppliance_Item');
+   Plugin::registerClass('PluginAppliancesAppliance_Item', array('ticket_types' => true));
    Plugin::registerClass('PluginAppliancesOptvalue');
    Plugin::registerClass('PluginAppliancesOptvalue_Item');
    Plugin::registerClass('PluginAppliancesRelation');
@@ -77,13 +77,12 @@ function plugin_init_appliances() {
 
    $PLUGIN_HOOKS['migratetypes']['appliances'] = 'plugin_datainjection_migratetypes_appliances';
 
-   $PLUGIN_HOOKS['change_profile']['appliances']   = array('PluginAppliancesProfile','select');
+   $PLUGIN_HOOKS['change_profile']['appliances']   = array('PluginAppliancesProfile','initProfile');
    $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
+   /*$PLUGIN_HOOKS['assign_to_ticket_dropdown']['appliances'] = true;
+   $PLUGIN_HOOKS['assign_to_ticket_itemtype']['appliances'] = array('PluginAppliancesAppliance_Item');*/
 
    if (class_exists('PluginAppliancesAppliance')) { // only if plugin activated
-      $PLUGIN_HOOKS['pre_item_purge']['appliances']
-                                       = array('Profile' => array('PluginAppliancesProfile',
-                                                                  'cleanProfile'));
       $PLUGIN_HOOKS['item_clone']['appliances']
                                        = array('Profile' => array('PluginAppliancesProfile',
                                                                   'cloneProfile'));
@@ -91,15 +90,25 @@ function plugin_init_appliances() {
                                        = 'plugin_datainjection_populate_appliances';
    }
 
-   if (isset($_SESSION["glpiID"])) {
+   //if glpi is loaded
+   if (Session::getLoginUserID()) {
 
-      if (isset($_SESSION["glpi_plugin_environment_installed"])
+      //if environment plugin is not installed
+      $plugin = new Plugin();
+      if (!$plugin->isActivated('environment')
+         && Session::haveRight("plugin_appliances", READ)) {
+
+         $PLUGIN_HOOKS['menu_toadd']['appliances'] = array('assets' => 'PluginAppliancesMenu');
+      }
+      $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
+
+      /*if (isset($_SESSION["glpi_plugin_environment_installed"])
           && ($_SESSION["glpi_plugin_environment_installed"] == 1)) {
 
          $_SESSION["glpi_plugin_environment_appliances"] = 1;
 
          // Display a menu entry ?
-         if (plugin_appliances_haveRight("appliance","r")) {
+         if (Session::haveRight("plugin_appliances", READ)) {
             $PLUGIN_HOOKS['menu_entry']['appliances'] = false;
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['title']
                                                       = _n('Appliance', 'Appliances', 2, 'appliances');
@@ -109,7 +118,7 @@ function plugin_init_appliances() {
                                                       = '/plugins/appliances/front/appliance.php';
          }
 
-         if (plugin_appliances_haveRight("appliance","w")) {
+         if (Session::haveRight("plugin_appliances", CREATE)) {
             $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['add']
                                           = '/plugins/appliances/front/appliance.form.php';
             $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
@@ -117,17 +126,17 @@ function plugin_init_appliances() {
 
        } else {
          // Display a menu entry ?
-         if (plugin_appliances_haveRight("appliance","r")) {
+         if (Session::haveRight("plugin_appliances", READ)) {
             $PLUGIN_HOOKS['menu_entry']['appliances']      = 'front/appliance.php';
             $PLUGIN_HOOKS['submenu_entry']['appliances']['search'] = 'front/appliance.php';
          }
 
-         if (plugin_appliances_haveRight("appliance","w")) {
+         if (Session::haveRight("plugin_appliances", CREATE)) {
             $PLUGIN_HOOKS['submenu_entry']['appliances']['add']
                                                            = 'front/appliance.form.php?new=1';
-            $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
+            
          }
-      }
+      }*/
    }
    // Import from Data_Injection plugin
    $PLUGIN_HOOKS['data_injection']['appliances'] = "plugin_appliances_data_injection_variables";
@@ -144,20 +153,20 @@ function plugin_init_appliances() {
 function plugin_version_appliances() {
 
    return array('name'           => __('Appliances', 'appliances'),
-                'version'        => '1.9.1',
+                'version'        => '2.0.0',
                 'oldname'        => 'applicatifs',
                 'author'         => 'Remi Collet, Xavier Caillaud, Nelly Mahu-Lasson',
                 'license'        => 'GPLv2+',
                 'homepage'       => 'https://forge.indepnet.net/projects/show/appliances',
-                'minGlpiVersion' => '0.84');
+                'minGlpiVersion' => '0.85');
 }
 
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_appliances_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.84','lt') || version_compare(GLPI_VERSION,'0.85','ge')) {
-      echo "This plugin requires GLPI >= 0.84 and GLPI < 0.85";
+   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.86','ge')) {
+      echo "This plugin requires GLPI >= 0.85 and GLPI < 0.86";
       return false;
    }
    return true;
@@ -167,22 +176,6 @@ function plugin_appliances_check_prerequisites() {
 // Uninstall process for plugin : need to return true if succeeded : may display messages or add to message after redirect
 function plugin_appliances_check_config() {
    return true;
-}
-
-
-function plugin_appliances_haveRight($module,$right) {
-
-   $matches = array(""  => array("","r","w"), // ne doit pas arriver normalement
-                    "r" => array("r","w"),
-                    "w" => array("w"),
-                    "1" => array("1"),
-                    "0" => array("0", "1")); // ne doit pas arriver non plus
-
-   if (isset($_SESSION["glpi_plugin_appliances_profiles"][$module])
-       && in_array($_SESSION["glpi_plugin_appliances_profiles"][$module],$matches[$right])) {
-      return true;
-   }
-   return false;
 }
 
 

@@ -38,6 +38,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                          'Printer', 'Software');
 
    public $dohistory = true;
+   static $rightname = "plugin_appliances";
 
 
    static function getTypeName($nb=0) {
@@ -47,17 +48,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       return _n('Appliance', 'Appliances', 1, 'appliances');
    }
-
-
-   static function canCreate() {
-      return plugin_appliances_haveRight('appliance', 'w');
-   }
-
-
-   static function canView() {
-      return plugin_appliances_haveRight('appliance', 'r');
-   }
-
 
    /**
     * Retrieve an Appliance from the database using its externalid (unique index)
@@ -198,6 +188,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('PluginAppliancesAppliance_Item', $ong, $options);
       $this->addStandardTab('PluginAppliancesOptvalue', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
@@ -205,7 +196,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Note', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -228,18 +219,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if ($ID>0) {
-         $this->check($ID,'r');
-      } else {
-         $this->check(-1, 'w');
-         $this->getEmpty();
-      }
-
-      $canedit = $this->can($ID,'w');
-      $canrecu = $this->can($ID,'recursive');
-
-      $this->showTabs($options);
+      $this->initForm($ID, $options);
       $this->showFormHeader($options);
+
+      $canedit = $this->can($ID, UPDATE);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td><td>";
@@ -349,8 +332,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
       return true;
    }
@@ -441,10 +422,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
 
-      // Defautl values
-      $p['name']     = 'plugin_appliances_appliances_id';
-      $p['entity']   = '';
-      $p['used']     = array();
+
+      $p['name']    = 'plugin_appliances_appliances_id';
+      $p['entity']  = '';
+      $p['used']    = array();
+      $p['display'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -452,52 +434,54 @@ class PluginAppliancesAppliance extends CommonDBTM {
          }
       }
 
-      $rand = mt_rand();
+      $where = " WHERE `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ".
+                       getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances", '', $p['entity'], true);
 
-      $where =" WHERE `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ".
-                      getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances", '',
-                                                 $p['entity'], true);
-
+      $p['used'] = array_filter($p['used']);
       if (count($p['used'])) {
-         $where .= " AND `id` NOT IN ('".implode("','", $p['used'])."')";
+         $where .= " AND `id` NOT IN (0, ".implode(",",$p['used']).")";
       }
 
       $query = "SELECT *
                 FROM `glpi_plugin_appliances_appliancetypes`
                 WHERE `id` IN (SELECT DISTINCT `plugin_appliances_appliancetypes_id`
-                               FROM `glpi_plugin_appliances_appliances` ".
-                               $where.")
-                GROUP BY `name`";
+                               FROM `glpi_plugin_appliances_appliances`
+                             $where)
+                ORDER BY `name`";
       $result = $DB->query($query);
 
-      echo "<select name='_type' id='type_appliances'>\n";
-      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>\n";
+      $values = array(0 => Dropdown::EMPTY_VALUE);
+
       while ($data = $DB->fetch_assoc($result)) {
-         echo "<option value='".$data['id']."'>".$data['name']."</option>\n";
+         $values[$data['id']] = $data['name'];
       }
-      echo "</select>\n";
+      $rand = mt_rand();
+      $out  = Dropdown::showFromArray('_appliancetype', $values, array('width'   => '30%',
+                                                                     'rand'    => $rand,
+                                                                     'display' => false));
+      $field_id = Html::cleanId("dropdown__appliancetype$rand");
 
-      $params = array('type_appliances' => '__VALUE__',
-                      'entity_restrict' => $p['entity'],
-                      'rand'            => $rand,
-                      'myname'          => $p['name'],
-                      'used'            => $p['used']);
+      $params   = array('appliancetype' => '__VALUE__',
+                        'entity' => $p['entity'],
+                        'rand'   => $rand,
+                        'myname' => $p['name'],
+                        'used'   => $p['used']);
 
-      Ajax::updateItemOnSelectEvent("type_appliances", "show_".$p['name'].$rand,
-                                    $CFG_GLPI["root_doc"].
-                                       "/plugins/appliances/ajax/dropdownTypeAppliances.php",
-                                  $params);
+      $out .= Ajax::updateItemOnSelectEvent($field_id,"show_".$p['name'].$rand,
+                                            $CFG_GLPI["root_doc"]."/plugins/appliances/ajax/dropdownTypeAppliances.php",
+                                            $params, false);
+      $out .= "<span id='show_".$p['name']."$rand'>";
+      $out .= "</span>\n";
 
-      echo "<span id='show_".$p['name']."$rand'>";
-      $_POST["entity_restrict"] = $p['entity'];
-      $_POST["type_appliances"] = 0;
-      $_POST["myname"]          = $p['name'];
-      $_POST["rand"]            = $rand;
-      $_POST["used"]            = $p['used'];
-      include (GLPI_ROOT."/plugins/appliances/ajax/dropdownTypeAppliances.php");
-      echo "</span>\n";
-
-      return $rand;
+      $params['appliancetype'] = 0;
+      $out .= Ajax::updateItem("show_".$p['name'].$rand,
+                               $CFG_GLPI["root_doc"]. "/plugins/appliances/ajax/dropdownTypeAppliances.php",
+                               $params, false);
+      if ($p['display']) {
+         echo $out;
+         return $rand;
+      }
+      return $out;
    }
 
 
@@ -750,7 +734,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $id        = intval($params['id']);
       $appliance = new self();
-      if (!$appliance->can($id, 'w')) {
+      if (!$appliance->can($id, UPDATE)) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
 
@@ -889,7 +873,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
 
       $appliance = new self();
-      if (!$appliance->can(-1, 'w', $input)) {
+      if (!$appliance->can(-1, UPDATE, $input)) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
 
@@ -930,7 +914,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          $found = $appli->getFromDBbyExternalID(addslashes($params["externalid"]));
       }
 
-      if (!$found || !$appli->can($appli->fields["id"],'r')) {
+      if (!$found || !$appli->can($appli->fields["id"],READ)) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTFOUND);
       }
       $resp = $appli->fields;
@@ -973,6 +957,180 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $migration->addField($table, 'groups_id_tech', 'integer', array('after' => 'groups_id'));
       $migration->addKey($table, 'groups_id_tech');
+      
+      if (TableExists("glpi_plugin_appliances_profiles")) {
+   
+         $notepad_tables = array('glpi_plugin_appliances_appliances');
+
+         foreach ($notepad_tables as $t) {
+            // Migrate data
+            if (FieldExists($t, 'notepad')) {
+               $query = "SELECT id, notepad
+                         FROM `$t`
+                         WHERE notepad IS NOT NULL
+                               AND notepad <>'';";
+               foreach ($DB->request($query) as $data) {
+                  $iq = "INSERT INTO `glpi_notepads`
+                                (`itemtype`, `items_id`, `content`, `date`, `date_mod`)
+                         VALUES ('".getItemTypeForTable($t)."', '".$data['id']."',
+                                 '".addslashes($data['notepad'])."', NOW(), NOW())";
+                  $DB->queryOrDie($iq, "0.85 migrate notepad data");
+               }
+               $query = "ALTER TABLE `glpi_plugin_appliances_appliances` DROP COLUMN `notepad`;";
+               $DB->query($query);
+            }
+         }
+      }
+   }
+   
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::getSpecificMassiveActions()
+   **/
+   function getSpecificMassiveActions($checkitem=NULL) {
+      $isadmin = static::canUpdate();
+      $actions = parent::getSpecificMassiveActions($checkitem);
+
+      if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         if ($isadmin) {
+            $actions['PluginAppliancesAppliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'install']    = _x('button', 'Associate');
+            $actions['PluginAppliancesAppliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall'] = _x('button', 'Dissociate');
+
+            if (Session::haveRight('transfer', READ)
+                     && Session::isMultiEntitiesMode()
+            ) {
+               $actions['PluginAppliancesAppliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'transfer'] = __('Transfer');
+            }
+         }
+      }
+      return $actions;
+   }
+   
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      switch ($ma->getAction()) {
+         case 'plugin_appliances_add_item':
+            self::dropdown(array());
+            echo "&nbsp;".
+                 Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+            return true;
+            break;
+         case "install" :
+            Dropdown::showAllItems("item_item", 0, 0, -1, self::getTypes(true), 
+                                   false, false, 'typeitem');
+            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+            return true;
+            break;
+         case "uninstall" :
+            Dropdown::showAllItems("item_item", 0, 0, -1, self::getTypes(true), 
+                                   false, false, 'typeitem');
+            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+            return true;
+            break;
+         case "transfer" :
+            Dropdown::show('Entity');
+            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+            return true;
+            break;
+    }
+      return parent::showMassiveActionsSubForm($ma);
+   }
+   
+   
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $DB;
+      
+      $appliance_item = new PluginAppliancesAppliance_Item();
+      
+      switch ($ma->getAction()) {
+         case "plugin_appliances_add_item":
+            $input = $ma->getInput();
+            foreach ($ids as $id) {
+               $input = array('plugin_appliances_appliancetypes_id' => $input['plugin_appliances_appliancetypes_id'],
+                                 'items_id'      => $id,
+                                 'itemtype'      => $item->getType());
+               if ($appliance_item->can(-1,UPDATE,$input)) {
+                  if ($appliance_item->add($input)) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+               }
+            }
+
+            return;
+         case "transfer" :
+            $input = $ma->getInput();
+            if ($item->getType() == 'PluginAppliancesAppliance') {
+            foreach ($ids as $key) {
+                  $item->getFromDB($key);
+                  $type = PluginAppliancesApplianceType::transfer($item->fields["plugin_appliances_appliancetypes_id"], $input['entities_id']);
+                  if ($type > 0) {
+                     $values["id"] = $key;
+                     $values["plugin_appliances_appliancetypes_id"] = $type;
+                     $item->update($values);
+                  }
+
+                  unset($values);
+                  $values["id"] = $key;
+                  $values["entities_id"] = $input['entities_id'];
+
+                  if ($item->update($values)) {
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                  }
+               }
+            }
+            return;
+
+         case 'install' :
+            $input = $ma->getInput();
+            foreach ($ids as $key) {
+               if ($item->can($key, UPDATE)) {
+                  $values = array('plugin_appliances_appliances_id' => $key,
+                                 'items_id'      => $input["item_item"],
+                                 'itemtype'      => $input['typeitem']);
+                  if ($appliance_item->add($values)) {
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               }
+            }
+            return;
+            
+         case 'uninstall':
+            $input = $ma->getInput();
+            foreach ($ids as $key) {
+               if ($val == 1) {
+                  if ($appliance_item->deleteItemByAppliancesAndItem($key,$input['item_item'],$input['typeitem'])) {
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                  }
+               }
+            }
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 }
 ?>

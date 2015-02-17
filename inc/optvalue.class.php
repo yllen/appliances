@@ -52,10 +52,10 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    static function showForAppliance (PluginAppliancesAppliance $appli) {
       global $DB, $CFG_GLPI;
 
-      if (!$appli->can($appli->fields['id'],'r')) {
+      if (!$appli->can($appli->fields['id'],READ)) {
          return false;
       }
-      $canedit = $appli->can($appli->fields['id'],'w');
+      $canedit = $appli->can($appli->fields['id'],UPDATE);
 
       $rand = mt_rand();
       if ($canedit) {

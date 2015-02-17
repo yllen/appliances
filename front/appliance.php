@@ -32,15 +32,15 @@ include ("../../../inc/includes.php");
 $plugin = new Plugin();
 
 if ($plugin->isActivated("environment")) {
-   Html::header(_n('Appliance', 'Appliances', 2, 'appliances'), $_SERVER['PHP_SELF'], "plugins",
-                "environment", "appliances");
+   Html::header(PluginWebapplicationsWebapplication::getTypeName(2)
+                  ,'',"assets","pluginenvironmentdisplay","appliances");
 } else {
-   Html::header(_n('Appliance', 'Appliances', 2, 'appliances'), $_SERVER['PHP_SELF'], "plugins",
-                "appliances");
+   Html::header(PluginAppliancesAppliance::getTypeName(2), '', "assets","pluginappliancesmenu");
+
 }
 
-if (plugin_appliances_haveRight("appliance","r")
-    || Session::haveRight("config","w")) {
+if (Session::haveRight("plugin_appliances", READ)
+    || Session::haveRight("config", UPDATE)) {
    Search::show('PluginAppliancesAppliance');
 
 } else {

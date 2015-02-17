@@ -29,7 +29,7 @@
 
 include ("../../../inc/includes.php");
 
-Plugin::load('appliances',true);
+//Plugin::load('appliances',true);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -42,27 +42,30 @@ $PluginAppliances = new PluginAppliancesAppliance();
 $PluginItem       = new PluginAppliancesAppliance_Item();
 
 if (isset($_POST["add"])) {
-   $PluginAppliances->check(-1, 'w', $_POST);
+   $PluginAppliances->check(-1, CREATE, $_POST);
    $newID = $PluginAppliances->add($_POST);
+   if ($_SESSION['glpibackcreated']) {
+      Html::redirect($web->getFormURL()."?id=".$newID);
+   }
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $PluginAppliances->check($_POST['id'], 'w');
+   $PluginAppliances->check($_POST['id'], UPDATE);
    $PluginAppliances->update($_POST);
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $PluginAppliances->check($_POST['id'], 'w');
+   $PluginAppliances->check($_POST['id'], DELETE);
    $PluginAppliances->delete($_POST);
    Html::redirect($CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.php");
 
 } else if (isset($_POST["restore"])) {
-   $PluginAppliances->check($_POST['id'],'w');
+   $PluginAppliances->check($_POST['id'], PURGE);
    $PluginAppliances->restore($_POST);
    Html::back();
 
 } else if (isset($_POST["purge"])) {
-   $PluginAppliances->check($_POST['id'], 'w');
+   $PluginAppliances->check($_POST['id'], PURGE);
    $PluginAppliances->delete($_POST, 1);
 
    Html::redirect($CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.php");
@@ -91,16 +94,16 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST['update_optvalues'])) {
-   $PluginAppliances->check($_POST['plugin_appliances_appliances_id'], 'w');
+   $PluginAppliances->check($_POST['plugin_appliances_appliances_id'], UPDATE);
 
    $Optvalue = new PluginAppliancesOptvalue();
    $Optvalue->updateList($_POST);
    Html::back();
 
 } else if (isset($_POST["add_opt_val"])){
-   $PluginAppliances->check($_POST['plugin_appliances_appliances_id'], 'r');
+   $PluginAppliances->check($_POST['plugin_appliances_appliances_id'], READ);
    $item = new $_POST['itemtype']();
-   $item->check($_POST['items_id'], 'w');
+   $item->check($_POST['items_id'], UPDATE);
 
    $OptvalueItem = new PluginAppliancesOptvalue_Item();
    $OptvalueItem->updateList($_POST);
@@ -113,7 +116,7 @@ if (isset($_POST["add"])) {
                      'items_id'                        => $_POST['item'],
                      'itemtype'                        => $_POST['itemtype']);
 
-      $PluginItem->check(-1, 'w', $input);
+      $PluginItem->check(-1, UPDATE, $input);
       $newID = $PluginItem->add($input);
    }
    Html::back();
@@ -122,7 +125,7 @@ if (isset($_POST["add"])) {
    foreach ($_POST["item"] as $key => $val) {
       $input = array('id' => $key);
       if ($val == 1) {
-         $PluginItem->check($key, 'w');
+         $PluginItem->check($key, UPDATE);
          $PluginItem->delete($input);
       }
    }
@@ -130,28 +133,23 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["deleteappliance"])) {
    $input = array('id' => $_POST["id"]);
-   $PluginItem->check($_POST["id"], 'w');
+   $PluginItem->check($_POST["id"], UPDATE);
    $PluginItem->delete($input);
    Html::back();
 
 } else {
-   $PluginAppliances->checkGlobal('r');
-   if (!isset($_SESSION['glpi_tab'])) {
-      $_SESSION['glpi_tab'] = 1;
-   }
-   if (isset($_GET['onglet'])) {
-      $_SESSION['glpi_tab'] = $_GET['onglet'];
-   }
+   $PluginAppliances->checkGlobal(READ);
 
+   //check environment meta-plugin installtion for change header
    $plugin = new Plugin();
    if ($plugin->isActivated("environment")) {
-      Html::header(_n('Appliance', 'Appliances', 2, 'appliances'), $_SERVER['PHP_SELF'], "plugins",
-                   "environment", "appliances");
+      Html::header(PluginAppliancesAppliance::getTypeName(2),
+                     '',"assets","pluginenvironmentdisplay","appliances");
    } else {
-      Html::header(_n('Appliance', 'Appliances', 2, 'appliances'), $_SERVER["PHP_SELF"], "plugins",
-                   "appliances");
+      Html::header(PluginAppliancesAppliance::getTypeName(2), '', "assets",
+                   "pluginappliancesmenu");
    }
-   $PluginAppliances->showForm($_GET["id"]);
+   $PluginAppliances->display($_GET);
 
    Html::footer();
 }

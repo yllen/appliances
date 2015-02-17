@@ -34,19 +34,10 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginAppliancesApplianceType extends CommonDropdown {
 
+   static $rightname = "plugin_appliances";
 
    static function getTypeName($nb=0) {
       return __('Type of appliance', 'appliances');
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('entity_dropdown', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('entity_dropdown', 'r');
    }
 
 

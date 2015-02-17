@@ -37,9 +37,21 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    // From CommonDBRelation
    static public $itemtype_1 = 'PluginAppliancesAppliance';
    static public $items_id_1 = 'plugin_appliances_appliances_id';
-
+   static public $take_entity_1 = false ;
+   
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
+   static public $take_entity_2 = true ;
+   
+   static $rightname = "plugin_appliances";
+
+   static function getTypeName($nb=0) {
+
+      if ($nb > 1) {
+         return _n('Appliance item', 'Appliances items', 2, 'appliances');
+      }
+      return _n('Appliance item', 'Appliances items', 1, 'appliances');
+   }
 
 
    function cleanDBonPurge() {
@@ -99,8 +111,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
       $ID       = $item->getField('id');
       $itemtype = get_Class($item);
-      $canread  = $item->can($ID,'r');
-      $canedit  = $item->can($ID,'w');
+      $canread  = $item->can($ID, READ);
+      $canedit  = $item->can($ID, UPDATE);
 
       $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
                        `glpi_plugin_appliances_appliances`.*
@@ -266,8 +278,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
       $ID       = $item->getField('id');
       $itemtype = get_Class($item);
-      $canread  = $item->can($ID,'r');
-      $canedit  = $item->can($ID,'w');
+      $canread  = $item->can($ID,READ);
+      $canedit  = $item->can($ID,UPDATE);
 
       $pdf->setColumnsSize(100);
       $pdf->displayTitle("<b>".__('Associated appliances', 'appliances')."</b>");
@@ -333,7 +345,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       if (!$appli->can($instID,"r")) {
          return false;
       }
-      if (!plugin_appliances_haveRight("appliance","r")) {
+      if (!Session::haveRight("plugin_appliances", READ)) {
          return false;
       }
 
@@ -449,12 +461,12 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
       $instID = $appli->fields['id'];
 
-      if (!$appli->can($instID,"r")) {
+      if (!$appli->can($instID, READ)) {
          return false;
       }
       $rand = mt_rand();
 
-      $canedit = $appli->can($instID,'w');
+      $canedit = $appli->can($instID, UPDATE);
 
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_plugin_appliances_appliances_items`
@@ -626,7 +638,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             return __('Associated item', 'Associated items', 2);
 
          } else if (in_array($item->getType(), PluginAppliancesAppliance::getTypes(true))
-                    && plugin_appliances_haveRight('appliance', 'r')) {
+                    && Session::haveRight('plugin_appliances', READ)) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(PluginAppliancesAppliance::getTypeName(2),
                                            self::countForItem($item));
@@ -663,5 +675,33 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          return false;
       }
       return true;
+   }
+   
+   function getFromDBbyAppliancesAndItem($plugin_appliances_appliances_id,$items_id,$itemtype) {
+      global $DB;
+
+      $query = "SELECT * FROM `".$this->getTable()."` " .
+         "WHERE `plugin_appliances_appliances_id` = '" . $plugin_appliances_appliances_id . "'
+         AND `itemtype` = '" . $items_id . "'
+         AND `items_id` = '" . $itemtype . "'";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 1) {
+            return false;
+         }
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         } else {
+            return false;
+         }
+      }
+      return false;
+   }
+
+   function deleteItemByAppliancesAndItem($plugin_appliances_appliances_id,$items_id,$itemtype) {
+
+      if ($this->getFromDBbyAppliancesAndItem($plugin_appliances_appliances_id,$items_id,$itemtype)) {
+         $this->delete(array('id'=>$this->fields["id"]));
+      }
    }
 }

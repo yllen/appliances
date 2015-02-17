@@ -36,32 +36,28 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownTypeAppliances.php")) {
 Session::checkCentralAccess();
 
 // Make a select box
+if (isset($_POST["appliancetype"])) {
+   $used = array();
 
-if (isset($_POST["type_appliances"])) {
-   $rand = $_POST['rand'];
+   // Clean used array
+   if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
+      $query = "SELECT `id`
+                FROM `glpi_plugin_appliances_appliances`
+                WHERE `id` IN (".implode(',',$_POST['used']).")
+                      AND `plugin_appliances_appliancetypes_id` = '".$_POST["appliancetype"]."'";
 
-   $use_ajax = false;
-   if ($CFG_GLPI["use_ajax"]
-       && (countElementsInTable('glpi_plugin_appliances_appliances',
-                                "plugin_appliances_appliancetypes_id ='".$_POST["type_appliances"].
-                                 "' ".getEntitiesRestrictRequest(" AND",
-                                                                 "glpi_plugin_appliances_appliances",
-                                                                 "", $_POST["entity_restrict"], true)
-                               ) > $CFG_GLPI["ajax_limit_count"])) {
-      $use_ajax = true;
+      foreach ($DB->request($query) AS $data) {
+         $used[$data['id']] = $data['id'];
+      }
    }
 
-   $params = array('searchText'      => ' __VALUE__',
-                   'type_appliances' => $_POST["type_appliances"],
-                   'entity_restrict' => $_POST["entity_restrict"],
-                   'rand'            => $_POST['rand'],
-                   'myname'          => $_POST['myname'],
-                   'used'            => $_POST['used']);
-
-   $default = "<select name='".$_POST["myname"]."'>
-               <option value='0'>".Dropdown::EMPTY_VALUE."</option></select>";
-   Ajax::dropdown($use_ajax, "/plugins/appliances/ajax/dropdownappliances.php", $params, $default,
-                $rand);
+   Dropdown::show('PluginAppliancesAppliance',
+                  array('name'      => $_POST['myname'],
+                        'used'      => $used,
+                        'width'     => '50%',
+                        'entity'    => $_POST['entity'],
+                        'rand'      => $_POST['rand'],
+                        'condition' => "glpi_plugin_appliances_appliances.plugin_appliances_appliancetypes_id='".$_POST["appliancetype"]."'"));
 
 }
 ?>
