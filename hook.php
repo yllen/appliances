@@ -225,7 +225,7 @@ function plugin_appliances_install() {
       Plugin::migrateItemType(array(1200 => 'PluginAppliancesAppliance'),
                               array("glpi_bookmarks", "glpi_bookmarks_users",
                                     "glpi_displaypreferences", "glpi_documents_items",
-                                    "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                                    "glpi_infocoms", "glpi_logs", "glpi_items_tickets"),
                               array("glpi_plugin_appliances_appliances_items",
                                     "glpi_plugin_appliances_optvalues_items"));
 
@@ -300,6 +300,10 @@ function plugin_appliances_uninstall() {
              WHERE `itemtype` = 'PluginAppliancesAppliance'";
    $DB->query($query);
    
+   $query = "DELETE
+             FROM `glpi_items_tickets`
+             WHERE `itemtype` = 'PluginAppliancesAppliance'";
+   $DB->query($query);
    
    if ($temp = getItemForItemtype('PluginDatainjectionModel')) {
       $temp->deleteByCriteria(array('itemtype'=>'PluginAppliancesAppliance'));
