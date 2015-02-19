@@ -264,7 +264,6 @@ function plugin_appliances_uninstall() {
                    'glpi_plugin_appliances_appliances_items',
                    'glpi_plugin_appliances_appliancetypes',
                    'glpi_plugin_appliances_environments',
-                   'glpi_plugin_appliances_profiles',
                    'glpi_plugin_appliances_relations',
                    'glpi_plugin_appliances_optvalues',
                    'glpi_plugin_appliances_optvalues_items');
@@ -305,7 +304,8 @@ function plugin_appliances_uninstall() {
    if ($temp = getItemForItemtype('PluginDatainjectionModel')) {
       $temp->deleteByCriteria(array('itemtype'=>'PluginAppliancesAppliance'));
    }
-   
+   include_once(GLPI_ROOT."/plugins/appliances/inc/profile.class.php");
+   include_once(GLPI_ROOT."/plugins/appliances/inc/menu.class.php");
    //Delete rights associated with the plugin
    $profileRight = new ProfileRight();
    foreach (PluginAppliancesProfile::getAllRights() as $right) {
