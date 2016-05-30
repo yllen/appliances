@@ -2,28 +2,30 @@
 /*
  * @version $Id$
  -------------------------------------------------------------------------
- appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2013 by the appliances Development Team.
+  LICENSE
 
- https://forge.indepnet.net/projects/appliances
- -------------------------------------------------------------------------
+ This file is part of Appliances plugin for GLPI.
 
- LICENSE
-
- This file is part of appliances.
-
- appliances is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
+ Appliances is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- appliances is distributed in the hope that it will be useful,
+ Appliances is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with appliances. If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU Affero General Public License
+ along with Appliances. If not, see <http://www.gnu.org/licenses/>.
+
+ @package   appliances
+ @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
+ @copyright Copyright (c) 2009-2016 Appliances plugin team
+ @license   AGPL License 3.0 or (at your option) any later version
+            http://www.gnu.org/licenses/agpl-3.0-standalone.html
+ @link      https://forge.glpi-project.org/projects/appliances
+ @since     version 2.0
  --------------------------------------------------------------------------
  */
 
@@ -37,17 +39,15 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                          'Printer', 'Software');
 
-   public $dohistory = true;
-   static $rightname = "plugin_appliances";
+   public $dohistory             = true;
+   static $rightname             = "plugin_appliances";
+   protected $usenotepadrights   = true;
 
 
    static function getTypeName($nb=0) {
-
-      if ($nb > 1) {
-         return _n('Appliance', 'Appliances', 2, 'appliances');
-      }
-      return _n('Appliance', 'Appliances', 1, 'appliances');
+      return _n('Appliance', 'Appliances', $nb, 'appliances');
    }
+
 
    /**
     * Retrieve an Appliance from the database using its externalid (unique index)
@@ -80,96 +80,96 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $tab = array();
 
-      $tab['common']           = _n('Appliance', 'Appliances', 2, 'appliances');
+      $tab['common']            = _n('Appliance', 'Appliances', 2, 'appliances');
 
-      $tab[1]['table']         = 'glpi_plugin_appliances_appliances';
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['table']          = 'glpi_plugin_appliances_appliances';
+      $tab[1]['field']          = 'name';
+      $tab[1]['name']           = __('Name');
+      $tab[1]['datatype']       = 'itemlink';
+      $tab[1]['itemlink_type']  = $this->getType();
 
-      $tab[2]['table']        = 'glpi_plugin_appliances_appliancetypes';
-      $tab[2]['field']        = 'name';
-      $tab[2]['name']         = __('Type');
+      $tab[2]['table']          = 'glpi_plugin_appliances_appliancetypes';
+      $tab[2]['field']          = 'name';
+      $tab[2]['name']           = __('Type');
 
-      $tab[32]['table']       = 'glpi_states';
-      $tab[32]['field']       = 'completename';
-      $tab[32]['name']        = _n('Status', 'Statuses', 1);
-      $tab[32]['displaytype'] = 'dropdown';
-      $tab[32]['checktype']   = 'text';
-      $tab[32]['injectable']  = true;
+      $tab[32]['table']         = 'glpi_states';
+      $tab[32]['field']         = 'completename';
+      $tab[32]['name']          = _n('Status', 'Statuses', 1);
+      $tab[32]['displaytype']   = 'dropdown';
+      $tab[32]['checktype']     = 'text';
+      $tab[32]['injectable']    = true;
 
       $tab += Location::getSearchOptionsToAdd();
 
-      $tab[4]['table']        = 'glpi_plugin_appliances_appliances';
-      $tab[4]['field']        =  'comment';
-      $tab[4]['name']         =  __('Comments');
-      $tab[4]['datatype']     =  'text';
+      $tab[4]['table']          = 'glpi_plugin_appliances_appliances';
+      $tab[4]['field']          =  'comment';
+      $tab[4]['name']           =  __('Comments');
+      $tab[4]['datatype']       =  'text';
 
-      $tab[5]['table']         = 'glpi_plugin_appliances_appliances_items';
-      $tab[5]['field']         = 'items_id';
-      $tab[5]['name']          = __('Associated items', 'appliances');
-      $tab[5]['massiveaction'] = false;
-      $tab[5]['forcegroupby']  =  true;
-      $tab[5]['joinparams']    = array('jointype' => 'child');
+      $tab[5]['table']          = 'glpi_plugin_appliances_appliances_items';
+      $tab[5]['field']          = 'items_id';
+      $tab[5]['name']           = __('Associated items', 'appliances');
+      $tab[5]['massiveaction']  = false;
+      $tab[5]['forcegroupby']   =  true;
+      $tab[5]['joinparams']     = array('jointype' => 'child');
 
-      $tab[6]['table']        = 'glpi_users';
-      $tab[6]['field']        = 'name';
-      $tab[6]['name']         = __('User');
+      $tab[6]['table']          = 'glpi_users';
+      $tab[6]['field']          = 'name';
+      $tab[6]['name']           = __('User');
 
-      $tab[8]['table']        = 'glpi_groups';
-      $tab[8]['field']        = 'completename';
-      $tab[8]['name']         = __('Group');
-      $tab[8]['condition']    = '`is_itemgroup`';
+      $tab[8]['table']          = 'glpi_groups';
+      $tab[8]['field']          = 'completename';
+      $tab[8]['name']           = __('Group');
+      $tab[8]['condition']      = '`is_itemgroup`';
 
-      $tab[24]['table']       = 'glpi_users';
-      $tab[24]['field']       = 'name';
-      $tab[24]['linkfield']   = 'users_id_tech';
-      $tab[24]['name']        = __('Technician in charge of the hardware');
+      $tab[24]['table']         = 'glpi_users';
+      $tab[24]['field']         = 'name';
+      $tab[24]['linkfield']     = 'users_id_tech';
+      $tab[24]['name']          = __('Technician in charge of the hardware');
 
-      $tab[49]['table']       = 'glpi_groups';
-      $tab[49]['field']       = 'completename';
-      $tab[49]['linkfield']   = 'groups_id_tech';
-      $tab[49]['name']        = __('Group in charge of the hardware');
-      $tab[49]['condition']   = '`is_assign`';
+      $tab[49]['table']         = 'glpi_groups';
+      $tab[49]['field']         = 'completename';
+      $tab[49]['linkfield']     = 'groups_id_tech';
+      $tab[49]['name']          = __('Group in charge of the hardware');
+      $tab[49]['condition']     = '`is_assign`';
 
-      $tab[9]['table']         = 'glpi_plugin_appliances_appliances';
-      $tab[9]['field']         = 'date_mod';
-      $tab[9]['name']          = __('Last update');
-      $tab[9]['massiveaction'] = false;
-      $tab[9]['datatype']      = 'datetime';
+      $tab[9]['table']          = 'glpi_plugin_appliances_appliances';
+      $tab[9]['field']          = 'date_mod';
+      $tab[9]['name']           = __('Last update');
+      $tab[9]['massiveaction']  = false;
+      $tab[9]['datatype']       = 'datetime';
 
-      $tab[10]['table']       = 'glpi_plugin_appliances_environments';
-      $tab[10]['field']       = 'name';
-      $tab[10]['name']        = __('Environment', 'appliances');
+      $tab[10]['table']         = 'glpi_plugin_appliances_environments';
+      $tab[10]['field']         = 'name';
+      $tab[10]['name']          = __('Environment', 'appliances');
 
-      $tab[11]['table']       = 'glpi_plugin_appliances_appliances';
-      $tab[11]['field']       = 'is_helpdesk_visible';
-      $tab[11]['name']        = __('Associable to a ticket');
-      $tab[11]['datatype']    = 'bool';
+      $tab[11]['table']         = 'glpi_plugin_appliances_appliances';
+      $tab[11]['field']         = 'is_helpdesk_visible';
+      $tab[11]['name']          = __('Associable to a ticket');
+      $tab[11]['datatype']      = 'bool';
 
-      $tab[12]['table']       = 'glpi_plugin_appliances_appliances';
-      $tab[12]['field']       = 'serial';
-      $tab[12]['name']        = __('Serial number');
+      $tab[12]['table']         = 'glpi_plugin_appliances_appliances';
+      $tab[12]['field']         = 'serial';
+      $tab[12]['name']          = __('Serial number');
 
-      $tab[13]['table']       = 'glpi_plugin_appliances_appliances';
-      $tab[13]['field']       = 'otherserial';
-      $tab[13]['name']        = __('Inventory number');
+      $tab[13]['table']         = 'glpi_plugin_appliances_appliances';
+      $tab[13]['field']         = 'otherserial';
+      $tab[13]['name']          = __('Inventory number');
 
-      $tab[31]['table']       = 'glpi_plugin_appliances_appliances';
-      $tab[31]['field']        = 'id';
-      $tab[31]['name']         = __('ID');
+      $tab[31]['table']         = 'glpi_plugin_appliances_appliances';
+      $tab[31]['field']         = 'id';
+      $tab[31]['name']          = __('ID');
       $tab[31]['massiveaction'] = false;
 
-      $tab[80]['table']       = 'glpi_entities';
-      $tab[80]['field']       = 'completename';
-      $tab[80]['name']        = __('Entity');
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = __('Entity');
 
-      $tab[7]['table']         = 'glpi_plugin_appliances_appliances';
-      $tab[7]['field']         = 'is_recursive';
-      $tab[7]['name']          = __('Child entities');
-      $tab[7]['massiveaction'] = false;
-      $tab[7]['datatype']      = 'bool';
+      $tab[7]['table']          = 'glpi_plugin_appliances_appliances';
+      $tab[7]['field']          = 'is_recursive';
+      $tab[7]['name']           = __('Child entities');
+      $tab[7]['massiveaction']  = false;
+      $tab[7]['datatype']       = 'bool';
 
       return $tab;
    }
@@ -216,13 +216,14 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
       $canedit = $this->can($ID, UPDATE);
+      $canrecu = $this->can($ID,'recursive');
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td><td>";
@@ -343,7 +344,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
     * @param $pdf object for the output
    **/
    function show_PDF ($pdf) {
-      global $DB;
 
       $pdf->setColumnsSize(50,50);
       $col1 = '<b>'.sprintf(__('%1$s %2$s'), __('ID'), $this->fields['id']).'</b>';
@@ -422,7 +422,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
 
-
       $p['name']    = 'plugin_appliances_appliances_id';
       $p['entity']  = '';
       $p['used']    = array();
@@ -435,18 +434,19 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
 
       $where = " WHERE `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ".
-                       getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances", '', $p['entity'], true);
+                       getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances", '',
+                                                  $p['entity'], true);
 
       $p['used'] = array_filter($p['used']);
       if (count($p['used'])) {
-         $where .= " AND `id` NOT IN (0, ".implode(",",$p['used']).")";
+         $where .= " AND `id` NOT IN ('".implode("','",$p['used'])."')";
       }
 
       $query = "SELECT *
                 FROM `glpi_plugin_appliances_appliancetypes`
                 WHERE `id` IN (SELECT DISTINCT `plugin_appliances_appliancetypes_id`
                                FROM `glpi_plugin_appliances_appliances`
-                             $where)
+                               $where)
                 ORDER BY `name`";
       $result = $DB->query($query);
 
@@ -455,17 +455,17 @@ class PluginAppliancesAppliance extends CommonDBTM {
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['id']] = $data['name'];
       }
-      $rand = mt_rand();
-      $out  = Dropdown::showFromArray('_appliancetype', $values, array('width'   => '30%',
-                                                                     'rand'    => $rand,
-                                                                     'display' => false));
+      $rand     = mt_rand();
+      $out      = Dropdown::showFromArray('_appliancetype', $values, array('width'   => '30%',
+                                                                           'rand'    => $rand,
+                                                                           'display' => false));
       $field_id = Html::cleanId("dropdown__appliancetype$rand");
 
       $params   = array('appliancetype' => '__VALUE__',
-                        'entity' => $p['entity'],
-                        'rand'   => $rand,
-                        'myname' => $p['name'],
-                        'used'   => $p['used']);
+                        'entity'        => $p['entity'],
+                        'rand'          => $rand,
+                        'myname'        => $p['name'],
+                        'used'          => $p['used']);
 
       $out .= Ajax::updateItemOnSelectEvent($field_id,"show_".$p['name'].$rand,
                                             $CFG_GLPI["root_doc"]."/plugins/appliances/ajax/dropdownTypeAppliances.php",
@@ -663,7 +663,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    static function methodDeleteAppliance($params, $protocol) {
-      global $DB;
 
       if (isset ($params['help'])) {
          return array('help'  => 'bool,optional',
@@ -699,7 +698,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    static function methodUpdateAppliance($params, $protocol) {
-      global $DB;
 
       // TODO : add more fields + factorize field translation with methodAddAppliance
 
@@ -794,7 +792,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    static function methodAddAppliance($params, $protocol) {
-      global $DB;
 
       // TODO : add more fields
       if (isset ($params['help'])) {
@@ -873,7 +870,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
 
       $appliance = new self();
-      if (!$appliance->can(-1, UPDATE, $input)) {
+      if (!$appliance->can(-1, CREATE, $input)) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
 
@@ -888,7 +885,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    static function methodGetAppliance($params, $protocol) {
-      global $DB;
 
       if (isset ($params['help'])) {
          return array(  'help'               => 'bool,optional',
@@ -936,6 +932,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    static function updateSchema(Migration $migration) {
+      global $DB;
 
       $migration->displayTitle(sprintf(__('%1$s: %2$s'), __('Update'), self::getTypeName(9)));
       $table = getTableForItemType(__CLASS__);
@@ -957,9 +954,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $migration->addField($table, 'groups_id_tech', 'integer', array('after' => 'groups_id'));
       $migration->addKey($table, 'groups_id_tech');
-      
+
+      // version 2.0
       if (TableExists("glpi_plugin_appliances_profiles")) {
-   
          $notepad_tables = array('glpi_plugin_appliances_appliances');
 
          foreach ($notepad_tables as $t) {
@@ -968,7 +965,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                $query = "SELECT id, notepad
                          FROM `$t`
                          WHERE notepad IS NOT NULL
-                               AND notepad <>'';";
+                               AND notepad <> '';";
                foreach ($DB->request($query) as $data) {
                   $iq = "INSERT INTO `glpi_notepads`
                                 (`itemtype`, `items_id`, `content`, `date`, `date_mod`)
@@ -976,37 +973,40 @@ class PluginAppliancesAppliance extends CommonDBTM {
                                  '".addslashes($data['notepad'])."', NOW(), NOW())";
                   $DB->queryOrDie($iq, "0.85 migrate notepad data");
                }
-               $query = "ALTER TABLE `glpi_plugin_appliances_appliances` DROP COLUMN `notepad`;";
-               $DB->query($query);
+               $migration->dropField(`glpi_plugin_appliances_appliances`, `notepad`);
             }
          }
       }
    }
-   
+
+
    /**
     * @since version 0.85
     *
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
          if ($isadmin) {
-            $actions['PluginAppliancesAppliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'install']    = _x('button', 'Associate');
-            $actions['PluginAppliancesAppliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall'] = _x('button', 'Dissociate');
+            $actions['PluginAppliancesAppliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'install']
+               = _x('button', 'Associate');
+            $actions['PluginAppliancesAppliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall']
+               = _x('button', 'Dissociate');
 
-            if (Session::haveRight('transfer', READ)
-                     && Session::isMultiEntitiesMode()
-            ) {
-               $actions['PluginAppliancesAppliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'transfer'] = __('Transfer');
+            if (Session::haveRight('transfer', READ) && Session::isMultiEntitiesMode()) {
+               $actions['PluginAppliancesAppliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'transfer']
+                  = __('Transfer');
             }
          }
       }
       return $actions;
    }
-   
+
+
    /**
     * @since version 0.85
     *
@@ -1017,32 +1017,31 @@ class PluginAppliancesAppliance extends CommonDBTM {
       switch ($ma->getAction()) {
          case 'plugin_appliances_add_item':
             self::dropdown(array());
-            echo "&nbsp;".
-                 Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+            echo "&nbsp;". Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
             return true;
-            break;
+
          case "install" :
-            Dropdown::showAllItems("item_item", 0, 0, -1, self::getTypes(true), 
+            Dropdown::showAllItems("item_item", 0, 0, -1, self::getTypes(true),
                                    false, false, 'typeitem');
             echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
             return true;
-            break;
+
          case "uninstall" :
-            Dropdown::showAllItems("item_item", 0, 0, -1, self::getTypes(true), 
+            Dropdown::showAllItems("item_item", 0, 0, -1, self::getTypes(true),
                                    false, false, 'typeitem');
             echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
             return true;
-            break;
+
          case "transfer" :
             Dropdown::show('Entity');
             echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
             return true;
-            break;
+
     }
       return parent::showMassiveActionsSubForm($ma);
    }
-   
-   
+
+
    /**
     * @since version 0.85
     *
@@ -1051,9 +1050,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       global $DB;
-      
+
       $appliance_item = new PluginAppliancesAppliance_Item();
-      
+
       switch ($ma->getAction()) {
          case "plugin_appliances_add_item":
             $input = $ma->getInput();
@@ -1116,7 +1115,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                }
             }
             return;
-            
+
          case 'uninstall':
             $input = $ma->getInput();
             foreach ($ids as $key) {

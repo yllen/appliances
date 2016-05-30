@@ -2,28 +2,30 @@
 /*
  * @version $Id$
  -------------------------------------------------------------------------
- appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2013 by the appliances Development Team.
-
- https://forge.indepnet.net/projects/appliances
- -------------------------------------------------------------------------
-
  LICENSE
 
- This file is part of appliances.
+ This file is part of Appliances plugin for GLPI.
 
- appliances is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
+ Appliances is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- appliances is distributed in the hope that it will be useful,
+ Appliances is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with appliances. If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU Affero General Public License
+ along with Appliances. If not, see <http://www.gnu.org/licenses/>.
+
+ @package   appliances
+ @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
+ @copyright Copyright (c) 2009-2016 Appliances plugin team
+ @license   AGPL License 3.0 or (at your option) any later version
+            http://www.gnu.org/licenses/agpl-3.0-standalone.html
+ @link      https://forge.glpi-project.org/projects/appliances
+ @since     version 2.0
  --------------------------------------------------------------------------
  */
 
@@ -45,7 +47,7 @@ if (isset($_POST["add"])) {
    $PluginAppliances->check(-1, CREATE, $_POST);
    $newID = $PluginAppliances->add($_POST);
    if ($_SESSION['glpibackcreated']) {
-      Html::redirect($web->getFormURL()."?id=".$newID);
+      Html::redirect($PluginAppliances->getFormURL()."?id=".$newID);
    }
    Html::back();
 

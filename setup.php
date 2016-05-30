@@ -2,28 +2,30 @@
 /*
  * @version $Id$
  -------------------------------------------------------------------------
- appliances - Appliances plugin for GLPI
- Copyright (C) 2003-2013 by the appliances Development Team.
-
- https://forge.indepnet.net/projects/appliances
- -------------------------------------------------------------------------
-
  LICENSE
 
- This file is part of appliances.
+ This file is part of Appliances plugin for GLPI.
 
- appliances is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
+ Appliances is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- appliances is distributed in the hope that it will be useful,
+ Appliances is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with appliances. If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU Affero General Public License
+ along with Appliances. If not, see <http://www.gnu.org/licenses/>.
+
+ @package   appliances
+ @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
+ @copyright Copyright (c) 2009-2016 Appliances plugin team
+ @license   AGPL License 3.0 or (at your option) any later version
+            http://www.gnu.org/licenses/agpl-3.0-standalone.html
+ @link      https://forge.glpi-project.org/projects/appliances
+ @since     version 2.0
  --------------------------------------------------------------------------
  */
 
@@ -79,8 +81,7 @@ function plugin_init_appliances() {
 
    $PLUGIN_HOOKS['change_profile']['appliances']   = array('PluginAppliancesProfile','initProfile');
    $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
-   /*$PLUGIN_HOOKS['assign_to_ticket_dropdown']['appliances'] = true;
-   $PLUGIN_HOOKS['assign_to_ticket_itemtype']['appliances'] = array('PluginAppliancesAppliance_Item');*/
+   $PLUGIN_HOOKS['assign_to_ticket_dropdown']['appliances'] = true;
 
    if (class_exists('PluginAppliancesAppliance')) { // only if plugin activated
       $PLUGIN_HOOKS['item_clone']['appliances']
@@ -134,7 +135,7 @@ function plugin_init_appliances() {
          if (Session::haveRight("plugin_appliances", CREATE)) {
             $PLUGIN_HOOKS['submenu_entry']['appliances']['add']
                                                            = 'front/appliance.form.php?new=1';
-            
+
          }
       }*/
    }
@@ -154,26 +155,23 @@ function plugin_version_appliances() {
 
    return array('name'           => __('Appliances', 'appliances'),
                 'version'        => '2.0.0',
-                'oldname'        => 'applicatifs',
                 'author'         => 'Remi Collet, Xavier Caillaud, Nelly Mahu-Lasson',
-                'license'        => 'GPLv2+',
-                'homepage'       => 'https://forge.indepnet.net/projects/show/appliances',
+                'license'        => 'GPLv3+',
+                'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
                 'minGlpiVersion' => '0.85');
 }
 
 
-// Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_appliances_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.85.3','lt') || version_compare(GLPI_VERSION,'0.86','ge')) {
-      echo "This plugin requires GLPI >= 0.85.3 and GLPI < 0.86";
+   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.86','ge')) {
+      echo "This plugin requires GLPI >= 0.85 and GLPI < 0.86";
       return false;
    }
    return true;
 }
 
 
-// Uninstall process for plugin : need to return true if succeeded : may display messages or add to message after redirect
 function plugin_appliances_check_config() {
    return true;
 }
@@ -184,4 +182,3 @@ function plugin_datainjection_migratetypes_appliances($types) {
    $types[1200] = 'PluginAppliancesAppliance';
    return $types;
 }
-?>
