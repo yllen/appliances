@@ -91,13 +91,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[2]['table']          = 'glpi_plugin_appliances_appliancetypes';
       $tab[2]['field']          = 'name';
       $tab[2]['name']           = __('Type');
+      $tab[2]['datatype']       = 'dropdown';
 
       $tab[32]['table']         = 'glpi_states';
       $tab[32]['field']         = 'completename';
-      $tab[32]['name']          = _n('Status', 'Statuses', 1);
-      $tab[32]['displaytype']   = 'dropdown';
-      $tab[32]['checktype']     = 'text';
-      $tab[32]['injectable']    = true;
+      $tab[32]['name']          = __('Status');
+      $tab[32]['datatype']      = 'dropdown';
 
       $tab += Location::getSearchOptionsToAdd();
 
@@ -116,22 +115,26 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[6]['table']          = 'glpi_users';
       $tab[6]['field']          = 'name';
       $tab[6]['name']           = __('User');
+      $tab[6]['datatype']       = 'dropdown';
 
       $tab[8]['table']          = 'glpi_groups';
       $tab[8]['field']          = 'completename';
       $tab[8]['name']           = __('Group');
       $tab[8]['condition']      = '`is_itemgroup`';
+      $tab[8]['datatype']       = 'dropdown';
 
       $tab[24]['table']         = 'glpi_users';
       $tab[24]['field']         = 'name';
       $tab[24]['linkfield']     = 'users_id_tech';
       $tab[24]['name']          = __('Technician in charge of the hardware');
+      $tab[24]['datatype']      = 'dropdown';
 
       $tab[49]['table']         = 'glpi_groups';
       $tab[49]['field']         = 'completename';
       $tab[49]['linkfield']     = 'groups_id_tech';
       $tab[49]['name']          = __('Group in charge of the hardware');
       $tab[49]['condition']     = '`is_assign`';
+      $tab[49]['datatype']      = 'dropdown';
 
       $tab[9]['table']          = 'glpi_plugin_appliances_appliances';
       $tab[9]['field']          = 'date_mod';
@@ -142,6 +145,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[10]['table']         = 'glpi_plugin_appliances_environments';
       $tab[10]['field']         = 'name';
       $tab[10]['name']          = __('Environment', 'appliances');
+      $tab[10]['datatype']      = 'dropdown';
 
       $tab[11]['table']         = 'glpi_plugin_appliances_appliances';
       $tab[11]['field']         = 'is_helpdesk_visible';
