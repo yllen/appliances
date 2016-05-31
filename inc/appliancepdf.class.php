@@ -47,7 +47,7 @@ class PluginAppliancesAppliancePDF extends PluginPdfCommon {
 
 
    static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
-toolbox::logdebug("item", $item);
+
       switch ($tab) {
          case 'PluginAppliancesAppliance$main' :
             $item->show_PDF($pdf);

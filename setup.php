@@ -49,7 +49,6 @@ function plugin_init_appliances() {
    Plugin::registerClass('PluginAppliancesProfile', array('addtabon' => 'Profile'));
    Plugin::registerClass('PluginAppliancesEnvironment');
    Plugin::registerClass('PluginAppliancesApplianceType');
-   Plugin::registerClass('PluginAppliancesAppliance_Item', array('ticket_types' => true));
    Plugin::registerClass('PluginAppliancesOptvalue');
    Plugin::registerClass('PluginAppliancesOptvalue_Item');
    Plugin::registerClass('PluginAppliancesRelation');

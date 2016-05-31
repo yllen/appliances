@@ -76,7 +76,6 @@ function plugin_appliances_AssignToTicket($types) {
 
    if (Session::haveRight("plugin_appliances_open_ticket", "1")) {
       $types['PluginAppliancesAppliance'] = _n('Appliance', 'Appliances', 2, 'appliances');
-      //$types['PluginAppliancesAppliance_Item'] = _n('Appliance item', 'Appliances item', 2, 'appliances');
    }
    return $types;
 }
@@ -160,37 +159,21 @@ function plugin_appliances_uninstall() {
       $DB->query("DROP TABLE `$table`");
    }
 
+   $itemtypes = array('Document_Item', 'DisplayPreference', 'Bookmark', 'Log', 'Notepad',
+         'Item_Ticket', 'Contract_Item', 'Item_Problem');
+   foreach ($itemtypes as $itemtype) {
+      $item = new $itemtype;
+      $item->deleteByCriteria(array('itemtype' => 'PluginAppliancesAppliance'));
+   }
+
    $query = "DELETE
-             FROM `glpi_displaypreferences`
-             WHERE (`itemtype` IN ('PluginAppliancesAppliance','PluginAppliancesApplianceType',
-                                     'PluginAppliancesEnvironment', 1200))";
+             FROM `glpi_dropdowntranslations`
+             WHERE `itemtype` IN ('PluginAppliancesApplianceType', 'PluginAppliancesEnvironment')";
    $DB->query($query);
 
    $query = "DELETE
-             FROM `glpi_documents_items`
-             WHERE `itemtype` = 'PluginAppliancesAppliance'";
-   $DB->query($query);
-
-   $query = "DELETE
-             FROM `glpi_bookmarks`
-             WHERE (`itemtype` = 'PluginAppliancesAppliance'
-                    AND `itemtype` = 'PluginAppliancesApplianceType'
-                    AND `itemtype` = 'PluginAppliancesEnvironment')";
-   $DB->query($query);
-
-   $query = "DELETE
-             FROM `glpi_logs`
-             WHERE `itemtype` = 'PluginAppliancesAppliance'";
-   $DB->query($query);
-
-   $query = "DELETE
-             FROM `glpi_notepads`
-             WHERE `itemtype` = 'PluginAppliancesAppliance'";
-   $DB->query($query);
-
-   $query = "DELETE
-             FROM `glpi_items_tickets`
-             WHERE `itemtype` = 'PluginAppliancesAppliance'";
+             FROM `glpi_profilerights`
+             WHERE `name` IN ('plugin_appliances', 'plugin_appliances_open_ticket')";
    $DB->query($query);
 
    if ($temp = getItemForItemtype('PluginDatainjectionModel')) {
