@@ -47,12 +47,10 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
    static $rightname = "plugin_appliances";
 
-   static function getTypeName($nb=0) {
 
-      if ($nb > 1) {
-         return _n('Appliance item', 'Appliances items', 2, 'appliances');
-      }
-      return _n('Appliance item', 'Appliances items', 1, 'appliances');
+
+   static function getTypeName($nb=0) {
+      return _n('Appliance item', 'Appliances items', $nb, 'appliances');
    }
 
 
@@ -427,14 +425,14 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
                         if (Session::isMultiEntitiesMode()) {
                            $pdf->setColumnsSize(12,27,25,18,18);
-                           $pdf->displayLine($item->getTypeName(), $name,
+                           $pdf->displayLine($item->getTypeName(1), $name,
                                              Dropdown::getDropdownName("glpi_entities",
                                                                        $data['entities_id']),
                                              (isset($data["serial"])? $data["serial"] :"-"),
                                              (isset($data["otherserial"])?$data["otherserial"]:"-"));
                         } else {
                            $pdf->setColumnsSize(25,31,22,22);
-                           $pdf->displayTitle($item->getTypeName(), $name,
+                           $pdf->displayTitle($item->getTypeName(1), $name,
                                               (isset($data["serial"])?$data["serial"]:"-"),
                                               (isset($data["otherserial"])?$data["otherserial"]:"-"));
                         }
@@ -571,7 +569,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                         echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
                         echo "</td>";
                      }
-                     echo "<td class='center'>".$item->getTypeName()."</td>";
+                     echo "<td class='center'>".$item->getTypeName(1)."</td>";
                      echo "<td class='center' ".
                            (isset($data['deleted']) && $data['deleted']?"class='tab_bg_2_2'":"").">".
                            $name."</td>";

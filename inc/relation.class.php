@@ -251,4 +251,3 @@ class PluginAppliancesRelation extends CommonDBTM {
    }
 
 }
-?>

@@ -41,4 +41,3 @@ class PluginAppliancesEnvironment extends CommonDropdown {
       return __('Environment', 'appliances');
    }
 }
-?>

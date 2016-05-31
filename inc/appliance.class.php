@@ -39,9 +39,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                          'Printer', 'Software');
 
-   public $dohistory             = true;
-   static $rightname             = "plugin_appliances";
-   protected $usenotepadrights   = true;
+   public $dohistory     = true;
+   static $rightname     = "plugin_appliances";
+   protected $usenotepad = true;
 
 
    static function getTypeName($nb=0) {
@@ -938,7 +938,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static function updateSchema(Migration $migration) {
       global $DB;
 
-      $migration->displayTitle(sprintf(__('%1$s: %2$s'), __('Update'), self::getTypeName(9)));
+      $migration->displayTitle(sprintf(__('%1$s: %2$s'), __('Update'), self::getTypeName(2)));
       $table = getTableForItemType(__CLASS__);
 
       // Version 1.6.1

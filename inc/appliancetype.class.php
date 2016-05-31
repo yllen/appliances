@@ -75,4 +75,3 @@ class PluginAppliancesApplianceType extends CommonDropdown {
       return $temp->add($input);
    }
 }
-?>

@@ -76,6 +76,7 @@ function plugin_appliances_AssignToTicket($types) {
 
    if (Session::haveRight("plugin_appliances_open_ticket", "1")) {
       $types['PluginAppliancesAppliance'] = _n('Appliance', 'Appliances', 2, 'appliances');
+      //$types['PluginAppliancesAppliance_Item'] = _n('Appliance item', 'Appliances item', 2, 'appliances');
    }
    return $types;
 }
@@ -362,7 +363,7 @@ function plugin_appliances_giveItem($type, $ID, $data, $num) {
                      if ($DB->numrows($result_linked)) {
                         while ($data = $DB->fetch_assoc($result_linked)) {
                            if ($item->getFromDB($data['id'])) {
-                              $out .= $item->getTypeName()." - ".$item->getLink()."<br>";
+                              $out .= $item->getTypeName(1)." - ".$item->getLink()."<br>";
                            }
                         }
                      }
@@ -371,7 +372,6 @@ function plugin_appliances_giveItem($type, $ID, $data, $num) {
             }
          }
          return $out;
-         break;
 
       case 'glpi_plugin_appliances_appliances.name':
          if ($type == 'Ticket') {
