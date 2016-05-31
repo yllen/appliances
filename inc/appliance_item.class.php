@@ -342,7 +342,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
       $instID = $appli->fields['id'];
 
-      if (!$appli->can($instID,"r")) {
+      if (!$appli->can($instID, READ)) {
          return false;
       }
       if (!Session::haveRight("plugin_appliances", READ)) {
@@ -350,7 +350,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       }
 
       $pdf->setColumnsSize(100);
-      $pdf->displayTitle('<b>'.__('Associated items', 'behaviors').'</b>');
+      $pdf->displayTitle('<b>'._n('Associated item', 'Associated items',2).'</b>');
 
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_plugin_appliances_appliances_items`

@@ -361,7 +361,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $pdf->displayLine(sprintf(__('%1$s: %2$s'), '<b><i>'.__('Name').'</i></b>',
                                 $this->fields['name']),
-                        sprintf(__('%1$s: %2$s'), '<b><i>'.-n('Status', 'Statuses', 1).'</i></b>',
+                        sprintf(__('%1$s: %2$s'), '<b><i>'._n('Status', 'Statuses', 1).'</i></b>',
                                 Html::clean(Dropdown::getDropdownName('glpi_states',
                                                                       $this->fields['states_id']))));
 
@@ -1136,4 +1136,3 @@ class PluginAppliancesAppliance extends CommonDBTM {
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 }
-?>
