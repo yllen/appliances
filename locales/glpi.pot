@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-11 16:15+0100\n"
+"POT-Creation-Date: 2016-05-31 14:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,65 +17,62 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: hook.php:76 hook.php:242 hook.php:256 setup.php:105
-#: front/appliance.form.php:148 front/appliance.form.php:151
-#: front/appliance.php:35 front/appliance.php:38 inc/appliance.class.php:46
-#: inc/appliance.class.php:48 inc/appliance.class.php:93
-#: inc/appliance_item.class.php:530
+#: hook.php:78 hook.php:266 hook.php:280 hook.php:295
+#: inc/appliance.class.php:48 inc/appliance.class.php:83
+#: inc/appliance_item.class.php:544 inc/menu.class.php:37
+#: inc/profile.class.php:154
 msgid "Appliance"
 msgid_plural "Appliances"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:193 inc/appliancetype.class.php:39
+#: hook.php:217 inc/appliancetype.class.php:42
 msgid "Type of appliance"
 msgstr ""
 
-#: hook.php:194 inc/appliance.class.php:154 inc/appliance.class.php:275
-#: inc/appliance.class.php:394 inc/environment.class.php:39
+#: hook.php:218 inc/appliance.class.php:147 inc/appliance.class.php:263
+#: inc/appliance.class.php:379 inc/environment.class.php:41
 msgid "Environment"
 msgstr ""
 
-#: hook.php:352 inc/appliance_item.class.php:137
-msgid "Associate"
-msgstr ""
-
-#: hook.php:353
-msgid "Dissociate"
-msgstr ""
-
-#: hook.php:358
+#: hook.php:405
 msgid "Associate to appliance"
 msgstr ""
 
-#: setup.php:146 inc/profile.class.php:95 inc/profile.class.php:152
+#: setup.php:156
 msgid "Appliances"
 msgstr ""
 
-#: inc/appliance.class.php:121 inc/appliance_item.class.php:341
-#: inc/appliance_item.class.php:479
+#: inc/appliance.class.php:110 inc/appliance_item.class.php:355
+#: inc/appliance_item.class.php:493
 msgid "Associated items"
 msgstr ""
 
-#: inc/appliance.class.php:324 inc/appliance_item.class.php:145
-#: inc/appliance_item.class.php:489 inc/relation.class.php:246
+#: inc/appliance.class.php:312 inc/appliance_item.class.php:159
+#: inc/appliance_item.class.php:503 inc/relation.class.php:248
 msgid "Item to link"
 msgstr ""
 
-#: inc/appliance_item.class.php:147 inc/appliance_item.class.php:489
-#: inc/optvalue.class.php:67 inc/optvalue.class.php:117
-#: inc/optvalue_item.class.php:150
+#: inc/appliance_item.class.php:53 inc/appliance_item.class.php:55
+msgid "Appliance item"
+msgid_plural "Appliances items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/appliance_item.class.php:151
+msgid "Associate"
+msgstr ""
+
+#: inc/appliance_item.class.php:161 inc/appliance_item.class.php:503
+#: inc/optvalue.class.php:69 inc/optvalue.class.php:119
+#: inc/optvalue_item.class.php:152
 msgid "User fields"
 msgstr ""
 
-#: inc/appliance_item.class.php:273
+#: inc/appliance_item.class.php:287
 msgid "Associated appliances"
 msgstr ""
 
-#: inc/optvalue.class.php:92
+#: inc/optvalue.class.php:94
 msgid "Default"
-msgstr ""
-
-#: inc/profile.class.php:90
-msgid "Rights management"
 msgstr ""
