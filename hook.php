@@ -270,6 +270,7 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
                                                          'joinparams'
                                                           => $sopt[1210]['joinparams'])));
       }
+      /* TODO: need fix to link relation table
       if ($itemtype == 'Ticket') {
          $sopt[1212]['table']         = 'glpi_plugin_appliances_appliances';
          $sopt[1212]['field']         = 'name';
@@ -279,6 +280,7 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
          $sopt[1212]['name']          = __('Appliance', 'appliances')." - ".
                                         __('Name');
       }
+      */
    }
    return $sopt;
 }
