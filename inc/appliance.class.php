@@ -296,8 +296,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
                             'entity'    => $this->fields["entities_id"],
                             'condition' => '`is_itemgroup`'));
       echo "</td>";
-      echo "<td rowspan='4'>".__('Comments')."</td>";
-      echo "<td rowspan='4' class='middle'>";
+      echo "<td rowspan='3'>".__('Comments')."</td>";
+      echo "<td rowspan='3' class='middle'>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
@@ -331,10 +331,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2' class='center'>".sprintf(__('%1$s: %2$s'), __('Last update'),
-                                                     Html::convDateTime($this->fields["date_mod"]));
-      echo "</td></tr>";
 
       $this->showFormButtons($options);
 

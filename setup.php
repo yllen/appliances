@@ -153,7 +153,7 @@ function plugin_init_appliances() {
 function plugin_version_appliances() {
 
    return array('name'           => __('Appliances', 'appliances'),
-                'version'        => '2.1.',
+                'version'        => '2.2.',
                 'author'         => 'Remi Collet, Xavier Caillaud, Nelly Mahu-Lasson',
                 'license'        => 'GPLv3+',
                 'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
@@ -163,8 +163,8 @@ function plugin_version_appliances() {
 
 function plugin_appliances_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.90','lt') || version_compare(GLPI_VERSION,'9.1','ge')) {
-      echo "This plugin requires GLPI >= 0.90 and GLPI < 9.1";
+   if (version_compare(GLPI_VERSION,'0.90','lt') || version_compare(GLPI_VERSION,'9.2','ge')) {
+      echo "This plugin requires GLPI >= 0.90 and GLPI < 9.2";
       return false;
    }
    return true;
