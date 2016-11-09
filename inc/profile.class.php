@@ -34,12 +34,22 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * Class PluginAppliancesProfile
+ */
 class PluginAppliancesProfile extends Profile {
 
    static $rightname = "profile";
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+    /**
+     * Get Tab Name used for itemtype
+     *
+     * @param CommonGLPI $item
+     * @param int $withtemplate
+     * @return string|translated
+     */
+    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getType() == 'Profile') {
          return PluginAppliancesAppliance::getTypeName(2);
@@ -48,7 +58,15 @@ class PluginAppliancesProfile extends Profile {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+    /**
+     * show Tab content
+     *
+     * @param CommonGLPI $item
+     * @param int $tabnum
+     * @param int $withtemplate
+     * @return bool
+     */
+    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType()=='Profile') {
          $ID = $item->getID();
@@ -70,8 +88,11 @@ class PluginAppliancesProfile extends Profile {
 
 
     /**
-    * @param $profile
-   **/
+     * @param $profiles_id
+     * @param $rights
+     * @param bool $drop_existing
+     * @internal param $profile
+     */
    static function addDefaultProfileInfos($profiles_id, $rights, $drop_existing = false) {
 
       $profileRight = new ProfileRight();
@@ -98,14 +119,17 @@ class PluginAppliancesProfile extends Profile {
    }
 
 
-   /**
-    * Show profile form
-    *
-    * @param $items_id integer id of the profile
-    * @param $target value url of target
-    *
-    * @return nothing
-    **/
+    /**
+     * Show profile form
+     *
+     * @param int $profiles_id
+     * @param bool $openform
+     * @param bool $closeform
+     * @return nothing
+     * @internal param int $items_id id of the profile
+     * @internal param value $target url of target
+     *
+     */
    function showForm($profiles_id=0, $openform=TRUE, $closeform=TRUE) {
 
       echo "<div class='firstbloc'>";
@@ -163,10 +187,12 @@ class PluginAppliancesProfile extends Profile {
    }
 
 
-   /**
-    * Init profiles
-    *
-    **/
+    /**
+     * Init profiles
+     *
+     * @param $old_right
+     * @return int
+     */
    static function translateARight($old_right) {
 
       switch ($old_right) {
@@ -189,11 +215,13 @@ class PluginAppliancesProfile extends Profile {
    }
 
 
-   /**
-    * @since 0.85
-    * Migration rights from old system to the new one for one profile
-    * @param $profiles_id the profile ID
-   **/
+    /**
+     * @since 0.85
+     * Migration rights from old system to the new one for one profile
+     * @param $profiles_id the profile ID
+     *
+     * @return bool
+     */
    static function migrateOneProfile($profiles_id) {
       global $DB;
 

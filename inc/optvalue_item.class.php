@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * Class PluginAppliancesOptvalue_Item
+ */
 class PluginAppliancesOptvalue_Item extends CommonDBTM {
 
 
@@ -116,7 +119,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
     * @param $appliancesID, ID of the applicatif
     */
    static function showList_PDF ($pdf, $ID, $appliancesID) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $query_app_opt = "SELECT `id`, `champ`, `ddefault`
                         FROM `glpi_plugin_appliances_optvalues`

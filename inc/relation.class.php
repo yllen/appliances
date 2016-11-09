@@ -117,18 +117,20 @@ class PluginAppliancesRelation extends CommonDBTM {
    }
 
 
-   /**
-    * Show the relation for a device/applicatif
-    *
-    * Called from PluginAppliancesAppliance->showItem and PluginAppliancesAppliance::showAssociated
-    *
-    * @param $drelation_type : type of the relation
-    * @param $relID ID of the relation
-    * @param $entity, ID of the entity of the device
-    * @param $canedit, if user is allowed to edit the relation
-    *    - canedit the device if called from the device form
-    *    - must be false if called from the applicatif form
-   **/
+    /**
+     * Show the relation for a device/applicatif
+     *
+     * Called from PluginAppliancesAppliance->showItem and PluginAppliancesAppliance::showAssociated
+     *
+     * @param $relationtype
+     * @param $relID ID of the relation
+     * @param $entity , ID of the entity of the device
+     * @param $canedit , if user is allowed to edit the relation
+     *    - canedit the device if called from the device form
+     *    - must be false if called from the applicatif form
+     * @return bool
+     * @internal param $drelation_type : type of the relation
+     */
    static function showList($relationtype, $relID, $entity, $canedit) {
       global $DB, $CFG_GLPI;
 
@@ -165,7 +167,6 @@ class PluginAppliancesRelation extends CommonDBTM {
          echo "<br><input type='hidden' name='deviceID' value='".$relID."'>";
 
          $i        = 0;
-         $itemlist = "";
          $used     = array();
 
          if ($number_loc >0) {
@@ -209,11 +210,13 @@ class PluginAppliancesRelation extends CommonDBTM {
     * Show for PDF the relation for a device/applicatif
     *
     * @param $pdf object for the output
-    * @param $drelation_type : type of the relation
+    * @param $relationtype
     * @param $relID ID of the relation
-   **/
+    * @return bool
+    * @internal param $drelation_type : type of the relation
+    */
    static function showList_PDF($pdf, $relationtype, $relID) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!$relationtype) {
          return false;

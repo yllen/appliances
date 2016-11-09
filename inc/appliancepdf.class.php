@@ -29,16 +29,29 @@
  --------------------------------------------------------------------------
 */
 
+/**
+ * Class PluginAppliancesAppliancePDF
+ */
 class PluginAppliancesAppliancePDF extends PluginPdfCommon {
 
 
-   function __construct(CommonGLPI $obj=NULL) {
+    /**
+     * PluginAppliancesAppliancePDF constructor.
+     * @param CommonGLPI|NULL $obj
+     */
+    function __construct(CommonGLPI $obj=NULL) {
 
       $this->obj = ($obj ? $obj : new PluginAppliancesAppliance());
    }
 
 
-   function defineAllTabs($options=array()) {
+    /**
+     * Define tabs to display
+     *
+     * @param array $options
+     * @return mixed
+     */
+    function defineAllTabs($options=array()) {
 
       $onglets = parent::defineAllTabs($options);
       unset($onglets['Item_Problem$1']); // TODO add method to print linked Problems
@@ -46,7 +59,15 @@ class PluginAppliancesAppliancePDF extends PluginPdfCommon {
    }
 
 
-   static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
+    /**
+     * show Tab content
+     *
+     * @param PluginPdfSimplePDF $pdf
+     * @param CommonGLPI $item
+     * @param string $tab
+     * @return bool
+     */
+    static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
 
       switch ($tab) {
          case 'PluginAppliancesAppliance$main' :

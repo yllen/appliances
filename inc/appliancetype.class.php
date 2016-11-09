@@ -34,16 +34,31 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * Class PluginAppliancesApplianceType
+ */
 class PluginAppliancesApplianceType extends CommonDropdown {
 
    static $rightname = "plugin_appliances";
 
-   static function getTypeName($nb=0) {
+    /**
+     * Return the localized name of the current Type
+     *
+     * @param int $nb
+     * @return translated
+     */
+    static function getTypeName($nb=0) {
       return __('Type of appliance', 'appliances');
    }
 
 
-   function prepareInputForAdd($input) {
+    /**
+     * Prepare input datas for adding the item
+     *
+     * @param datas $input
+     * @return datas
+     */
+    function prepareInputForAdd($input) {
 
       if (array_key_exists('externalid',$input) && !$input['externalid']) {
          // INSERT NULL as this value is an UNIQUE index
@@ -53,7 +68,12 @@ class PluginAppliancesApplianceType extends CommonDropdown {
    }
 
 
-   static function transfer($ID, $entity) {
+    /**
+     * @param $ID
+     * @param $entity
+     * @return int
+     */
+    static function transfer($ID, $entity) {
       global $DB;
 
       $temp = new self();

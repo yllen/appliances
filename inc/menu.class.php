@@ -29,16 +29,26 @@
  --------------------------------------------------------------------------
  */
 
+/**
+ * Class PluginAppliancesMenu
+ */
 class PluginAppliancesMenu extends CommonGLPI {
    static $rightname = 'plugin_appliances';
 
 
-   static function getMenuName() {
+    /**
+     * Return the localized name of the current Type
+     *
+     * @return translated
+     */
+    static function getMenuName() {
       return _n('Appliance', 'Appliances', 2, 'appliances');
    }
 
-   static function getMenuContent() {
-      global $CFG_GLPI;
+    /**
+     * @return array
+     */
+    static function getMenuContent() {
 
       $menu                                           = array();
       $menu['title']                                  = self::getMenuName();

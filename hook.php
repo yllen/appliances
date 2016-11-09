@@ -32,7 +32,7 @@
 define("PLUGIN_APPLIANCES_RELATION_LOCATION",1);
 
 function plugin_appliances_postinit() {
-   global $CFG_GLPI, $PLUGIN_HOOKS;
+   global $PLUGIN_HOOKS;
 
    $PLUGIN_HOOKS['plugin_uninstall_after']['appliances'] = array();
    $PLUGIN_HOOKS['item_purge']['appliances']             = array();
@@ -72,6 +72,10 @@ function plugin_appliances_registerMethods() {
 }
 
 
+/**
+ * @param $types
+ * @return mixed
+ */
 function plugin_appliances_AssignToTicket($types) {
 
    if (Session::haveRight("plugin_appliances_open_ticket", "1")) {
@@ -81,6 +85,9 @@ function plugin_appliances_AssignToTicket($types) {
 }
 
 
+/**
+ * @return bool
+ */
 function plugin_appliances_install() {
    global $DB;
 
@@ -144,6 +151,9 @@ function plugin_appliances_install() {
 }
 
 
+/**
+ * @return bool
+ */
 function plugin_appliances_uninstall() {
    global $DB;
 
@@ -238,7 +248,9 @@ function plugin_appliances_getDatabaseRelations() {
 
 /**
  * Define search option for types of the plugins
-**/
+ * @param $itemtype
+ * @return array
+ */
 function plugin_appliances_getAddSearchOptions($itemtype) {
 
    $sopt = array();
@@ -286,6 +298,10 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
 }
 
 
+/**
+ * @param $type
+ * @return bool
+ */
 function plugin_appliances_forceGroupBy($type) {
 
    switch ($type) {
@@ -296,8 +312,15 @@ function plugin_appliances_forceGroupBy($type) {
 }
 
 
+/**
+ * @param $type
+ * @param $ID
+ * @param $data
+ * @param $num
+ * @return string
+ */
 function plugin_appliances_giveItem($type, $ID, $data, $num) {
-   global $DB, $CFG_GLPI;
+   global $DB;
 
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
@@ -383,6 +406,10 @@ function plugin_appliances_giveItem($type, $ID, $data, $num) {
 
 ////// SPECIFIC MODIF MASSIVE FUNCTIONS ///////
 
+/**
+ * @param $type
+ * @return array
+ */
 function plugin_appliances_MassiveActions($type) {
 
    if (in_array($type,PluginAppliancesAppliance::getTypes(true))) {

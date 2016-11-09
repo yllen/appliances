@@ -34,10 +34,16 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * Class PluginAppliancesOptvalue
+ */
 class PluginAppliancesOptvalue extends CommonDBTM {
 
 
-   function cleanDBonPurge() {
+    /**
+     * Actions done when item is deleted from the database
+     */
+    function cleanDBonPurge() {
 
       $temp = new PluginAppliancesOptvalue_Item();
       $temp->deleteByCriteria(array('plugin_appliances_optvalues_id' => $this->fields['id']));
@@ -112,7 +118,11 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-   static function pdfForAppliance(PluginPdfSimplePDF $pdf, PluginAppliancesAppliance $appli) {
+    /**
+     * @param PluginPdfSimplePDF $pdf
+     * @param PluginAppliancesAppliance $appli
+     */
+    static function pdfForAppliance(PluginPdfSimplePDF $pdf, PluginAppliancesAppliance $appli) {
       global $DB;
 
       $pdf->setColumnsSize(100);
@@ -138,11 +148,13 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-   /**
-    * Update the list of Optvalues defined for an appliance
-    *
-    * @param $input array of input data (form)
-   **/
+    /**
+     * Update the list of Optvalues defined for an appliance
+     *
+     * @param $input array of input data (form)
+     *
+     * @return bool
+     */
    function updateList($input) {
       global $DB;
 
@@ -185,14 +197,25 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-   static function countForAppliance(PluginAppliancesAppliance $item) {
+    /**
+     * @param PluginAppliancesAppliance $item
+     * @return int
+     */
+    static function countForAppliance(PluginAppliancesAppliance $item) {
 
       return countElementsInTable('glpi_plugin_appliances_optvalues',
                                   "`plugin_appliances_appliances_id` = '".$item->getID()."'");
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+    /**
+     * Get Tab Name used for itemtype
+     *
+     * @param CommonGLPI $item
+     * @param int $withtemplate
+     * @return array|string|translated
+     */
+    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getType()=='PluginAppliancesAppliance') {
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -204,7 +227,15 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+    /**
+     * show Tab content
+     *
+     * @param CommonGLPI $item
+     * @param int $tabnum
+     * @param int $withtemplate
+     * @return bool
+     */
+    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType()=='PluginAppliancesAppliance') {
          self::showForAppliance($item);
@@ -213,7 +244,15 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-   static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
+    /**
+     * show Tab content for PDF
+     *
+     * @param PluginPdfSimplePDF $pdf
+     * @param CommonGLPI $item
+     * @param $tab
+     * @return bool
+     */
+    static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
 
       if ($item->getType()=='PluginAppliancesAppliance') {
          self::pdfForAppliance($pdf, $item);

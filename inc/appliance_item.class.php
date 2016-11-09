@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * Class PluginAppliancesAppliance_Item
+ */
 class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
    // From CommonDBRelation
@@ -48,13 +51,21 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    static $rightname = "plugin_appliances";
 
 
-
-   static function getTypeName($nb=0) {
+    /**
+     * Return the localized name of the current Type
+     *
+     * @param int $nb
+     * @return translated
+     */
+    static function getTypeName($nb=0) {
       return _n('Appliance item', 'Appliances items', $nb, 'appliances');
    }
 
 
-   function cleanDBonPurge() {
+    /**
+     * Actions done when item is deleted from the database
+     */
+    function cleanDBonPurge() {
 
       $temp = new PluginAppliancesOptvalue_Item();
       $temp->deleteByCriteria(array('itemtype' => $this->fields['itemtype'],
@@ -65,9 +76,10 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    }
 
 
-   /**
-    * Hook called After an item is uninstall or purge
-   **/
+    /**
+     * Hook called After an item is uninstall or purge
+     * @param CommonDBTM $item
+     */
    static function cleanForItem(CommonDBTM $item) {
 
       $temp = new self();
@@ -78,7 +90,11 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    }
 
 
-   static function countForAppliance(PluginAppliancesAppliance $item) {
+    /**
+     * @param PluginAppliancesAppliance $item
+     * @return int
+     */
+    static function countForAppliance(PluginAppliancesAppliance $item) {
 
       $types = implode("','", $item->getTypes());
       if (empty($types)) {
@@ -90,7 +106,11 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    }
 
 
-   static function countForItem(CommonDBTM $item) {
+    /**
+     * @param CommonDBTM $item
+     * @return int
+     */
+    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_plugin_appliances_appliances_items',
                                   "`itemtype`='".$item->getType()."'
@@ -110,7 +130,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       global $DB,$CFG_GLPI;
 
       $ID       = $item->getField('id');
-      $itemtype = get_Class($item);
+      $itemtype = get_class($item);
       $canread  = $item->can($ID, READ);
       $canedit  = $item->can($ID, UPDATE);
 
@@ -127,7 +147,6 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                       getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
                                                  'entities_id', $item->getEntityID(), true);
       $result = $DB->query($query);
-      $number = $DB->numrows($result);
 
       $query_app = "SELECT `ID`
                     FROM `glpi_plugin_appliances_appliances_items`
@@ -224,7 +243,6 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       }
 
       if ($canedit){
-         $entities = "";
          if ($item->isRecursive()) {
             $entities = getSonsOf('glpi_entities', $item->getEntityID());
          } else {
@@ -274,12 +292,10 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
     * @param $item
    **/
    static function pdfForItem(PluginPdfSimplePDF $pdf, CommonGLPI $item){
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID       = $item->getField('id');
-      $itemtype = get_Class($item);
-      $canread  = $item->can($ID,READ);
-      $canedit  = $item->can($ID,UPDATE);
+      $itemtype = get_class($item);
 
       $pdf->setColumnsSize(100);
       $pdf->displayTitle("<b>".__('Associated appliances', 'appliances')."</b>");
@@ -337,8 +353,13 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    }
 
 
-   static function pdfForAppliance(PluginPdfSimplePDF $pdf, PluginAppliancesAppliance $appli) {
-      global $DB, $CFG_GLPI;
+    /**
+     * @param PluginPdfSimplePDF $pdf
+     * @param PluginAppliancesAppliance $appli
+     * @return bool
+     */
+    static function pdfForAppliance(PluginPdfSimplePDF $pdf, PluginAppliancesAppliance $appli) {
+      global $DB;
 
       $instID = $appli->fields['id'];
 
@@ -450,12 +471,13 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    }
 
 
-
-   /**
-    * Show the Device associated with an applicatif
-    *
-    * Called from the applicatif form
-   **/
+    /**
+     * Show the Device associated with an applicatif
+     *
+     * Called from the applicatif form
+     * @param PluginAppliancesAppliance $appli
+     * @return bool
+     */
    static function showForAppliance(PluginAppliancesAppliance $appli) {
       global $DB,$CFG_GLPI;
 
@@ -474,8 +496,6 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                 ORDER BY `itemtype`";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-
-      $i = 0;
 
       if (Session::isMultiEntitiesMode()) {
          $colsup = 1;
@@ -607,9 +627,16 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          echo "<tr class='tab_bg_1'><td colspan='".(3+$colsup)."' class='center'>";
 
          echo "<input type='hidden' name='conID' value='$instID'>";
-         Dropdown::showAllItems("item", 0, 0,
-                                ($appli->fields['is_recursive']?-1:$appli->fields['entities_id']),
-                                 $appli->getTypes());
+         Dropdown::showSelectItemFromItemtypes(array('items_id_name' => 'items_id',
+              'itemtypes' => $appli->getTypes(true),
+              'entity_restrict'
+              => ($appli->fields['is_recursive']
+                  ? getSonsOf('glpi_entities',
+                    $appli->fields['entities_id'])
+                  : $appli->fields['entities_id']),
+              'checkright'
+              => true,
+         ));
          echo "</td>";
          echo "<td colspan='3' class='center' class='tab_bg_2'>";
          echo "<input type='submit' name='additem' value='".__('Add')."' class='submit'>";
@@ -626,7 +653,14 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+    /**
+     * Get Tab Name used for itemtype
+     *
+     * @param CommonGLPI $item
+     * @param int $withtemplate
+     * @return array|string|translated
+     */
+    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
          if (($item->getType() == 'PluginAppliancesAppliance')
@@ -635,7 +669,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                return self::createTabEntry(_n('Associated item', 'Associated items', 2),
                                            self::countForAppliance($item));
             }
-            return __('Associated item', 'Associated items', 2);
+            return _n('Associated item', 'Associated items', 2);
 
          } else if (in_array($item->getType(), PluginAppliancesAppliance::getTypes(true))
                     && Session::haveRight('plugin_appliances', READ)) {
@@ -650,7 +684,15 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+    /**
+     * show Tab content
+     *
+     * @param CommonGLPI $item
+     * @param int $tabnum
+     * @param int $withtemplate
+     * @return bool
+     */
+    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType()=='PluginAppliancesAppliance') {
          self::showForAppliance($item);
@@ -663,7 +705,14 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    }
 
 
-   static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
+    /**
+     * show Tab content for PDF
+     * @param PluginPdfSimplePDF $pdf
+     * @param CommonGLPI $item
+     * @param $tab
+     * @return bool
+     */
+    static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
 
       if ($item->getType()=='PluginAppliancesAppliance') {
          self::pdfForAppliance($pdf, $item);
@@ -677,7 +726,13 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       return true;
    }
 
-   function getFromDBbyAppliancesAndItem($plugin_appliances_appliances_id,$items_id,$itemtype) {
+    /**
+     * @param $plugin_appliances_appliances_id
+     * @param $items_id
+     * @param $itemtype
+     * @return bool
+     */
+    function getFromDBbyAppliancesAndItem($plugin_appliances_appliances_id, $items_id, $itemtype) {
       global $DB;
 
       $query = "SELECT * FROM `".$this->getTable()."` " .
@@ -698,7 +753,12 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       return false;
    }
 
-   function deleteItemByAppliancesAndItem($plugin_appliances_appliances_id,$items_id,$itemtype) {
+    /**
+     * @param $plugin_appliances_appliances_id
+     * @param $items_id
+     * @param $itemtype
+     */
+    function deleteItemByAppliancesAndItem($plugin_appliances_appliances_id, $items_id, $itemtype) {
 
       if ($this->getFromDBbyAppliancesAndItem($plugin_appliances_appliances_id,$items_id,$itemtype)) {
          $this->delete(array('id'=>$this->fields["id"]));

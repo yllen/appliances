@@ -33,7 +33,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-/// PluginAppliancesApplianceInjection class
+/**
+ * Class PluginAppliancesApplianceInjection
+ */
 class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
    implements PluginDatainjectionInjectionInterface {
 
@@ -107,7 +109,6 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
     * @return an array of IDs of newly created objects : for example array(Computer=>1, Networkport=>10)
    **/
    function addOrUpdateObject($values=array(), $options=array()) {
-      global $LANG;
 
       $lib = new PluginDatainjectionCommonInjectionLib($this,$values,$options);
       $lib->processAddOrUpdate();
