@@ -185,6 +185,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $tab[7]['massiveaction']  = false;
       $tab[7]['datatype']       = 'bool';
 
+      $tab[81]['table']         = 'glpi_entities';
+      $tab[81]['field']         = 'entities_id';
+      $tab[81]['name']          = __('Entity') . "-" . __('ID');
+
       return $tab;
    }
 

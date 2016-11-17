@@ -34,7 +34,7 @@ include ("../../../inc/includes.php");
 $plugin = new Plugin();
 
 if ($plugin->isActivated("environment")) {
-   Html::header(PluginWebapplicationsWebapplication::getTypeName(2)
+   Html::header(PluginAppliancesAppliance::getTypeName(2)
                   ,'',"assets","pluginenvironmentdisplay","appliances");
 } else {
    Html::header(PluginAppliancesAppliance::getTypeName(2), '', "assets","pluginappliancesmenu");
