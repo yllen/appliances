@@ -632,7 +632,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          echo "<tr class='tab_bg_1'><td colspan='".(3+$colsup)."' class='center'>";
 
          echo "<input type='hidden' name='conID' value='$instID'>";
-         Dropdown::showSelectItemFromItemtypes(array('items_id_name'   => 'items_id',
+         Dropdown::showSelectItemFromItemtypes(array('items_id_name'   => 'item',
                                                      'itemtypes'       => $appli->getTypes(true),
                                                      'entity_restrict' => ($appli->fields['is_recursive']
                                                                              ? getSonsOf('glpi_entities',
