@@ -31,16 +31,16 @@
 
 /**
  * Class PluginAppliancesAppliancePDF
- */
+**/
 class PluginAppliancesAppliancePDF extends PluginPdfCommon {
 
 
     /**
      * PluginAppliancesAppliancePDF constructor.
-     * @param CommonGLPI|NULL $obj
-     */
+     *
+     * @param $obj   CommonGLPI $object (Default NULL)
+    **/
     function __construct(CommonGLPI $obj=NULL) {
-
       $this->obj = ($obj ? $obj : new PluginAppliancesAppliance());
    }
 
@@ -48,9 +48,8 @@ class PluginAppliancesAppliancePDF extends PluginPdfCommon {
     /**
      * Define tabs to display
      *
-     * @param array $options
-     * @return mixed
-     */
+     * @see CommonGLPI final defineAllTabs()
+    **/
     function defineAllTabs($options=array()) {
 
       $onglets = parent::defineAllTabs($options);
@@ -62,11 +61,12 @@ class PluginAppliancesAppliancePDF extends PluginPdfCommon {
     /**
      * show Tab content
      *
-     * @param PluginPdfSimplePDF $pdf
-     * @param CommonGLPI $item
-     * @param string $tab
+     * @param $pdf                  instance of plugin PDF
+     * @param $item        string   CommonGLPI object
+     * @param $tab         string   CommonGLPI
+     *
      * @return bool
-     */
+    **/
     static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
 
       switch ($tab) {

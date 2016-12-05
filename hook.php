@@ -74,8 +74,9 @@ function plugin_appliances_registerMethods() {
 
 /**
  * @param $types
+ *
  * @return mixed
- */
+**/
 function plugin_appliances_AssignToTicket($types) {
 
    if (Session::haveRight("plugin_appliances_open_ticket", "1")) {
@@ -87,7 +88,7 @@ function plugin_appliances_AssignToTicket($types) {
 
 /**
  * @return bool
- */
+**/
 function plugin_appliances_install() {
    global $DB;
 
@@ -153,7 +154,7 @@ function plugin_appliances_install() {
 
 /**
  * @return bool
- */
+**/
 function plugin_appliances_uninstall() {
    global $DB;
 
@@ -248,9 +249,13 @@ function plugin_appliances_getDatabaseRelations() {
 
 /**
  * Define search option for types of the plugins
+ *
+ * @see Plugin: getAddSearchOptions()
+ *
  * @param $itemtype
+ *
  * @return array
- */
+**/
 function plugin_appliances_getAddSearchOptions($itemtype) {
 
    $sopt = array();
@@ -300,8 +305,9 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
 
 /**
  * @param $type
+ *
  * @return bool
- */
+**/
 function plugin_appliances_forceGroupBy($type) {
 
    switch ($type) {
@@ -313,13 +319,16 @@ function plugin_appliances_forceGroupBy($type) {
 
 
 /**
+ * @see Search::giveItem()
+ *
  * @param $type
  * @param $ID
- * @param $data
+ * @param $data      array
  * @param $num
+ *
  * @return string
- */
-function plugin_appliances_giveItem($type, $ID, $data, $num) {
+*/
+function plugin_appliances_giveItem($type, $ID, array $data, $num) {
    global $DB;
 
    $searchopt = &Search::getOptions($type);
@@ -408,8 +417,9 @@ function plugin_appliances_giveItem($type, $ID, $data, $num) {
 
 /**
  * @param $type
+ *
  * @return array
- */
+**/
 function plugin_appliances_MassiveActions($type) {
 
    if (in_array($type,PluginAppliancesAppliance::getTypes(true))) {
@@ -418,252 +428,10 @@ function plugin_appliances_MassiveActions($type) {
    }
    return array();
 }
-/*
-function plugin_appliances_MassiveActions($type) {
 
-   switch ($type) {
-      case 'PluginAppliancesAppliance' :
-         return array('plugin_appliances_install'    => __('Associate', 'appliances'),
-                      'plugin_appliances_desinstall' => __('Dissociate', 'appliances'),
-                      'plugin_appliances_transfert'  => __('Transfer'));
-
-      default :
-         if (in_array($type, PluginAppliancesAppliance::getTypes(true))) {
-            return array("plugin_appliances_add_item" => __('Associate to appliance', 'appliances'));
-         }
-   }
-   return array();
-}
-
-
-function plugin_appliances_MassiveActionsDisplay($options) {
-
-   switch ($options['itemtype']) {
-      case 'PluginAppliancesAppliance' :
-         switch ($options['action']) {
-            // No case for add_document : use GLPI core one
-            case "plugin_appliances_install" :
-               Dropdown::showAllItems("item_item",0,0,-1,PluginAppliancesAppliance::getTypes());
-               echo "<input type='submit' name='massiveaction' class='submit' ".
-                     "value='"._x('button', 'Post')."'>";
-               break;
-
-            case "plugin_appliances_desinstall" :
-               Dropdown::showAllItems("item_item",0,0,-1,PluginAppliancesAppliance::getTypes());
-               echo "<input type='submit' name='massiveaction' class='submit' ".
-                     "value='"._x('button', 'Post')."'>";
-               break;
-
-            case "plugin_appliances_transfert" :
-               Entity::dropdown();
-               echo "&nbsp;<input type='submit' name='massiveaction' class='submit' ".
-                     "value='"._x('button', 'Post')."'>";
-               break;
-         }
-         break;
-
-      default :
-         if (in_array($options['itemtype'], PluginAppliancesAppliance::getTypes(true))) {
-            Dropdown::show('PluginAppliancesAppliance');
-            echo "<input type='submit' name='massiveaction' class='submit\' ".
-                  "value='"._x('button', 'Post')."'>";
-         }
-   }
-   return "";
-}
-
-
-function plugin_appliances_MassiveActionsProcess($data) {
-   global $DB;
-
-   switch ($data['action']) {
-      case "plugin_appliances_add_item" :
-         if (in_array($data['itemtype'],PluginAppliancesAppliance::getTypes())) {
-            $PluginItem = new PluginAppliancesAppliance_Item();
-            foreach ($data["item"] as $key => $val) {
-               if ($val == 1) {
-                  $input = array('plugin_appliances_appliances_id'
-                                             => $data['plugin_appliances_appliances_id'],
-                                 'items_id'  => $key,
-                                 'itemtype'  => $data['itemtype']);
-                  if ($PluginItem->can(-1,'w',$input)) {
-                     $PluginItem->add($input);
-                  }
-               }
-            }
-         }
-         break;
-
-      case "plugin_appliances_install" :
-         if (in_array($data['itemtype'],PluginAppliancesAppliance::getTypes())) {
-            $PluginItem = new PluginAppliancesAppliance_Item();
-            foreach ($data["item"] as $key => $val) {
-               if ($val == 1) {
-                  $input = array('plugin_appliances_appliances_id' => $key,
-                                 'items_id'                        => $data["item_item"],
-                                 'itemtype'                        => $data['itemtype']);
-                  if ($PluginItem->can(-1,'w',$input)) {
-                     $newid = $PluginItem->add($input);
-                  }
-               }
-            }
-         }
-         break;
-
-      case "plugin_appliances_desinstall" :
-         if (in_array($data['itemtype'],PluginAppliancesAppliance::getTypes())) {
-            foreach ($data["item"] as $key => $val) {
-               if ($val == 1) {
-                  $query = "DELETE
-                            FROM `glpi_plugin_appliances_appliances_items`
-                            WHERE `itemtype` = '".$data['itemtype']."'
-                                  AND `items_id` = '".$data['item_item']."'
-                                  AND `plugin_appliances_appliances_id` = '".$key."'";
-                  $DB->query($query);
-               }
-            }
-         }
-         break;
-
-      case "plugin_appliances_transfert" :
-         if ($data['itemtype'] == 'PluginAppliancesAppliance') {
-            foreach ($data["item"] as $key => $val) {
-               if ($val == 1) {
-                  $appliance = new PluginAppliancesAppliance;
-                  $appliance->getFromDB($key);
-
-                  $type = PluginAppliancesApplianceType::transfer($appliance->fields["plugin_appliances_appliancetypes_id"],
-                                                                  $data['entities_id']);
-                  $values["id"]                                  = $key;
-                  $values["plugin_appliances_appliancetypes_id"] = $type;
-                  $values["entities_id"]                         = $data['entities_id'];
-                  $appliance->update($values);
-               }
-            }
-         }
-         break;
-   }
-}
-*/
 
 function plugin_datainjection_populate_appliances() {
    global $INJECTABLE_TYPES;
 
    $INJECTABLE_TYPES['PluginAppliancesApplianceInjection'] = 'appliances';
 }
-
-/*
-
-function plugin_appliances_addSelect($type,$id,$num) {
-
-   $searchopt = &Search::getOptions($type);
-   $table = $searchopt[$id]["table"];
-   $field = $searchopt[$id]["field"];
-//echo "add select : ".$table.".".$field."<br/>";
-   switch ($type) {
-
-      case 'Ticket':
-
-         if ($table.".".$field == "glpi_plugin_appliances_appliances.name") {
-            return " GROUP_CONCAT(DISTINCT `glpi_plugin_appliances_appliances`.`id` SEPARATOR '$$$$') AS ITEM_$num, "
-                    . " GROUP_CONCAT(DISTINCT `glpi_plugin_appliances_appliances_bis`.`id` SEPARATOR '$$$$') AS ITEM_".$num."_2,";
-         }
-         break;
-   }
-}
-
-
-
-function plugin_appliances_addLeftJoin($itemtype,$ref_table,$new_table,$linkfield,&$already_link_tables) {
-
-   switch ($itemtype) {
-
-      case 'Ticket':
-         return " LEFT JOIN `glpi_plugin_appliances_appliances` AS glpi_plugin_appliances_appliances
-            ON (`glpi_items_tickets`.`items_id` = `glpi_plugin_appliances_appliances`.`id`
-                  AND `glpi_items_tickets`.`itemtype`='PluginAppliancesAppliance')
-
-         LEFT JOIN `glpi_plugin_appliances_appliances_items`
-            ON (`glpi_items_tickets`.`items_id` = `glpi_plugin_appliances_appliances_items`.`id`
-                  AND `glpi_items_tickets`.`itemtype`='PluginAppliancesAppliance_Item')
-         LEFT JOIN `glpi_plugin_appliances_appliances` AS glpi_plugin_appliances_appliances_bis
-            ON (`glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id` = `glpi_plugin_appliances_appliances_bis`.`id`)";
-         break;
-
-   }
-   return "";
-}
-
-
-
-function plugin_appliances_addWhere($link,$nott,$type,$id,$val,$searchtype) {
-
-   $searchopt = &Search::getOptions($type);
-   $table = $searchopt[$id]["table"];
-   $field = $searchopt[$id]["field"];
-
-   switch ($type) {
-
-      case 'Ticket':
-         if ($table.".".$field == "glpi_plugin_appliances_appliances.name") {
-            $out = '';
-            switch ($searchtype) {
-               case "contains" :
-                  $SEARCH = Search::makeTextSearch($val, $nott);
-                  break;
-
-               case "equals" :
-                  if ($nott) {
-                     $SEARCH = " <> '$val'";
-                  } else {
-                     $SEARCH = " = '$val'";
-                  }
-                  break;
-
-               case "notequals" :
-                  if ($nott) {
-                     $SEARCH = " = '$val'";
-                  } else {
-                     $SEARCH = " <> '$val'";
-                  }
-                  break;
-
-            }
-            if (in_array($searchtype, array('equals', 'notequals'))) {
-               if ($table != getTableForItemType($type) || $type == 'States') {
-                  $out = " $link (`glpi_plugin_appliances_appliances`.`id`".$SEARCH;
-               } else {
-                  $out = " $link (`glpi_plugin_appliances_appliances`.`$field`".$SEARCH;
-               }
-               if ($searchtype=='notequals') {
-                  $nott = !$nott;
-               }
-               // Add NULL if $val = 0 and not negative search
-               // Or negative search on real value
-               if ((!$nott && $val==0) || ($nott && $val != 0)) {
-                  $out .= " OR `glpi_plugin_appliances_appliances`.`id` IS NULL";
-               }
-//               $out .= ')';
-               $out1 = $out;
-               $out = str_replace(" ".$link." (", " ".$link." ", $out);
-            } else {
-               $out = Search::makeTextCriteria("`glpi_plugin_appliances_appliances`.".$field,$val,$nott,$link);
-               $out1 = $out;
-               $out = preg_replace("/^ $link/", $link.' (', $out);
-            }
-            $out2 = $out." OR ";
-            $out2 .= str_replace("`glpi_plugin_appliances_appliances`",
-                                 "`glpi_plugin_appliances_appliances_bis`", $out1)." ";
-            $out2 = str_replace("OR   AND", "OR", $out2);
-            $out2 = str_replace("OR   OR", "OR", $out2);
-            $out2 = str_replace("AND   OR", "OR", $out2);
-            $out2 = str_replace("OR  AND", "OR", $out2);
-            $out2 = str_replace("OR  OR", "OR", $out2);
-            $out2 = str_replace("AND  OR", "OR", $out2);
-            return $out2.")";
-         }
-         break;
-   }
-}*/
-
-?>

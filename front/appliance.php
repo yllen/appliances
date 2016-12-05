@@ -49,4 +49,3 @@ if (Session::haveRight("plugin_appliances", READ)
    Html::displayRightError();
 }
 Html::footer();
-?>

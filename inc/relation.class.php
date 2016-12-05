@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginAppliancesRelation extends CommonDBTM {
 
 
-   static function getTypeTable ($value) {
+   static function getTypeTable($value) {
 
       switch ($value) {
          case 1 : // Location
@@ -63,7 +63,7 @@ class PluginAppliancesRelation extends CommonDBTM {
    }
 
 
-   static function getItemType ($value) {
+   static function getItemType($value) {
 
       switch ($value) {
          case 1 : // Location
@@ -117,20 +117,19 @@ class PluginAppliancesRelation extends CommonDBTM {
    }
 
 
-    /**
-     * Show the relation for a device/applicatif
-     *
-     * Called from PluginAppliancesAppliance->showItem and PluginAppliancesAppliance::showAssociated
-     *
-     * @param $relationtype
-     * @param $relID ID of the relation
-     * @param $entity , ID of the entity of the device
-     * @param $canedit , if user is allowed to edit the relation
-     *    - canedit the device if called from the device form
-     *    - must be false if called from the applicatif form
-     * @return bool
-     * @internal param $drelation_type : type of the relation
-     */
+   /**
+    * Show the relation for a device/applicatif
+    *
+    * Called from PluginAppliancesAppliance->showItem and PluginAppliancesAppliance::showAssociated
+    *
+    * @param $relationtype               type of the relation
+    * @param $relID                      ID of the relation
+    * @param $entity                     ID of the entity of the device
+    * @param $canedit                    if user is allowed to edit the relation
+    *    - canedit the device if called from the device form
+    *    - must be false if called from the applicatif form
+    *
+   **/
    static function showList($relationtype, $relID, $entity, $canedit) {
       global $DB, $CFG_GLPI;
 
@@ -209,12 +208,11 @@ class PluginAppliancesRelation extends CommonDBTM {
    /**
     * Show for PDF the relation for a device/applicatif
     *
-    * @param $pdf object for the output
-    * @param $relationtype
-    * @param $relID ID of the relation
-    * @return bool
-    * @internal param $drelation_type : type of the relation
-    */
+    * @param $pdf                object for the output
+    * @param $relationtype       type of the relation
+    * @param $relID              ID of the relation
+    *
+   **/
    static function showList_PDF($pdf, $relationtype, $relID) {
       global $DB;
 
@@ -250,7 +248,6 @@ class PluginAppliancesRelation extends CommonDBTM {
       $pdf->displayLine(sprintf(__('%1$s: %2$s'),
                                 "<b><i>".__('Item to link', 'appliances')."$title </i> </b>",
                                 implode(', ',$opts)));
-
    }
 
 }

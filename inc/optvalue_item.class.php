@@ -36,20 +36,20 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Class PluginAppliancesOptvalue_Item
- */
+**/
 class PluginAppliancesOptvalue_Item extends CommonDBTM {
 
 
    /**
     * Show the optional values for a item / applicatif
     *
-    * @param $itemtype type of the item
-    * @param $items_id ID of the item
-    * @param $appliances_id, ID of the applicatif
-    * @param $canedit, if user is allowed to edit the values
+    * @param $itemtype                type of the item
+    * @param $items_id                ID of the item
+    * @param $appliances_id           ID of the applicatif
+    * @param $canedit                 if user is allowed to edit the values
     *    - canedit the device if called from the device form
     *    - must be false if called from the applicatif form
-    */
+   **/
    static function showList ($itemtype, $items_id, $appliances_id, $canedit) {
       global $DB, $CFG_GLPI;
 
@@ -114,11 +114,11 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
    /**
     * Show for PDF the optional value for a device / applicatif
     *
-    * @param $pdf object for the output
-    * @param $ID of the relation
-    * @param $appliancesID, ID of the applicatif
-    */
-   static function showList_PDF ($pdf, $ID, $appliancesID) {
+    * @param $pdf            object for the output
+    * @param $ID             of the relation
+    * @param $appliancesID   ID of the applicatif
+   **/
+   static function showList_PDF($pdf, $ID, $appliancesID) {
       global $DB;
 
       $query_app_opt = "SELECT `id`, `champ`, `ddefault`
@@ -161,9 +161,8 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
     * Update to optional values for an appliance / item
     *
     * @param $input array on input value (form)
-    */
+   **/
    function updateList($input) {
-      global $DB;
 
       $number_champs = $input["number_champs"];
       for ($i=1 ; $i<=$number_champs ; $i++) {
@@ -202,4 +201,3 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
    }
 
 }
-?>

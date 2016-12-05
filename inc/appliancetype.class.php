@@ -36,17 +36,17 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Class PluginAppliancesApplianceType
- */
+**/
 class PluginAppliancesApplianceType extends CommonDropdown {
 
    static $rightname = "plugin_appliances";
 
-    /**
-     * Return the localized name of the current Type
-     *
-     * @param int $nb
-     * @return translated
-     */
+
+   /**
+    * Return the localized name of the current Type
+    *
+    *  @see CommonGLPI::getTypeName()
+    **/
     static function getTypeName($nb=0) {
       return __('Type of appliance', 'appliances');
    }
@@ -55,9 +55,8 @@ class PluginAppliancesApplianceType extends CommonDropdown {
     /**
      * Prepare input datas for adding the item
      *
-     * @param datas $input
-     * @return datas
-     */
+     * @see CommonDBTM prapareInputForAdd()
+    **/
     function prepareInputForAdd($input) {
 
       if (array_key_exists('externalid',$input) && !$input['externalid']) {
@@ -71,8 +70,9 @@ class PluginAppliancesApplianceType extends CommonDropdown {
     /**
      * @param $ID
      * @param $entity
-     * @return int
-     */
+     *
+     * @return integer or boolean
+    **/
     static function transfer($ID, $entity) {
       global $DB;
 

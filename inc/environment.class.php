@@ -36,17 +36,17 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Class PluginAppliancesEnvironment
- */
+**/
 class PluginAppliancesEnvironment extends CommonDropdown {
 
 
-    /**
-     * Return the localized name of the current Type
-     *
-     * @param int $nb
-     * @return translated
-     */
+   /**
+    * Return the localized name of the current Type
+    *
+    * @see CommonGLPI::getTypeName()
+    **/
     static function getTypeName($nb=0) {
       return __('Environment', 'appliances');
    }
+
 }

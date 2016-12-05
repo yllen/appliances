@@ -36,13 +36,13 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Class PluginAppliancesOptvalue
- */
+**/
 class PluginAppliancesOptvalue extends CommonDBTM {
 
 
-    /**
-     * Actions done when item is deleted from the database
-     */
+   /**
+    * Actions done when item is deleted from the database
+    **/
     function cleanDBonPurge() {
 
       $temp = new PluginAppliancesOptvalue_Item();
@@ -50,13 +50,13 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-   /**
-    * Display list of Optvalues for an appliance
-    *
-    * @param $appli PluginAppliancesAppliance instance
-    *
-    * @return nothing (display form)
-    */
+  /**
+   * Display list of Optvalues for an appliance
+   *
+   * @param $appli PluginAppliancesAppliance instance
+   *
+   * @return nothing (display form)
+   **/
    static function showForAppliance (PluginAppliancesAppliance $appli) {
       global $DB, $CFG_GLPI;
 
@@ -118,10 +118,10 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-    /**
-     * @param PluginPdfSimplePDF $pdf
-     * @param PluginAppliancesAppliance $appli
-     */
+   /**
+    * @param $pdf         Instance of plugin PDF
+    * @param $appli       PluginAppliancesAppliance
+    **/
     static function pdfForAppliance(PluginPdfSimplePDF $pdf, PluginAppliancesAppliance $appli) {
       global $DB;
 
@@ -148,13 +148,13 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-    /**
-     * Update the list of Optvalues defined for an appliance
-     *
-     * @param $input array of input data (form)
-     *
-     * @return bool
-     */
+   /**
+    * Update the list of Optvalues defined for an appliance
+    *
+    * @param $input array of input data (form)
+    *
+    * @return bool
+   **/
    function updateList($input) {
       global $DB;
 
@@ -197,10 +197,11 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-    /**
-     * @param PluginAppliancesAppliance $item
-     * @return int
-     */
+   /**
+    * @param $item   Appliance Object
+    *
+    * @return integer
+    **/
     static function countForAppliance(PluginAppliancesAppliance $item) {
 
       return countElementsInTable('glpi_plugin_appliances_optvalues',
@@ -208,33 +209,29 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-    /**
-     * Get Tab Name used for itemtype
-     *
-     * @param CommonGLPI $item
-     * @param int $withtemplate
-     * @return array|string|translated
-     */
+   /**
+    * Get Tab Name used for itemtype
+    *
+    * @see CommonGLPI getTabNameForItem()
+    **/
     function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getType()=='PluginAppliancesAppliance') {
+         $nb = '';
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(_n('Field', 'Fields', 2), self::countForAppliance($item));
+            $nb = self::countForAppliance($item);
          }
-         return _n('Field', 'Fields', 2);
+         return self::createTabEntry(_n('Field', 'Fields', 2), $nb);
       }
       return '';
    }
 
 
-    /**
-     * show Tab content
-     *
-     * @param CommonGLPI $item
-     * @param int $tabnum
-     * @param int $withtemplate
-     * @return bool
-     */
+   /**
+    * show Tab content
+    *
+    * @see CommonGLPI::displayTabContentForItem()
+    **/
     static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType()=='PluginAppliancesAppliance') {
@@ -244,19 +241,19 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    }
 
 
-    /**
-     * show Tab content for PDF
-     *
-     * @param PluginPdfSimplePDF $pdf
-     * @param CommonGLPI $item
-     * @param $tab
-     * @return bool
-     */
+   /**
+    * show Tab content for PDF
+    *
+    * @param $pdf            Instance of plugin PDF
+    * @param $item           CommonGLPI object
+    * @param $tab
+    *
+    * @return bool
+    **/
     static function displayTabContentForPDF(PluginPdfSimplePDF $pdf, CommonGLPI $item, $tab) {
 
       if ($item->getType()=='PluginAppliancesAppliance') {
          self::pdfForAppliance($pdf, $item);
-
       } else {
          return false;
       }

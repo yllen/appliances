@@ -31,24 +31,24 @@
 
 /**
  * Class PluginAppliancesMenu
- */
+**/
 class PluginAppliancesMenu extends CommonGLPI {
    static $rightname = 'plugin_appliances';
 
 
-    /**
-     * Return the localized name of the current Type
-     *
-     * @return translated
-     */
+   /**
+    * Return the localized name of the current Type
+    *
+    * @return translated
+   **/
     static function getMenuName() {
       return _n('Appliance', 'Appliances', 2, 'appliances');
    }
 
-    /**
-     * @return array
-     */
-    static function getMenuContent() {
+   /**
+    * @return array
+   **/
+   static function getMenuContent() {
 
       $menu                                           = array();
       $menu['title']                                  = self::getMenuName();
@@ -63,6 +63,7 @@ class PluginAppliancesMenu extends CommonGLPI {
 
 
    static function removeRightsFromSession() {
+
       if (isset($_SESSION['glpimenu']['tools']['types']['PluginAppliancesMenu'])) {
          unset($_SESSION['glpimenu']['tools']['types']['PluginAppliancesMenu']);
       }

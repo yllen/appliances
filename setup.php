@@ -101,43 +101,8 @@ function plugin_init_appliances() {
          $PLUGIN_HOOKS['menu_toadd']['appliances'] = array('assets' => 'PluginAppliancesMenu');
       }
       $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
-
-      /*if (isset($_SESSION["glpi_plugin_environment_installed"])
-          && ($_SESSION["glpi_plugin_environment_installed"] == 1)) {
-
-         $_SESSION["glpi_plugin_environment_appliances"] = 1;
-
-         // Display a menu entry ?
-         if (Session::haveRight("plugin_appliances", READ)) {
-            $PLUGIN_HOOKS['menu_entry']['appliances'] = false;
-            $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['title']
-                                                      = _n('Appliance', 'Appliances', 2, 'appliances');
-            $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['page']
-                                                      = '/plugins/appliances/front/appliance.php';
-            $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['search']
-                                                      = '/plugins/appliances/front/appliance.php';
-         }
-
-         if (Session::haveRight("plugin_appliances", CREATE)) {
-            $PLUGIN_HOOKS['submenu_entry']['environment']['options']['appliances']['links']['add']
-                                          = '/plugins/appliances/front/appliance.form.php';
-            $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
-         }
-
-       } else {
-         // Display a menu entry ?
-         if (Session::haveRight("plugin_appliances", READ)) {
-            $PLUGIN_HOOKS['menu_entry']['appliances']      = 'front/appliance.php';
-            $PLUGIN_HOOKS['submenu_entry']['appliances']['search'] = 'front/appliance.php';
-         }
-
-         if (Session::haveRight("plugin_appliances", CREATE)) {
-            $PLUGIN_HOOKS['submenu_entry']['appliances']['add']
-                                                           = 'front/appliance.form.php?new=1';
-
-         }
-      }*/
    }
+
    // Import from Data_Injection plugin
    $PLUGIN_HOOKS['data_injection']['appliances'] = "plugin_appliances_data_injection_variables";
 
@@ -153,7 +118,7 @@ function plugin_init_appliances() {
 function plugin_version_appliances() {
 
    return array('name'           => __('Appliances', 'appliances'),
-                'version'        => '2.2',
+                'version'        => '2.2.1',
                 'author'         => 'Remi Collet, Xavier Caillaud, Nelly Mahu-Lasson',
                 'license'        => 'GPLv3+',
                 'homepage'       => 'https://forge.glpi-project.org/projects/appliances',

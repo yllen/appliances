@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Class PluginAppliancesAppliance
- */
+**/
 class PluginAppliancesAppliance extends CommonDBTM {
 
    static $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
@@ -48,9 +48,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
     /**
-     * @param int $nb
-     * @return translated
-     */
+     * @see CommonGLPI::getTypeName()
+    **/
     static function getTypeName($nb=0) {
       return _n('Appliance', 'Appliances', $nb, 'appliances');
    }
@@ -85,7 +84,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
     /**
      * @return array
-     */
+    */
     function getSearchOptions() {
 
       $tab = array();
@@ -195,7 +194,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
     /**
      * Actions done when item is deleted from the database
-     */
+    **/
     function cleanDBonPurge() {
 
       $temp = new PluginAppliancesAppliance_Item();
@@ -208,9 +207,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
     /**
      * Define tabs to display
-     * @param array $options
-     * @return array
-     */
+     *
+     * @see CommonGLPI::defineTabs()
+    **/
     function defineTabs($options=array()) {
 
       $ong = array();
@@ -244,10 +243,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
     /**
      * Print appliance
-     * @param $ID
-     * @param array $options
+     *
+     * @param $ID         integer
+     * @param $options    array
+     *
      * @return bool
-     */
+    **/
     function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
@@ -370,7 +371,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
     *
     * @param $pdf object for the output
    **/
-   function show_PDF ($pdf) {
+   function show_PDF($pdf) {
 
       $pdf->setColumnsSize(50,50);
       $col1 = '<b>'.sprintf(__('%1$s %2$s'), __('ID'), $this->fields['id']).'</b>';
@@ -433,18 +434,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-    /**
-     * Diplay a dropdown to select an Appliance
-     *
-     * Parameters which could be used in options array :
-     *    - name : string / name of the select (default is plugin_appliances_appliances_id)
-     *    - entity : integer or array / restrict to a defined entity or array of entities
-     *                   (default '' : current entity)
-     *    - used : array / Already used items ID: not to display in dropdown (default empty)
-     *
-     * @param array|possible $options possible options
-     * @return nothing
-     */
+   /**
+    * Diplay a dropdown to select an Appliance
+    *
+    * @see CommonDBTM::dropdown()
+   **/
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
 
@@ -555,12 +549,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-    /**
-     * @param $params
-     * @param $protocol
-     *
-     * @return array
-     */
+   /**
+    * @param $params
+    * @param $protocol
+    *
+    * @return array
+   **/
    static function methodTestAppliance($params, $protocol) {
       global $PLUGIN_HOOKS;
 
@@ -581,23 +575,23 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-    /**
-     * @param $params
-     * @param $protocol
-     *
-     * @return array
-     */
+   /**
+    * @param $params
+    * @param $protocol
+    *
+    * @return array
+   **/
    static function methodListAppliances($params, $protocol) {
       global $DB, $CFG_GLPI;
 
       // TODO add some search options (name, type, ...)
 
       if (isset ($params['help'])) {
-         return array(  'help'      => 'bool,optional',
-                        'id2name'   => 'bool,optional',
-                        'count'     => 'bool,optional',
-                        'start'     => 'integer,optional',
-                        'limit'     => 'integer,optional' );
+         return array('help'      => 'bool,optional',
+                      'id2name'   => 'bool,optional',
+                      'count'     => 'bool,optional',
+                      'start'     => 'integer,optional',
+                      'limit'     => 'integer,optional' );
       }
 
       if (!Session::getLoginUserID()) {
@@ -691,11 +685,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-    /**
-     * @param $params
-     * @param $protocol
-     * @return array
-     */
+   /**
+    * @param $params
+    * @param $protocol
+    *
+    * @return array
+    **/
     static function methodDeleteAppliance($params, $protocol) {
 
       if (isset ($params['help'])) {
@@ -731,11 +726,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-    /**
-     * @param $params
-     * @param $protocol
-     * @return array
-     */
+   /**
+    * @param $params
+    * @param $protocol
+    *
+    * @return array
+    **/
     static function methodUpdateAppliance($params, $protocol) {
 
       // TODO : add more fields + factorize field translation with methodAddAppliance
@@ -830,11 +826,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-    /**
-     * @param $params
-     * @param $protocol
-     * @return array
-     */
+   /**
+    * @param $params
+    * @param $protocol
+    *
+    * @return array
+    **/
     static function methodAddAppliance($params, $protocol) {
 
       // TODO : add more fields
@@ -928,17 +925,18 @@ class PluginAppliancesAppliance extends CommonDBTM {
    }
 
 
-    /**
-     * @param $params
-     * @param $protocol
-     * @return array
-     */
+   /**
+    * @param $params
+    * @param $protocol
+    *
+    * @return array
+    **/
     static function methodGetAppliance($params, $protocol) {
 
       if (isset ($params['help'])) {
-         return array(  'help'               => 'bool,optional',
-                        'id2name'            => 'bool,optional',
-                        'externalid OR id'   => 'string' );
+         return array('help'               => 'bool,optional',
+                      'id2name'            => 'bool,optional',
+                      'externalid OR id'   => 'string' );
       }
 
       if (!Session::getLoginUserID()) {
@@ -982,7 +980,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
     /**
      * @param Migration $migration
-     */
+    **/
     static function updateSchema(Migration $migration) {
       global $DB;
 
@@ -1074,21 +1072,17 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
          case "install" :
              Dropdown::showSelectItemFromItemtypes(array('items_id_name' => 'item_item',
-                 'itemtype_name' => 'typeitem',
-                 'itemtypes' => self::getTypes(true),
-                 'checkright'
-                 => true,
-             ));
+                                                         'itemtype_name' => 'typeitem',
+                                                         'itemtypes'     => self::getTypes(true),
+                                                         'checkright'    => true));
             echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
             return true;
 
          case "uninstall" :
              Dropdown::showSelectItemFromItemtypes(array('items_id_name' => 'item_item',
-                 'itemtype_name' => 'typeitem',
-                 'itemtypes' => self::getTypes(true),
-                 'checkright'
-                 => true,
-             ));
+                                                         'itemtype_name' => 'typeitem',
+                                                         'itemtypes'     => self::getTypes(true),
+                                                         'checkright'    => true));
             echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
             return true;
 
@@ -1117,8 +1111,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
             $input = $ma->getInput();
             foreach ($ids as $id) {
                $input = array('plugin_appliances_appliancetypes_id' => $input['plugin_appliances_appliancetypes_id'],
-                                 'items_id'      => $id,
-                                 'itemtype'      => $item->getType());
+                              'items_id'      => $id,
+                              'itemtype'      => $item->getType());
                if ($appliance_item->can(-1,UPDATE,$input)) {
                   if ($appliance_item->add($input)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -1129,16 +1123,17 @@ class PluginAppliancesAppliance extends CommonDBTM {
                   $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                }
             }
-
             return;
+
          case "transfer" :
             $input = $ma->getInput();
             if ($item->getType() == 'PluginAppliancesAppliance') {
             foreach ($ids as $key) {
                   $item->getFromDB($key);
-                  $type = PluginAppliancesApplianceType::transfer($item->fields["plugin_appliances_appliancetypes_id"], $input['entities_id']);
+                  $type = PluginAppliancesApplianceType::transfer($item->fields["plugin_appliances_appliancetypes_id"],
+                                                                  $input['entities_id']);
                   if ($type > 0) {
-                     $values["id"] = $key;
+                     $values["id"]                                  = $key;
                      $values["plugin_appliances_appliancetypes_id"] = $type;
                      $item->update($values);
                   }
@@ -1161,8 +1156,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
             foreach ($ids as $key) {
                if ($item->can($key, UPDATE)) {
                   $values = array('plugin_appliances_appliances_id' => $key,
-                                 'items_id'      => $input["item_item"],
-                                 'itemtype'      => $input['typeitem']);
+                                 'items_id'                         => $input["item_item"],
+                                 'itemtype'                         => $input['typeitem']);
                   if ($appliance_item->add($values)) {
                      $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                   } else {
@@ -1178,12 +1173,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
          case 'uninstall':
             $input = $ma->getInput();
             foreach ($ids as $key) {
-               if ($appliance_item->deleteItemByAppliancesAndItem($key,$input['item_item'],$input['typeitem'])) {
+               if ($appliance_item->deleteItemByAppliancesAndItem($key, $input['item_item'],
+                                                                  $input['typeitem'])) {
                   $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                } else {
                   $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                }
-
             }
             return;
       }
