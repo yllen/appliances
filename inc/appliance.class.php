@@ -91,7 +91,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $tab['common']            = _n('Appliance', 'Appliances', 2, 'appliances');
 
-      $tab[1]['table']          = 'glpi_plugin_appliances_appliances';
+      $tab[1]['table']          = $this->getTable();
       $tab[1]['field']          = 'name';
       $tab[1]['name']           = __('Name');
       $tab[1]['datatype']       = 'itemlink';
@@ -346,9 +346,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
                                           = glpi_plugin_appliances_appliances_items.id
                                         AND glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id
                                           = $ID"))) {
-         PluginAppliancesRelation::dropdownType("relationtype", $this->fields["relationtype"]);
+         PluginAppliancesRelation::dropdownType("relationtype",
+                                                 isset($this->fields["relationtype"])
+                                                   ? $this->fields["relationtype"] : '');
       } else {
-         echo PluginAppliancesRelation::getTypeName($this->fields["relationtype"]);
+         echo PluginAppliancesRelation::getTypeName(isset($this->fields["relationtype"])
+                                                      ? $this->fields["relationtype"] : '');
          $rand    = mt_rand();
          $comment = __('Flag change forbidden. Linked items found.');
          $image   = "/pics/lock.png";

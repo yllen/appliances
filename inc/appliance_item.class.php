@@ -522,7 +522,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       if (Session::isMultiEntitiesMode()) {
          echo "<th>".__('Entity')."</th>";
       }
-      if ($appli->fields["relationtype"]) {
+      if (isset($appli->fields["relationtype"])) {
          echo "<th>".__('Item to link', 'appliances')."<br>".__('User fields', 'appliances')."</th>";
       }
       echo "<th>".__('Serial number')."</th>";
