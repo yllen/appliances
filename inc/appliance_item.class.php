@@ -225,8 +225,12 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          if ($number_app > 0) {
             // add or delete a relation to an applicatifs
             echo "<td class='center'>";
-            PluginAppliancesRelation::showList ($data["relationtype"], $data["entID"],
-                                                $item->fields["entities_id"], $canedit);
+            $data["relationtype"] = '';
+            if (isset($data["relationtype"]) && $data["relationtype"]) {
+               $data["relationtype"] = $data["relationtype"];
+            }
+            PluginAppliancesRelation::showList($data["relationtype"], $data["entID"],
+                                               $item->fields["entities_id"], $canedit);
             echo "</td>";
          }
 
@@ -604,7 +608,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                               "</td>";
                      }
 
-                     if ($appli->fields["relationtype"]) {
+                     if (isset($appli->fields["relationtype"]) && $appli->fields["relationtype"]) {
                         echo "<td class='center'>".
                                PluginAppliancesRelation::getTypeName($appli->fields["relationtype"]).
                                "&nbsp;:&nbsp;";
