@@ -312,8 +312,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                      `glpi_plugin_appliances_appliances`
                 LEFT JOIN `glpi_entities`
                      ON (`glpi_entities`.`id` = `glpi_plugin_appliances_appliances`.`entities_id`)
-                WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '".$ID;"'
-                      AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '";$itemtype;"'
+                WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '$ID'
+                      AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype'
                       AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
                            = `glpi_plugin_appliances_appliances`.`id`".
                       getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
