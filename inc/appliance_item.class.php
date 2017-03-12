@@ -200,15 +200,19 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             echo "<td class='center'>";
             echo "<a href='".
                    $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php?id=".
-                   $data["id"]."'>".$name;
+                   $data["id"]."'>";
             if ($_SESSION["glpiis_ids_visible"]) {
                printf(__('%1$s (%2$s)'), $name, $data["id"]);
+            } else {
+               echo $name;
             }
             echo "</a></td>";
          } else {
-            echo "<td class='center'>".$name;
+            echo "<td class='center'>";
             if ($_SESSION["glpiis_ids_visible"]) {
                printf(__('%1$s (%2$s)'), $name, $data["id"]);
+            } else {
+               echo $name;
             }
             echo "</td>";
          }
@@ -478,6 +482,39 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    }
 
 
+   static function showAddForm(PluginAppliancesAppliance $appli) {
+      global $CFG_GLPI;
+
+      $ID = $appli->getField('id');
+      if (!$appli->can($ID, UPDATE)) {
+         return false;
+      }
+      $rand = mt_rand();
+      if ($ID > 0) {
+         echo "<div class='firstbloc'>";
+         echo "<form method='post' name='appliances_form$rand' id='appliances_form$rand' action=\"".
+                $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php\">";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><td class='center tab_bg_2' width='20%'>";
+         echo "<input type='hidden' name='conID' value='$ID'>\n";
+         Dropdown::showSelectItemFromItemtypes(array('items_id_name'   => 'item',
+                                                     'itemtypes'       => $appli->getTypes(true),
+                                                     'entity_restrict' => ($appli->fields['is_recursive']
+                                                                           ? getSonsOf('glpi_entities',
+                                                                                       $appli->fields['entities_id'])
+                                                                           : $appli->fields['entities_id']),
+                                                     'checkright'      => true));
+         echo "</td>";
+         echo "<td class='center' class='tab_bg_2'>";
+         echo "<input type='submit' name='additem' value='".__('Add')."' class='submit'>";
+            echo "</td></tr></table>";
+         Html::closeForm();
+               echo "</div>";
+      }
+      }
+
+
+
    /**
     * Show the Device associated with an applicatif
     *
@@ -495,7 +532,6 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       if (!$appli->can($instID, READ)) {
          return false;
       }
-      $rand = mt_rand();
 
       $canedit = $appli->can($instID, UPDATE);
 
@@ -511,15 +547,23 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       } else {
          $colsup = 0;
       }
+      $rand = mt_rand();
 
-      echo "<form method='post' name='appliances_form$rand' id='appliances_form$rand' action=\"".
-            $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php\">";
-
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='".($canedit?(6+$colsup):(5+$colsup))."'>".
-            __('Associated items', 'appliances')."</th></tr><tr>";
+      echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<th>&nbsp;</th>";
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed'    => $number,
+                                      'container'        => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
+         echo "<input type='hidden' name='conID' value='$instID'>\n";
+      }
+
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr class='tab_bg_1'>";
+      if ($canedit) {
+          echo "<th width='10'>";
+          Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+          echo "</th>";
       }
       echo "<th>".__('Type')."</th>";
       echo "<th>".__('Name')."</th>";
@@ -539,14 +583,15 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             continue;
          }
          if ($item->canView()) {
+            // Ticket and knowbaseitem can't be associated to an appliance
             $column = "name";
-            if ($type == 'Ticket') {
+    /*        if ($type == 'Ticket') {
                $column = "id";
             }
             if ($type == 'KnowbaseItem') {
                $column = "question";
             }
-
+*/
             $query = "SELECT `".$item->getTable()."`.*,
                              `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
                              `glpi_entities`.`id` AS entity
@@ -576,7 +621,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                      Session::addToNavigateListItems($type,$data["id"]);
                      //TODO $ID never user - why this part ?
                      $ID = "";
-                     if ($type == 'Ticket') {
+                     // Ticket and knowbaseitem can't be associated to an appliance
+/*                     if ($type == 'Ticket') {
                         $data["name"] = sprintf(__('%1$s %2$s'), __('Ticket'), $data["id"]);
                      }
                      if ($type == 'KnowbaseItem') {
@@ -585,19 +631,17 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                      if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                         $ID = " (".$data["id"].")";
                      }
-
+*/
                      $name = $item->getLink();
 
                      echo "<tr class='tab_bg_1'>";
+                     echo "<td width='10'>";
                      if ($canedit) {
-                        echo "<td width='10'>";
-                        $sel = "";
-                        if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                           $sel = "checked";
-                        }
-                        echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
-                        echo "</td>";
+                        Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
+                     } else {
+                        echo "$nbsp;";
                      }
+                     echo "</td>";
                      echo "<td class='center'>".$item->getTypeName(1)."</td>";
                      echo "<td class='center' ".
                            (isset($data['deleted']) && $data['deleted']?"class='tab_bg_2_2'":"").">".
@@ -631,31 +675,13 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             }
          }
       }
-
-      if ($canedit) {
-         echo "<tr class='tab_bg_1'><td colspan='".(3+$colsup)."' class='center'>";
-
-         echo "<input type='hidden' name='conID' value='$instID'>";
-         Dropdown::showSelectItemFromItemtypes(array('items_id_name'   => 'item',
-                                                     'itemtypes'       => $appli->getTypes(true),
-                                                     'entity_restrict' => ($appli->fields['is_recursive']
-                                                                             ? getSonsOf('glpi_entities',
-                                                                                         $appli->fields['entities_id'])
-                                                                             : $appli->fields['entities_id']),
-                                                     'checkright'      => true));
-         echo "</td>";
-         echo "<td colspan='3' class='center' class='tab_bg_2'>";
-         echo "<input type='submit' name='additem' value='".__('Add')."' class='submit'>";
-         echo "</td></tr>";
-         echo "</table></div>" ;
-
-         Html::openArrowMassives("appliances_form$rand", true);
-         Html::closeArrowMassives(array('deleteitem' => __('Delete permanently')));
-
-      } else {
-         echo "</table></div>";
+      echo "</table>";
+      if ($canedit && $number) {
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
+         Html::closeForm();
       }
-      Html::closeForm();
+      echo "</div>";
    }
 
 
@@ -696,6 +722,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
     static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType()=='PluginAppliancesAppliance') {
+         self::showAddForm($item);
          self::showForAppliance($item);
 
       } else if (in_array($item->getType(), PluginAppliancesAppliance::getTypes(true))) {
@@ -769,4 +796,13 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          $this->delete(array('id'=>$this->fields["id"]));
       }
    }
+
+
+   function getForbiddenStandardMassiveAction() {
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+
 }

@@ -1187,4 +1187,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
+
+
 }
