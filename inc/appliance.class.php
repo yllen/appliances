@@ -65,10 +65,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
    function getFromDBbyExternalID($extid) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `externalid` = '".$extid."'";
-
       if ($result = $DB->request(['FROM'  => $this->getTable(),
                                   'WHERE' => ['externalid' => $extid]])) {
          if ($result->numrows() != 1) {
