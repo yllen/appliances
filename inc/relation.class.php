@@ -171,7 +171,7 @@ class PluginAppliancesRelation extends CommonDBTM {
          if ($number_loc >0) {
             echo "<table>";
             while ($i < $number_loc) {
-               $res = $DB->fetch_array($result_loc);
+               $res = $result_loc->next();
                echo "<tr><td class=top>";
                // when the value of the checkbox is changed, the corresponding hidden variable value
                // is also changed by javascript
@@ -196,7 +196,7 @@ class PluginAppliancesRelation extends CommonDBTM {
          Html::closeForm();
 
       } else if ($number_loc > 0) {
-         while ($res = $DB->fetch_array($result_loc)) {
+         while ($res = $result_loc->next()) {
             echo $res["dispname"]."<br>";
          }
       } else {
@@ -241,7 +241,7 @@ class PluginAppliancesRelation extends CommonDBTM {
       $result_loc = $DB->request($sql_loc);
 
       $opts = array();
-      while ($res = $DB->fetch_array($result_loc)) {
+      while ($res = $result_loc->next()) {
          $opts[] = $res["dispname"];
       }
       $pdf->setColumnsSize(100);

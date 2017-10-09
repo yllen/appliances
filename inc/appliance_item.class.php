@@ -183,7 +183,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       }
       echo "</tr>";
       $used = [];
-      while ($data = $DB->fetch_array($result)) {
+      while ($data = $result_app->next()) {
          $appliancesID = $data["id"];
          $used[]       = $appliancesID;
 
@@ -330,7 +330,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             $pdf->displayTitle('<b><i>'.__('Name'), __('Group'),__('Type').'</i></b>');
          }
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $result->next()) {
             $appliancesID = $data["id"];
             if (Session::isMultiEntitiesMode()) {
                $pdf->setColumnsSize(30,30,20,20);
@@ -396,10 +396,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       if (!$number) {
          $pdf->displayLine(__('No item found'));
       } else {
-         for ($i=0 ; $i < $number ; $i++) {
-            foreach ($result as $id => $row) {
-               $type = $row['itemtype'];
-            }
+         foreach ($result as $id => $row) {
+            $type = $row['itemtype'];
             if (!($item = getItemForItemtype($type))) {
                continue;
             }
@@ -568,10 +566,9 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       echo "<th>".__('Inventory number')."</th>";
       echo "</tr>";
 
-      for ($i=0 ; $i < $number ; $i++) {
-         foreach ($result as $id => $row) {
-            $type = $row['itemtype'];
-         }
+      foreach ($result as $id => $row) {
+         $type = $row['itemtype'];
+
          if (!($item = getItemForItemtype($type))) {
             continue;
          }
@@ -582,7 +579,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             $query = "SELECT `".$item->getTable()."`.*,
                              `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
                              `glpi_entities`.`id` AS entity
-                      FROM `glpi_plugin_appliances_appliances_items`, ".getTableForItemType($type)."
+                      FROM `glpi_plugin_appliances_appliances_items`, `".getTableForItemType($type)."`
                       LEFT JOIN `glpi_entities`
                            ON (`glpi_entities`.`id` = `".$item->getTable()."`.`entities_id`)
                       WHERE `".$item->getTable()."`.`id`
@@ -606,9 +603,6 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                    foreach ($result_linked as $id => $data) {
                      $item->getFromDB($data["id"]);
                      Session::addToNavigateListItems($type, $data["id"]);
-                     //TODO $ID never user - why this part ?
-                     $ID = "";
-
                      $name = $item->getLink();
 
                      echo "<tr class='tab_bg_1'>";

@@ -96,7 +96,6 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['update_optvalues'])) {
    $PluginAppliances->check($_POST['plugin_appliances_appliances_id'], UPDATE);
-
    $Optvalue = new PluginAppliancesOptvalue();
    $Optvalue->updateList($_POST);
    Html::back();
