@@ -48,7 +48,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    static public $items_id_2     = 'items_id';
    static public $take_entity_2  = true ;
 
-   static $rightname = "plugin_appliances";
+   static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+
 
 
     /**
@@ -151,7 +152,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       $result_app = $DB->request(['SELECT' => 'ID',
                                   'FROM'   => 'glpi_plugin_appliances_appliances_items',
                                   'WHERE'  => ['items_id' => $ID]]);
-      $result_app->numrows();
+      $number_app = $result_app->numrows();
 
       if ($number_app >0) {
          $colsup = 1;

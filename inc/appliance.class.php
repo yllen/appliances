@@ -498,7 +498,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $values = [0 => Dropdown::EMPTY_VALUE];
 
-      foreach ($result as $id => $data) {
+      while ($data =$result->next()) {
          $values[$data['id']] = $data['name'];
       }
       $rand     = mt_rand();
@@ -1136,10 +1136,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
          case "plugin_appliances_add_item":
             $input = $ma->getInput();
             foreach ($ids as $id) {
-               $input = ['plugin_appliances_appliancetypes_id' => $input['plugin_appliances_appliancetypes_id'],
+               $input = ['plugin_appliances_appliances_id'
+                                         => $input['plugin_appliances_appliances_id'],
                          'items_id'      => $id,
                          'itemtype'      => $item->getType()];
-               if ($appliance_item->can(-1,UPDATE,$input)) {
+               if ($appliance_item->can(-1, CREATE, $input)) {
                   if ($appliance_item->add($input)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {

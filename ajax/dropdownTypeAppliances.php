@@ -43,11 +43,9 @@ if (isset($_POST["appliancetype"])) {
 
    // Clean used array
    if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
-      $val = implode(',',$_POST['used']);
-
       foreach ($DB->request(['SELECT' => 'id',
                              'FROM'   => 'glpi_plugin_appliances_appliances',
-                             'WHERE'  => ['id' => $val,
+                             'WHERE'  => ['id' => $_POST['used'],
                                           'plugin_appliances_appliancetypes_id'
                                                => $_POST["appliancetype"]]]) AS $data) {
          $used[$data['id']] = $data['id'];

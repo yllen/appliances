@@ -186,7 +186,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                      'vvalue'                         => $input[$vvalue]];
             $this->add($data);
          }
-    //  } // For
+      } // For
    }
 
 }
