@@ -100,9 +100,10 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       if (empty($types)) {
          return 0;
       }
-      return countElementsInTable('glpi_plugin_appliances_appliances_items',
-                                  "`itemtype` IN ('".$types."')
-                                   AND `plugin_appliances_appliances_id` = '".$item->getID()."'");
+      $dbu = new DbUtils();
+      return $dbu->countElementsInTable('glpi_plugin_appliances_appliances_items',
+                                        ['itemtype'                        => $item->getTypes(),
+                                         'plugin_appliances_appliances_id' => $item->getID()]);
    }
 
 
@@ -113,9 +114,10 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
     */
     static function countForItem(CommonDBTM $item) {
 
-      return countElementsInTable('glpi_plugin_appliances_appliances_items',
-                                  "`itemtype`='".$item->getType()."'
-                                   AND `items_id` = '".$item->getID()."'");
+      $dbu = new DbUtils();
+      return $dbu->countElementsInTable('glpi_plugin_appliances_appliances_items',
+                                        ['itemtype' => $item->getType(),
+                                         'items_id' => $item->getID()]);
    }
 
 
@@ -152,7 +154,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       $result_app = $DB->request(['SELECT' => 'ID',
                                   'FROM'   => 'glpi_plugin_appliances_appliances_items',
                                   'WHERE'  => ['items_id' => $ID]]);
-      $number_app = $result_app->numrows();
+      $number_app = count($result_app);
 
       if ($number_app >0) {
          $colsup = 1;
@@ -184,7 +186,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       }
       echo "</tr>";
       $used = [];
-      while ($data = $result_app->next()) {
+
+      while ($data = $result->next()) {
          $appliancesID = $data["id"];
          $used[]       = $appliancesID;
 
@@ -262,7 +265,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          $req = $DB->request(['FROM'  => 'glpi_plugin_appliances_appliances',
                               'COUNT' => 'cpt',
                               'WHERE' => ['is_deleted' => 0]]);
-         $nb     = $req->numrows();
+         $nb     = count($req);
 
          if (($withtemplate < 2)
              && ($nb > count($used))) {
@@ -318,7 +321,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                       getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
                                                  'entities_id', $item->getEntityID(), true);
       $result = $DB->request($query);
-      $number = $result->numrows();
+      $number = count($result);
 
       if (!$number) {
          $pdf->displayLine(__('No item found'));
@@ -382,7 +385,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       $result = $DB->request(['SELECT DISTINCT' => 'itemtype',
                               'FROM'            => 'glpi_plugin_appliances_appliances_items',
                               'WHERE'           => ['plugin_appliances_appliances_id' => $instID]]);
-      $number = $result->numrows();
+      $number = count($result);
 
       if (Session::isMultiEntitiesMode()) {
          $pdf->setColumnsSize(12,27,25,18,18);
@@ -397,9 +400,10 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       if (!$number) {
          $pdf->displayLine(__('No item found'));
       } else {
+         $dbu = new DbUtils();
          foreach ($result as $id => $row) {
             $type = $row['itemtype'];
-            if (!($item = getItemForItemtype($type))) {
+            if (!($item = $dbu->getItemForItemtype($type))) {
                continue;
             }
 
@@ -431,7 +435,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->getTable()."`.$column";
 
                if ($result_linked = $DB->request($query)) {
-                  if ($result_linked->numrows()) {
+                  if (count($result_linked)) {
                      foreach ($result_linked as $id => $data) {
                         if (!$item->getFromDB($data['id'])) {
                            continue;
@@ -530,7 +534,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       $result = $DB->request(['SELECT DISTINCT' => 'itemtype',
                               'FROM'            => 'glpi_plugin_appliances_appliances_items',
                               'WHERE'           => ['plugin_appliances_appliances_id' => $instID]]);
-      $number = $result->numrows();
+      $number = count($result);
 
       if (Session::isMultiEntitiesMode()) {
          $colsup = 1;
@@ -567,10 +571,11 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       echo "<th>".__('Inventory number')."</th>";
       echo "</tr>";
 
+      $dbu = new DbUtils();
       foreach ($result as $id => $row) {
          $type = $row['itemtype'];
 
-         if (!($item = getItemForItemtype($type))) {
+         if (!($item = $dbu->getItemForItemtype($type))) {
             continue;
          }
          if ($item->canView()) {
@@ -580,7 +585,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             $query = "SELECT `".$item->getTable()."`.*,
                              `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
                              `glpi_entities`.`id` AS entity
-                      FROM `glpi_plugin_appliances_appliances_items`, `".getTableForItemType($type)."`
+                      FROM `glpi_plugin_appliances_appliances_items`, `".$dbu->getTableForItemType($type)."`
                       LEFT JOIN `glpi_entities`
                            ON (`glpi_entities`.`id` = `".$item->getTable()."`.`entities_id`)
                       WHERE `".$item->getTable()."`.`id`
@@ -596,7 +601,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->getTable()."`.$column";
 
             if ($result_linked = $DB->request($query)) {
-               if ($result_linked->numrows()) {
+               if (count($result_linked)) {
                   Session::initNavigateListItems($type,
                                                  _n('Appliance', 'Appliances', 2, 'appliances')."
                                                    = ".$appli->getNameID());
@@ -744,7 +749,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                                                          => $plugin_appliances_appliances_id,
                                               'itemtype' => $items_id,
                                               'items_id' => $itemtype]])) {
-         if ($result->numrows() != 1) {
+         if (count($result) != 1) {
             return false;
          }
          foreach ($result as $id => $row) {
