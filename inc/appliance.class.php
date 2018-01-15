@@ -67,7 +67,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       if ($result = $DB->request(['FROM'  => $this->getTable(),
                                   'WHERE' => ['externalid' => $extid]])) {
-         if ($result->numrows() != 1) {
+         if (count($result) != 1) {
             return false;
          }
 
@@ -93,11 +93,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
                 'name'          => _n('Appliance', 'Appliances', 2, 'appliances')];
 
       $tab[] = ['id'            => '1',
-                'table'         => $this->getTable(),
-                'field'         => 'name',
+               'table'         => $this->getTable(),
+               'field'         => 'name',
                 'name'          => __('Name'),
                 'datatype'      => 'itemlink',
-                'itemlink_type' => $this->getType()];
+                'massiveaction' => false];
 
       $tab[] = ['id'            => '2',
                 'table'         => 'glpi_plugin_appliances_appliancetypes',
@@ -188,12 +188,14 @@ class PluginAppliancesAppliance extends CommonDBTM {
                 'table'         => 'glpi_plugin_appliances_appliances',
                 'field'         => 'id',
                 'name'          => __('ID'),
+                'datatype'      => 'number',
                 'massiveaction' => false];
 
       $tab[] = ['id'            => '80',
                 'table'         => 'glpi_entities',
                 'field'         => 'completename',
-                'name'          => __('Entity')];
+                'name'          => __('Entity'),
+                'datatype'      => 'dropdown'];
 
       $tab[] = ['id'            => '7',
                 'table'         => 'glpi_plugin_appliances_appliances',
@@ -280,6 +282,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $canedit = $this->can($ID, UPDATE);
 
+      $dbu = new DbUtils();
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td><td>";
       Html::autocompletionTextField($this, "name", array('size' => 34));
@@ -363,12 +367,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<td>".__('Item to link', 'appliances')."</td><td>";
       if ($canedit
           && !($ID
-               && countElementsInTable(["glpi_plugin_appliances_relations",
-                                        "glpi_plugin_appliances_appliances_items"],
-                                       "glpi_plugin_appliances_relations.plugin_appliances_appliances_items_id
-                                          = glpi_plugin_appliances_appliances_items.id
-                                        AND glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id
-                                          = $ID"))) {
+               && $dbu->countElementsInTable(["glpi_plugin_appliances_relations",
+                                              "glpi_plugin_appliances_appliances_items"],
+                                              "glpi_plugin_appliances_relations.plugin_appliances_appliances_items_id
+                                                = glpi_plugin_appliances_appliances_items.id
+                                              AND glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id
+                                                  = $ID"))) {
          PluginAppliancesRelation::dropdownType("relationtype",
                                                  isset($this->fields["relationtype"])
                                                    ? $this->fields["relationtype"] : '');
@@ -461,11 +465,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    /**
-    * Diplay a dropdown to select an Appliance
+    * Diplay a dropdown to select an Appliance in massive action
     *
     * @see CommonDBTM::dropdown()
    **/
-   static function dropdown($options=array()) {
+   static function dropdownMA($options=array()) {
       global $DB, $CFG_GLPI;
 
       $p['name']    = 'plugin_appliances_appliances_id';
@@ -562,8 +566,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
       // Only allowed types
       $types = self::$types;
 
+      $dbu   = new DbUtils();
       foreach ($types as $key => $type) {
-         if (!($item = getItemForItemtype($type))) {
+         if (!($item = $dbu->getItemForItemtype($type))) {
             continue;
          }
 
@@ -1011,7 +1016,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       global $DB;
 
       $migration->displayTitle(sprintf(__('%1$s: %2$s'), __('Update'), self::getTypeName(2)));
-      $table = getTableForItemType(__CLASS__);
+      $dbu = new DbUtils();
+      $table = $dbu->getTableForItemType(__CLASS__);
 
       // Version 1.6.1
       $migration->changeField($table, 'notes', 'notepad', 'text');
@@ -1092,7 +1098,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       switch ($ma->getAction()) {
          case 'plugin_appliances_add_item':
-            self::dropdown([]);
+            self::dropdownMA([]);
             echo "&nbsp;". Html::submit(_x('button','Post'), ['name' => 'massiveaction']);
             return true;
 
