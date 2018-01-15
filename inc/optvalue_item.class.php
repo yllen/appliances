@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2017 Appliances plugin team
+ @copyright Copyright (c) 2009-2018 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -56,7 +56,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
       $result_app_opt = $DB->request(['FROM'  => 'glpi_plugin_appliances_optvalues',
                                       'WHERE' => ['plugin_appliances_appliances_id' => $appliances_id],
                                       'ORDER' => 'vvalues']);
-      $number  = $result_app_opt->numrows();
+      $number  = count($result_app_opt);
 
       if ($canedit) {
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
@@ -119,7 +119,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                                       'FROM'   => 'glpi_plugin_appliances_optvalues',
                                       'WHERE'  => ['plugin_appliances_appliances_id' => $appliancesID],
                                       'ORDER'  => 'vvalues']);
-      $number_champs = $result_app_opt->numrows();
+      $number_champs = count($result_app_opt);
 
       if (!$number_champs) {
          return;

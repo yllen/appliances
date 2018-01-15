@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2017 Appliances plugin team
+ @copyright Copyright (c) 2009-2018 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -148,17 +148,18 @@ class PluginAppliancesRelation extends CommonDBTM {
          $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
                             `name` AS dispname ";
       }
-      $sql_loc .= "FROM `".getTableForItemType($itemtype)."` ,
+      $dbu = new DbUtils();
+      $sql_loc .= "FROM `".$dbu->getTableForItemType($itemtype)."` ,
                         `glpi_plugin_appliances_relations`,
                         `glpi_plugin_appliances_appliances_items`
-                   WHERE `".getTableForItemType($itemtype)."`.`id`
+                   WHERE `".$dbu->getTableForItemType($itemtype)."`.`id`
                                     = `glpi_plugin_appliances_relations`.`relations_id`
                          AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
                                     = `glpi_plugin_appliances_appliances_items`.`id`
                          AND `glpi_plugin_appliances_appliances_items`.`id` = '".$relID."'";
 
       $result_loc = $DB->request($sql_loc);
-      $number_loc = $result_loc->numrows();
+      $number_loc = count($result_loc);
 
       if ($canedit) {
          echo "<form method='post' name='relation' action='".

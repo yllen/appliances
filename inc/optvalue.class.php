@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2017 Appliances plugin team
+ @copyright Copyright (c) 2009-2018 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -77,7 +77,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       $query_app = $DB->request(['FROM' => 'glpi_plugin_appliances_optvalues',
                                  'WHERE' => ['plugin_appliances_appliances_id' => $appli->fields['id']],
                                  'ORDER' => 'vvalues']);
-      $number_champs = $query_app->numrows();
+      $number_champs = count($query_app);
       $number_champs++;
       for ($i=1 ; $i <= $number_champs ; $i++) {
          if ($data = $query_app->next()) {
@@ -200,8 +200,9 @@ class PluginAppliancesOptvalue extends CommonDBTM {
     **/
     static function countForAppliance(PluginAppliancesAppliance $item) {
 
-      return countElementsInTable('glpi_plugin_appliances_optvalues',
-                                  "`plugin_appliances_appliances_id` = '".$item->getID()."'");
+      $dbu = new DbUtils();
+      return $dbu->countElementsInTable('glpi_plugin_appliances_optvalues',
+                                        ['plugin_appliances_appliances_id' => $item->getID()]);
    }
 
 

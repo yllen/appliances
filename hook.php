@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2017 Appliances plugin team
+ @copyright Copyright (c) 2009-2018 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -158,6 +158,8 @@ function plugin_appliances_install() {
 function plugin_appliances_uninstall() {
    global $DB;
 
+   $dbu = new DbUtils();
+
    $tables = ['glpi_plugin_appliances_appliances',
               'glpi_plugin_appliances_appliances_items',
               'glpi_plugin_appliances_appliancetypes',
@@ -187,7 +189,7 @@ function plugin_appliances_uninstall() {
              WHERE `name` IN ('plugin_appliances', 'plugin_appliances_open_ticket')";
    $DB->query($query);
 
-   if ($temp = getItemForItemtype('PluginDatainjectionModel')) {
+   if ($temp = $dbu->getItemForItemtype('PluginDatainjectionModel')) {
       $temp->deleteByCriteria(['itemtype'=>'PluginAppliancesAppliance']);
    }
    include_once(GLPI_ROOT."/plugins/appliances/inc/profile.class.php");
@@ -299,6 +301,7 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
       */
    }
    return $sopt;
+
 }
 
 
@@ -334,6 +337,8 @@ function plugin_appliances_giveItem($type, $ID, array $data, $num) {
    $table     = $searchopt[$ID]["table"];
    $field     = $searchopt[$ID]["field"];
 
+   $dbu       = new DbUtils();
+
    switch ($table.'.'.$field) {
       case "glpi_plugin_appliances_appliances_items.items_id" :
          $appliances_id = $data['id'];
@@ -342,7 +347,7 @@ function plugin_appliances_giveItem($type, $ID, array $data, $num) {
                                         'WHERE'           => ['plugin_appliances_appliances_id'
                                                                => $appliances_id],
                                         'ORDER'           => 'itemtype']);
-         $number_device  = $query_device->numrows();
+         $number_device  = count($query_device);
          $out            = '';
          if ($number_device > 0) {
             for ($y=0 ; $y < $number_device ; $y++) {
@@ -353,8 +358,8 @@ function plugin_appliances_giveItem($type, $ID, array $data, $num) {
                foreach ($query_device as $id => $row) {
                   $type = $row['itemtype'];
                }
-               if (!($item = getItemForItemtype($type))) {
-                     continue;
+               if (!($item = $dbu->getItemForItemtype($type))) {
+                  continue;
                }
                $table = $item->getTable();
                if (!empty($table)) {
@@ -378,7 +383,7 @@ function plugin_appliances_giveItem($type, $ID, array $data, $num) {
                              `$table`.`$column`";
 
                   if ($result_linked = $DB->request($query)) {
-                     if ($result_linked->numrows()) {
+                     if (count($result_linked)) {
                         foreach ($result_linked as $id => $row) {
                            if ($item->getFromDB($row['id'])) {
                               $out .= $item->getTypeName(1)." - ".$item->getLink()."<br>";
@@ -397,7 +402,7 @@ function plugin_appliances_giveItem($type, $ID, array $data, $num) {
             if ($data['raw']["ITEM_$num"] != '') {
                $appliances_id = explode('$$$$', $data['raw']["ITEM_$num"]);
             } else {
-               $appliances_id = explode('$$$$', $data['raw']["ITEM_".$num."_2"]);
+               $appliances_id = explode('$$$$', $data['raw']["ITEM_".$num."_id"]);
             }
             $ret = [];
             $paAppliance = new PluginAppliancesAppliance();
@@ -411,6 +416,7 @@ function plugin_appliances_giveItem($type, $ID, array $data, $num) {
 
    }
    return "";
+
 }
 
 
