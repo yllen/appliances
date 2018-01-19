@@ -117,7 +117,7 @@ function plugin_init_appliances() {
 function plugin_version_appliances() {
 
    return ['name'           => __('Appliances', 'appliances'),
-           'version'        => '2.3.1',
+           'version'        => '2.3.2',
            'author'         => 'Remi Collet, Nelly Mahu-Lasson',
            'license'        => 'GPLv3+',
            'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
