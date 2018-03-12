@@ -288,7 +288,11 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<td>".__('Name')."</td><td>";
       Html::autocompletionTextField($this, "name", array('size' => 34));
       echo "</td><td>"._n('Status', 'Statuses', 1)."</td><td>";
-      State::dropdown(['value' => $this->fields["states_id"]]);
+      if ($canedit) {
+         State::dropdown(['value' => $this->fields["states_id"]]);
+      } else {
+         echo Dropdown::getDropdownName("glpi_states", $this->fields["states_id"]);
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -300,9 +304,14 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo Dropdown::getDropdownName("glpi_locations",$this->fields["locations_id"]);
       }
       echo "</td><td>".__('Type')."</td><td>";
-      Dropdown::show('PluginAppliancesApplianceType',
-                      ['value'  => $this->fields["plugin_appliances_appliancetypes_id"],
-                       'entity' => $this->fields["entities_id"]]);
+      if ($canedit) {
+         Dropdown::show('PluginAppliancesApplianceType',
+                        ['value'  => $this->fields["plugin_appliances_appliancetypes_id"],
+                         'entity' => $this->fields["entities_id"]]);
+      } else {
+         echo Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
+                                        $this->fields["plugin_appliances_appliancetypes_id"]);
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -316,8 +325,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
          echo getUserName($this->fields['users_id_tech']);
       }
       echo "</td><td>".__('Environment', 'appliances')."</td><td>";
-      Dropdown::show('PluginAppliancesEnvironment',
-                     ['value' => $this->fields["plugin_appliances_environments_id"]]);
+      if ($canedit) {
+         Dropdown::show('PluginAppliancesEnvironment',
+                        ['value' => $this->fields["plugin_appliances_environments_id"]]);
+      } else {
+         echo Dropdown::getDropdownName("glpi_plugin_appliances_environments",
+                                        $this->fields["plugin_appliances_environments_id"]);
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -328,7 +342,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                           'entity'    => $this->fields['entities_id'],
                           'condition' => '`is_assign`']);
       } else {
-         echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id"]);
+         echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id_tech"]);
       }
       echo "</td><td>".__('Serial number')."</td><td>";
       Html::autocompletionTextField($this,'serial');
@@ -337,9 +351,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('User')."</td>";
       echo "<td>";
-      User::dropdown(['value'  => $this->fields["users_id"],
-                      'entity' => $this->fields["entities_id"],
-                      'right'  => 'all']);
+      if ($canedit) {
+         User::dropdown(['value'  => $this->fields["users_id"],
+                         'entity' => $this->fields["entities_id"],
+                         'right'  => 'all']);
+      } else {
+         echo getUserName($this->fields['users_id']);
+      }
       echo "</td><td>".__('Inventory number')."</td><td>";
       Html::autocompletionTextField($this,'otherserial');
       echo "</td></tr>\n";
@@ -347,9 +365,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
-      Group::dropdown(['value'     => $this->fields["groups_id"],
-                       'entity'    => $this->fields["entities_id"],
-                       'condition' => '`is_itemgroup`']);
+      if ($canedit) {
+         Group::dropdown(['value'     => $this->fields["groups_id"],
+                         'entity'    => $this->fields["entities_id"],
+                         'condition' => '`is_itemgroup`']);
+      } else {
+         echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id"]);
+      }
       echo "</td>";
       echo "<td rowspan='3'>".__('Comments')."</td>";
       echo "<td rowspan='3' class='middle'>";
@@ -359,9 +381,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Associable to a ticket')."</td><td>";
-      Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+      if ($canedit) {
+         Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+      } else {
+         echo Dropdown::getYesNo($this->fields['is_helpdesk_visible']);
+      }
       echo "</td></tr>";
-
       echo "<tr class='tab_bg_1'>";
       // dropdown relationtype added
       echo "<td>".__('Item to link', 'appliances')."</td><td>";
