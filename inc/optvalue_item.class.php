@@ -125,7 +125,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
          return;
       }
 
-      $opts = array();
+      $opts = [];
       for ($i=1 ; $i<=$number_champs ; $i++) {
          if ($data_opt = $result_app_opt->next()) {
             $query_val = $DB->request(['SELECT' => 'vvalue',

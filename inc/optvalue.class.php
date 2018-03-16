@@ -130,7 +130,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
                                  'WHERE'  => ['plugin_appliances_appliances_id' => $appli->getID()],
                                  'ORDER' => 'vvalues']);
 
-      $opts = array();
+      $opts = [];
       while ($data = $query_app->next()) {
          $opts[] = '<b>'.$data["champ"].'</b>'.($data["ddefault"] ? '='.$data["ddefault"] : '');
       }

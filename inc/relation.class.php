@@ -241,7 +241,7 @@ class PluginAppliancesRelation extends CommonDBTM {
                          AND `glpi_plugin_appliances_appliances_items`.`id` = '".$relID."'";
       $result_loc = $DB->request($sql_loc);
 
-      $opts = array();
+      $opts = [];
       while ($res = $result_loc->next()) {
          $opts[] = $res["dispname"];
       }

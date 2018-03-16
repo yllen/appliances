@@ -132,6 +132,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    static function showForItem($item, $withtemplate='') {
       global $DB,$CFG_GLPI;
 
+      $dbu = new DbUtils();
+
       $ID       = $item->getField('id');
       $itemtype = get_class($item);
       $canread  = $item->can($ID, READ);
@@ -147,8 +149,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                       AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '".$itemtype."'
                       AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
                            = `glpi_plugin_appliances_appliances`.`id`".
-                      getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
-                                                 'entities_id', $item->getEntityID(), true);
+                      $dbu->getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
+                                                       'entities_id', $item->getEntityID(), true);
       $result = $DB->request($query);
 
       $result_app = $DB->request(['SELECT' => 'ID',
@@ -259,8 +261,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          } else {
             $entities = $item->getEntityID();
          }
-         $limit = getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances", '',
-                                             $entities, true);
+         $limit = $dbu->getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances", '',
+                                                   $entities, true);
 
          $req = $DB->request(['FROM'  => 'glpi_plugin_appliances_appliances',
                               'COUNT' => 'cpt',
@@ -302,6 +304,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    static function pdfForItem(PluginPdfSimplePDF $pdf, CommonGLPI $item){
       global $DB;
 
+      $dbu = new DbUtils();
+
       $ID       = $item->getField('id');
       $itemtype = get_class($item);
 
@@ -318,8 +322,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                       AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype'
                       AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
                            = `glpi_plugin_appliances_appliances`.`id`".
-                      getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
-                                                 'entities_id', $item->getEntityID(), true);
+                      $dbu->getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
+                                                       'entities_id', $item->getEntityID(), true);
       $result = $DB->request($query);
       $number = count($result);
 
@@ -427,7 +431,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                                AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '".$type."'
                                AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
                                     = '".$instID."' ".
-                               getEntitiesRestrictRequest(" AND ",$item->getTable());
+                               $dbu->getEntitiesRestrictRequest(" AND ",$item->getTable());
 
                if ($item->maybeTemplate()) {
                   $query .= " AND `".$item->getTable()."`.`is_template` = '0'";
@@ -593,7 +597,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                             AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '".$type."'
                             AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
                                  = '".$instID."' ".
-                            getEntitiesRestrictRequest(" AND ", $item->getTable());
+                            $dbu->getEntitiesRestrictRequest(" AND ", $item->getTable());
 
             if ($item->maybeTemplate()) {
                $query .= " AND `".$item->getTable()."`.`is_template` = '0'";

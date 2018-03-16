@@ -50,7 +50,7 @@ class PluginAppliancesAppliancePDF extends PluginPdfCommon {
      *
      * @see CommonGLPI final defineAllTabs()
     **/
-    function defineAllTabs($options=array()) {
+    function defineAllTabs($options=[]) {
 
       $onglets = parent::defineAllTabs($options);
       unset($onglets['Item_Problem$1']); // TODO add method to print linked Problems

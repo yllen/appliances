@@ -372,8 +372,8 @@ function plugin_appliances_giveItem($type, $ID, array $data, $num) {
                                        = '".$type."'
                                AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
                                        = '".$appliances_id."'".
-                              getEntitiesRestrictRequest(" AND ", $table, '', '',
-                                                         $item->maybeRecursive());
+                              $dbu->getEntitiesRestrictRequest(" AND ", $table, '', '',
+                                                               $item->maybeRecursive());
 
                if ($item->maybeTemplate()) {
                   $query .= " AND `".$table."`.`is_template` = '0'";

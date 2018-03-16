@@ -91,7 +91,7 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
     * @param $values       array   fields to add into glpi
     * @param $options      array   options used during creation
    **/
-   function deleteObject($values=array(), $options=array()) {
+   function deleteObject($values=[], $options=[]) {
 
       $lib = new PluginDatainjectionCommonInjectionLib($this,$values,$options);
       $lib->deleteObject();
@@ -108,7 +108,7 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
     *
     * @return an array of IDs of newly created objects : for example array(Computer=>1, Networkport=>10)
    **/
-   function addOrUpdateObject($values=array(), $options=array()) {
+   function addOrUpdateObject($values=[], $options=[]) {
 
       $lib = new PluginDatainjectionCommonInjectionLib($this,$values,$options);
       $lib->processAddOrUpdate();

@@ -232,7 +232,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
      *
      * @see CommonGLPI::defineTabs()
     **/
-    function defineTabs($options=array()) {
+    function defineTabs($options=[]) {
 
       $ong = [];
       $this->addDefaultFormTab($ong)
@@ -274,7 +274,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
      *
      * @return bool
     **/
-    function showForm($ID, $options=array()) {
+    function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
@@ -286,7 +286,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td><td>";
-      Html::autocompletionTextField($this, "name", array('size' => 34));
+      Html::autocompletionTextField($this, "name", ['size' => 34]);
       echo "</td><td>"._n('Status', 'Statuses', 1)."</td><td>";
       if ($canedit) {
          State::dropdown(['value' => $this->fields["states_id"]]);
@@ -494,8 +494,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
     *
     * @see CommonDBTM::dropdown()
    **/
-   static function dropdownMA($options=array()) {
+   static function dropdownMA($options=[]) {
       global $DB, $CFG_GLPI;
+
+      $dbu = new DbUtils();
 
       $p['name']    = 'plugin_appliances_appliances_id';
       $p['entity']  = '';
@@ -509,8 +511,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
 
       $where = " WHERE `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ".
-                       getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances", '',
-                                                  $p['entity'], true);
+                       $dbu->getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances",
+                                                        '', $p['entity'], true);
 
       $p['used'] = array_filter($p['used']);
       if (count($p['used'])) {
@@ -650,6 +652,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
                  'limit'     => 'integer,optional'];
       }
 
+      $dbu = new DbUtils();
+
       if (!Session::getLoginUserID()) {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
       }
@@ -696,7 +700,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          $order = "`name` DESC";
       }
 
-      $where = getEntitiesRestrictRequest(' WHERE', 'glpi_plugin_appliances_appliances');
+      $where = $dbu->getEntitiesRestrictRequest(' WHERE', 'glpi_plugin_appliances_appliances');
 
       if (isset ($params['count'])) {
          $query = "SELECT COUNT(DISTINCT `id`) AS count
@@ -827,7 +831,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED);
       }
 
-      $input = array('id' => $id);
+      $input = ['id' => $id];
       if (isset($params['name'])) {
          $input['name'] = addslashes($params['name']);
       }
@@ -974,7 +978,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $id = $appliance->add($input);
       if ($id) {
          // Return the newly created object
-         return $appliance->methodGetAppliance(array('id'=>$id), $protocol);
+         return $appliance->methodGetAppliance(['id'=>$id], $protocol);
       }
 
       return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_FAILED);
@@ -1053,18 +1057,18 @@ class PluginAppliancesAppliance extends CommonDBTM {
       $migration->addKey($table, 'plugin_appliances_appliancetypes_id');
       $migration->addKey($table, 'plugin_appliances_environments_id');
 
-      $migration->addField($table, 'states_id', 'integer', array('after' => 'date_mod'));
+      $migration->addField($table, 'states_id', 'integer', ['after' => 'date_mod']);
       $migration->addKey($table, 'states_id');
 
-      $migration->addField($table, 'users_id_tech', 'integer', array('after' => 'users_id'));
+      $migration->addField($table, 'users_id_tech', 'integer', ['after' => 'users_id']);
       $migration->addKey($table, 'users_id_tech');
 
-      $migration->addField($table, 'groups_id_tech', 'integer', array('after' => 'groups_id'));
+      $migration->addField($table, 'groups_id_tech', 'integer', ['after' => 'groups_id']);
       $migration->addKey($table, 'groups_id_tech');
 
       // version 2.0
       if ($DB->tableExists("glpi_plugin_appliances_profiles")) {
-         $notepad_tables = array('glpi_plugin_appliances_appliances');
+         $notepad_tables = ['glpi_plugin_appliances_appliances'];
 
          foreach ($notepad_tables as $t) {
             // Migrate data
@@ -1076,7 +1080,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                foreach ($DB->request($query) as $data) {
                   $iq = "INSERT INTO `glpi_notepads`
                                 (`itemtype`, `items_id`, `content`, `date`, `date_mod`)
-                         VALUES ('".getItemTypeForTable($t)."', '".$data['id']."',
+                         VALUES ('".$dbu->getItemTypeForTable($t)."', '".$data['id']."',
                                  '".addslashes($data['notepad'])."', NOW(), NOW())";
                   $DB->queryOrDie($iq, "0.85 migrate notepad data");
                }

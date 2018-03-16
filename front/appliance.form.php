@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
    $relation = new PluginAppliancesRelation();
    if (isset($_POST['itemrelation'])) {
       foreach($_POST["itemrelation"] as $key => $val) {
-         $relation->delete(array('id' => $key));
+         $relation->delete(['id' => $key]);
       }
    }
    Html::back();
