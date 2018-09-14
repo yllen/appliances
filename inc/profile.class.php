@@ -223,22 +223,20 @@ class PluginAppliancesProfile extends Profile {
       global $DB;
 
       //Cannot launch migration if there's nothing to migrate...
-      if (!$DB->tableExists('glpi_plugin_appliances_profiles')) {
-      return true;
-      }
+      if ($DB->tableExists('glpi_plugin_appliances_profiles')) {
+         foreach ($DB->request('glpi_plugin_appliances_profiles',
+                               ['id' => $profiles_id]) as $profile_data) {
 
-      foreach ($DB->request('glpi_plugin_appliances_profiles',
-                            ['profiles_id' => $profiles_id]) as $profile_data) {
-
-         $matching = ['appliances'  => 'plugin_appliances',
-                      'open_ticket' => 'plugin_appliances_open_ticket'];
-         $current_rights = ProfileRight::getProfileRights($profiles_id, array_values($matching));
-         foreach ($matching as $old => $new) {
-            if (!isset($current_rights[$old])) {
-               $query = "UPDATE `glpi_profilerights`
-                         SET `rights`='".self::translateARight($profile_data[$old])."'
-                         WHERE `name`='$new' AND `profiles_id`='$profiles_id'";
-               $DB->query($query);
+            $matching = ['appliances'  => 'plugin_appliances',
+                         'open_ticket' => 'plugin_appliances_open_ticket'];
+            $current_rights = ProfileRight::getProfileRights($profiles_id, array_values($matching));
+            foreach ($matching as $old => $new) {
+               if (!isset($current_rights[$old])) {
+                  $query = "UPDATE `glpi_profilerights`
+                            SET `rights`='".self::translateARight($profile_data[$old])."'
+                            WHERE `name`='$new' AND `profiles_id`='$profiles_id'";
+                  $DB->query($query);
+               }
             }
          }
       }
