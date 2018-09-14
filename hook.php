@@ -92,6 +92,8 @@ function plugin_appliances_AssignToTicket($types) {
 function plugin_appliances_install() {
    global $DB;
 
+   $dbu = new DbUtils();
+
    if ($DB->tableExists("glpi_plugin_applicatifs_profiles")) {
       if ($DB->fieldExists("glpi_plugin_applicatifs_profiles","create_applicatifs")) { // version <1.3
          $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.3.sql");
@@ -111,16 +113,16 @@ function plugin_appliances_install() {
       if ($DB->fieldExists("glpi_plugin_applicatifs","state")) { // empty 1.5.0 not in update 1.5.0
          $DB->query("ALTER TABLE `glpi_plugin_applicatifs` DROP `state`");
       }
-      if (DbUtils::isIndex("glpi_plugin_applicatifs_optvalues_machines", "optvalue_ID")) { // in empty 1.5.0 not in update 1.5.0
+      if ($dbu->isIndex("glpi_plugin_applicatifs_optvalues_machines", "optvalue_ID")) { // in empty 1.5.0 not in update 1.5.0
          $DB->query("ALTER TABLE `glpi_plugin_applicatifs_optvalues_machines`
                      DROP KEY `optvalue_ID`");
       }
       $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.6.0.sql");
 
       Plugin::migrateItemType([1200 => 'PluginAppliancesAppliance'],
-                              ["glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences",
-                               "glpi_documents_items", "glpi_infocoms", "glpi_logs",
-                               "glpi_items_tickets"],
+                              ["glpi_savedsearches", "glpi_savedsearches_users",
+                               "glpi_displaypreferences", "glpi_documents_items", "glpi_infocoms",
+                               "glpi_logs", "glpi_items_tickets"],
                               ["glpi_plugin_appliances_appliances_items",
                                "glpi_plugin_appliances_optvalues_items"]);
 
