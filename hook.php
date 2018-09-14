@@ -48,6 +48,7 @@ function plugin_appliances_postinit() {
    }
 }
 
+
 function plugin_appliances_registerMethods() {
    global $WEBSERVICES_METHOD;
 
@@ -92,7 +93,7 @@ function plugin_appliances_AssignToTicket($types) {
 function plugin_appliances_install() {
    global $DB;
 
-   $dbu = new DbUtils();
+   $migration = new Migration(240);
 
    if ($DB->tableExists("glpi_plugin_applicatifs_profiles")) {
       if ($DB->fieldExists("glpi_plugin_applicatifs_profiles","create_applicatifs")) { // version <1.3
@@ -110,13 +111,11 @@ function plugin_appliances_install() {
       if (!$DB->fieldExists("glpi_plugin_applicatifs","helpdesk_visible")) { // version 1.5.0
          $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.5.1.sql");
       }
-      if ($DB->fieldExists("glpi_plugin_applicatifs","state")) { // empty 1.5.0 not in update 1.5.0
-         $DB->query("ALTER TABLE `glpi_plugin_applicatifs` DROP `state`");
-      }
-      if ($dbu->isIndex("glpi_plugin_applicatifs_optvalues_machines", "optvalue_ID")) { // in empty 1.5.0 not in update 1.5.0
-         $DB->query("ALTER TABLE `glpi_plugin_applicatifs_optvalues_machines`
-                     DROP KEY `optvalue_ID`");
-      }
+
+      // empty 1.5.0 not in update 1.5.0
+      $migration->dropField('glpi_plugin_applicatifs', 'state');
+      $migration->dropKey('glpi_plugin_applicatifs_optvalues_machines', 'optvalue_ID');
+
       $DB->runFile(GLPI_ROOT ."/plugins/appliances/sql/update-1.6.0.sql");
 
       Plugin::migrateItemType([1200 => 'PluginAppliancesAppliance'],
@@ -134,21 +133,18 @@ function plugin_appliances_install() {
       $DB->runFile(GLPI_ROOT . '/plugins/appliances/sql/empty-2.0.0.sql');
 
    } else {
-      $migration = new Migration(200);
-
       include_once(GLPI_ROOT."/plugins/appliances/inc/appliance.class.php");
       PluginAppliancesAppliance::updateSchema($migration);
-
-      $migration->executeMigration();
-
    }
+
    // required cause autoload don't work for unactive plugin'
    include_once(GLPI_ROOT."/plugins/appliances/inc/profile.class.php");
 
    PluginAppliancesProfile::initProfile();
    PluginAppliancesProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
-   $migration = new Migration("2.0.0");
    $migration->dropTable('glpi_plugin_appliances_profiles');
+
+   $migration->executeMigration();
 
    return true;
 }
@@ -162,6 +158,8 @@ function plugin_appliances_uninstall() {
 
    $dbu = new DbUtils();
 
+   $migration = new Migration(240);
+
    $tables = ['glpi_plugin_appliances_appliances',
               'glpi_plugin_appliances_appliances_items',
               'glpi_plugin_appliances_appliancetypes',
@@ -171,7 +169,7 @@ function plugin_appliances_uninstall() {
               'glpi_plugin_appliances_optvalues_items'];
 
    foreach($tables as $table) {
-      $DB->query("DROP TABLE `$table`");
+      $mig->dropTable($table);
    }
 
    $itemtypes = ['Document_Item', 'DisplayPreference', 'Bookmark', 'Log', 'Notepad', 'Item_Ticket',
@@ -203,6 +201,8 @@ function plugin_appliances_uninstall() {
    }
    PluginAppliancesMenu::removeRightsFromSession();
    PluginAppliancesProfile::removeRightsFromSession();
+
+   $migration->executeMigration();
 
    return true;
 }

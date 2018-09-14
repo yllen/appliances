@@ -247,7 +247,7 @@ class PluginAppliancesRelation extends CommonDBTM {
       }
       $pdf->setColumnsSize(100);
       $pdf->displayLine(sprintf(__('%1$s: %2$s'),
-                                "<b><i>".__('Item to link', 'appliances')."$title </i> </b>",
+                                "<b><i>".__('Item to link', 'appliances')."&nbsp;$title </i> </b>",
                                 implode(', ',$opts)));
    }
 

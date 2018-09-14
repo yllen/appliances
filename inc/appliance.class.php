@@ -111,7 +111,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                 'name'          => __('Status'),
                 'datatype'      => 'dropdown'];
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = ['id'            => '4',
                 'table'         => 'glpi_plugin_appliances_appliances',
@@ -394,10 +394,10 @@ class PluginAppliancesAppliance extends CommonDBTM {
           && !($ID
                && $dbu->countElementsInTable(["glpi_plugin_appliances_relations",
                                               "glpi_plugin_appliances_appliances_items"],
-                                              "glpi_plugin_appliances_relations.plugin_appliances_appliances_items_id
-                                                = glpi_plugin_appliances_appliances_items.id
-                                              AND glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id
-                                                  = $ID"))) {
+                                              ['glpi_plugin_appliances_relations.plugin_appliances_appliances_items_id'
+                                                => 'glpi_plugin_appliances_appliances_items.id',
+                                               'glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id'
+                                                => $ID]))) {
          PluginAppliancesRelation::dropdownType("relationtype",
                                                  isset($this->fields["relationtype"])
                                                    ? $this->fields["relationtype"] : '');

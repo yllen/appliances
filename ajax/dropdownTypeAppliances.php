@@ -43,6 +43,7 @@ if (isset($_POST["appliancetype"])) {
 
    // Clean used array
    if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
+      global $DB;
       foreach ($DB->request(['SELECT' => 'id',
                              'FROM'   => 'glpi_plugin_appliances_appliances',
                              'WHERE'  => ['id' => $_POST['used'],

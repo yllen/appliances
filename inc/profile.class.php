@@ -261,7 +261,8 @@ class PluginAppliancesProfile extends Profile {
       }
 
       //Migration old rights in new ones
-      foreach ($DB->request("SELECT `id` FROM `glpi_profiles`") as $prof) {
+      foreach ($DB->request(['SELECT' => 'id',
+                             'FROM'   => 'glpi_profiles']) as $prof) {
          self::migrateOneProfile($prof['id']);
       }
       foreach ($DB->request(['FROM'  => 'glpi_profilerights',

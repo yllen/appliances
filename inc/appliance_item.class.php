@@ -257,7 +257,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
 
       if ($canedit){
          if ($item->isRecursive()) {
-            $entities = getSonsOf('glpi_entities', $item->getEntityID());
+            $entities = $dbu->getSonsOf('glpi_entities', $item->getEntityID());
          } else {
             $entities = $item->getEntityID();
          }
@@ -486,6 +486,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    static function showAddForm(PluginAppliancesAppliance $appli) {
       global $CFG_GLPI;
 
+      $dbu = new DbUtils();
+
       $ID = $appli->getField('id');
       if (!$appli->can($ID, UPDATE)) {
          return false;
@@ -501,7 +503,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          Dropdown::showSelectItemFromItemtypes(['items_id_name'   => 'item',
                                                 'itemtypes'       => $appli->getTypes(true),
                                                 'entity_restrict' => ($appli->fields['is_recursive']
-                                                                      ? getSonsOf('glpi_entities',
+                                                                      ? $dbu->getSonsOf('glpi_entities',
                                                                                   $appli->fields['entities_id'])
                                                                       : $appli->fields['entities_id']),
                                                 'checkright'      => true]);
