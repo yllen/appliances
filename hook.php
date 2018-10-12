@@ -358,36 +358,37 @@ function plugin_appliances_giveItem($type, $ID, array $data, $num) {
             }
             foreach ($query_device as $id => $row) {
                $type = $row['itemtype'];
-            }
-            if (!($item = $dbu->getItemForItemtype($type))) {
-               continue;
-            }
-            $table = $item->getTable();
-            if (!empty($table)) {
-               $query = "SELECT `".$table."`.`id`
-                         FROM `glpi_plugin_appliances_appliances_items`, `".$table."`
-                         LEFT JOIN `glpi_entities`
-                           ON (`glpi_entities`.`id` = `".$table."`.`entities_id`)
-                         WHERE `".$table."`.`id`
-                                       = `glpi_plugin_appliances_appliances_items`.`items_id`
-                               AND `glpi_plugin_appliances_appliances_items`.`itemtype`
-                                       = '".$type."'
-                               AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
-                                       = '".$appliances_id."'".
-                              $dbu->getEntitiesRestrictRequest(" AND ", $table, '', '',
-                                                               $item->maybeRecursive());
 
-               if ($item->maybeTemplate()) {
-                  $query .= " AND `".$table."`.`is_template` = '0'";
+               if (!($item = $dbu->getItemForItemtype($type))) {
+                  continue;
                }
-               $query .= " ORDER BY `glpi_entities`.`completename`,
-                                    `$table`.`$column`";
+               $table = $item->getTable();
+               if (!empty($table)) {
+                  $query = "SELECT `".$table."`.`id`
+                            FROM `glpi_plugin_appliances_appliances_items`, `".$table."`
+                            LEFT JOIN `glpi_entities`
+                                  ON (`glpi_entities`.`id` = `".$table."`.`entities_id`)
+                            WHERE `".$table."`.`id`
+                                       = `glpi_plugin_appliances_appliances_items`.`items_id`
+                                   AND `glpi_plugin_appliances_appliances_items`.`itemtype`
+                                       = '".$type."'
+                                   AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
+                                       = '".$appliances_id."'".
+                                   $dbu->getEntitiesRestrictRequest(" AND ", $table, '', '',
+                                                                    $item->maybeRecursive());
 
-               if ($result_linked = $DB->request($query)) {
-                  if (count($result_linked)) {
-                     foreach ($result_linked as $id => $row) {
-                        if ($item->getFromDB($row['id'])) {
-                           $out .= $item->getTypeName(1)." - ".$item->getLink()."<br>";
+                  if ($item->maybeTemplate()) {
+                     $query .= " AND `".$table."`.`is_template` = '0'";
+                  }
+                  $query .= " ORDER BY `glpi_entities`.`completename`,
+                                       `$table`.`$column`";
+
+                  if ($result_linked = $DB->request($query)) {
+                     if (count($result_linked)) {
+                        foreach ($result_linked as $id => $row) {
+                           if ($item->getFromDB($row['id'])) {
+                              $out .= $item->getTypeName(1)." - ".$item->getLink()."<br>";
+                           }
                         }
                      }
                   }
