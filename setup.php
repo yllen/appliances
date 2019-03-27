@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2018 Appliances plugin team
+ @copyright Copyright (c) 2009-2019 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -108,6 +108,8 @@ function plugin_init_appliances() {
    // Import webservice
    $PLUGIN_HOOKS['webservices']['appliances'] = 'plugin_appliances_registerMethods';
 
+   $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
+
    // End init, when all types are registered
    $PLUGIN_HOOKS['post_init']['appliances'] = 'plugin_appliances_postinit';
 }
@@ -117,20 +119,20 @@ function plugin_init_appliances() {
 function plugin_version_appliances() {
 
    return ['name'           => __('Appliances', 'appliances'),
-           'version'        => '2.4.1',
+           'version'        => '2.5.0',
            'author'         => 'Remi Collet, Nelly Mahu-Lasson',
            'license'        => 'GPLv3+',
            'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
-           'minGlpiVersion' => '9.3',
-           'requirements'   => ['glpi' => ['min' => '9.3',
-                                           'max' => '9.4']]];
+           'minGlpiVersion' => '9.4',
+           'requirements'   => ['glpi' => ['min' => '9.4',
+                                           'max' => '9.5']]];
 }
 
 
 function plugin_appliances_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'9.3','lt') || version_compare(GLPI_VERSION,'9.4','ge')) {
-      echo "This plugin requires GLPI >= 9.3 and GLPI < 9.4";
+   if (version_compare(GLPI_VERSION,'9.4','lt') || version_compare(GLPI_VERSION,'9.5','ge')) {
+      echo "This plugin requires GLPI >= 9.4 and GLPI < 9.5";
       return false;
    }
    return true;

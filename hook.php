@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2018 Appliances plugin team
+ @copyright Copyright (c) 2009-2019 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -93,7 +93,7 @@ function plugin_appliances_AssignToTicket($types) {
 function plugin_appliances_install() {
    global $DB;
 
-   $migration = new Migration(240);
+   $migration = new Migration(250);
 
    if ($DB->tableExists("glpi_plugin_applicatifs_profiles")) {
       if ($DB->fieldExists("glpi_plugin_applicatifs_profiles","create_applicatifs")) { // version <1.3
@@ -158,7 +158,7 @@ function plugin_appliances_uninstall() {
 
    $dbu = new DbUtils();
 
-   $migration = new Migration(240);
+   $migration = new Migration(250);
 
    $tables = ['glpi_plugin_appliances_appliances',
               'glpi_plugin_appliances_appliances_items',
@@ -172,7 +172,7 @@ function plugin_appliances_uninstall() {
       $mig->dropTable($table);
    }
 
-   $itemtypes = ['Document_Item', 'DisplayPreference', 'Bookmark', 'Log', 'Notepad', 'Item_Ticket',
+   $itemtypes = ['Document_Item', 'DisplayPreference', 'Savedsearch', 'Log', 'Notepad', 'Item_Ticket',
                  'Contract_Item', 'Item_Problem'];
    foreach ($itemtypes as $itemtype) {
       $item = new $itemtype;
@@ -364,7 +364,8 @@ function plugin_appliances_giveItem($type, $ID, array $data, $num) {
                }
                $table = $item->getTable();
                if (!empty($table)) {
-                  $query = "SELECT `".$table."`.`id`
+                  /*
+                   *                   $query = "SELECT `".$table."`.`id`
                             FROM `glpi_plugin_appliances_appliances_items`, `".$table."`
                             LEFT JOIN `glpi_entities`
                                   ON (`glpi_entities`.`id` = `".$table."`.`entities_id`)
@@ -382,6 +383,26 @@ function plugin_appliances_giveItem($type, $ID, array $data, $num) {
                   }
                   $query .= " ORDER BY `glpi_entities`.`completename`,
                                        `$table`.`$column`";
+
+                   */
+                  $query = ['SELECT'     => $table.'.id',
+                            'FROM'       => 'glpi_plugin_appliances_appliances_items',
+                            'LEFT JOIN'  => [$table
+                                              => ['FKEY' => [$table          => 'id',
+                                                             'glpi_plugin_appliances_appliances_items' => 'items_id']],
+                                             'glpi_entities'
+                                              => ['FKEY' => ['glpi_entities' => 'id',
+                                                             $table          => 'entities_id']]],
+                            'WHERE'      => ['glpi_plugin_appliances_appliances_items.itemtype' => $type,
+                                             'glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id'
+                                                               => $appliances_id]
+                                             + getEntitiesRestrictCriteria($table, '', '',
+                                                                           $item->maybeRecursive())];
+
+                  if ($item->maybeTemplate()) {
+                     $query['WHERE'][$table.'.is_template'] = 0;
+                  }
+                  $query['ORDER'] = ['glpi_entities.completename', $table.'.'.$column];
 
                   if ($result_linked = $DB->request($query)) {
                      if (count($result_linked)) {

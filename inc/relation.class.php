@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2018 Appliances plugin team
+ @copyright Copyright (c) 2009-2019 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -137,26 +137,26 @@ class PluginAppliancesRelation extends CommonDBTM {
          return false;
       }
 
+      $dbu = new DbUtils();
+
       // selects all the attached relations
       $itemtype = PluginAppliancesRelation::getItemType($relationtype);
       $title    = PluginAppliancesRelation::getTypeName($relationtype);
 
+      $field    = 'name AS dispname';
       if ($itemtype == 'Location') {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
-                            `completename` AS dispname ";
-      } else {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
-                            `name` AS dispname ";
+         $field = 'completename AS dispname';
       }
-      $dbu = new DbUtils();
-      $sql_loc .= "FROM `".$dbu->getTableForItemType($itemtype)."` ,
-                        `glpi_plugin_appliances_relations`,
-                        `glpi_plugin_appliances_appliances_items`
-                   WHERE `".$dbu->getTableForItemType($itemtype)."`.`id`
-                                    = `glpi_plugin_appliances_relations`.`relations_id`
-                         AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
-                                    = `glpi_plugin_appliances_appliances_items`.`id`
-                         AND `glpi_plugin_appliances_appliances_items`.`id` = '".$relID."'";
+
+      $sql_loc = ['SELECT'    => ['glpi_plugin_appliances_relations.id', $field],
+                  'FROM'      => $dbu->getTableForItemType($itemtype),
+                  'LEFT JOIN' => ['glpi_plugin_appliances_relations'
+                                   => ['FKEY' => [$dbu->getTableForItemType($itemtype) => 'id',
+                                                  'glpi_plugin_appliances_relations'   => 'relations_id']],
+                                   'glpi_plugin_appliances_appliances_items'
+                                   => ['FKEY' => ['glpi_plugin_appliances_relations'        => 'plugin_appliances_appliances_items_id',
+                                                  'glpi_plugin_appliances_appliances_items' => 'id']]],
+                  'WHERE'     => ['glpi_plugin_appliances_appliances_items.id' => $relID]];
 
       $result_loc = $DB->request($sql_loc);
       $number_loc = count($result_loc);
@@ -225,20 +225,21 @@ class PluginAppliancesRelation extends CommonDBTM {
       $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
       $title     = PluginAppliancesRelation::getTypeName($relationtype);
 
-      if ($tablename=='glpi_locations') {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
-                            `completename` AS dispname ";
-      } else {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
-                            `name` AS dispname ";
+      $field    = 'name AS dispname';
+      if ($tablename == 'Location') {
+         $field = 'completename AS dispname';
       }
-      $sql_loc .= "FROM `".$tablename."` ,
-                        `glpi_plugin_appliances_relations`,
-                        `glpi_plugin_appliances_appliances_items`
-                   WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
-                         AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
-                                 = `glpi_plugin_appliances_appliances_items`.`id`
-                         AND `glpi_plugin_appliances_appliances_items`.`id` = '".$relID."'";
+
+      $sql_loc = ['SELECT'    => ['glpi_plugin_appliances_relations.id', $field],
+                  'FROM'      => $tablename,
+                  'LEFT JOIN' => ['glpi_plugin_appliances_relations'
+                                   => ['FKEY' => [$tablename                         => 'id',
+                                                  'glpi_plugin_appliances_relations' => 'relations_id']],
+                                   'glpi_plugin_appliances_appliances_items'
+                                   => ['FKEY' => ['glpi_plugin_appliances_relations'        => 'plugin_appliances_appliances_items_id',
+                                                  'glpi_plugin_appliances_appliances_items' => 'id']]],
+                 'WHERE'     => ['glpi_plugin_appliances_appliances_items.id' => $relID]];
+
       $result_loc = $DB->request($sql_loc);
 
       $opts = [];

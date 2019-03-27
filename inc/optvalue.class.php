@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2018 Appliances plugin team
+ @copyright Copyright (c) 2009-2019 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -255,5 +255,39 @@ class PluginAppliancesOptvalue extends CommonDBTM {
          return false;
       }
       return true;
+   }
+
+
+   function rawSearchOptionsToAdd() {
+
+      $tab = [];
+
+      $tab[] = ['id'            => 'common',
+                'name'          => __('User fields', 'appliances')];
+
+      $query_app = $DB->request(['FROM' => 'glpi_plugin_appliances_optvalues',
+                                 'ORDER' => 'vvalues']);
+      $number_champs = count($query_app);
+      $number_champs++;
+      for ($i=1 ; $i <= $number_champs ; $i++) {
+         if ($data = $query_app->next()) {
+            $champ    = $data["champ"];
+            $ddefault = $data["ddefault"];
+         } else {
+            $champ    = '';
+            $ddefault = '';
+         }
+
+         if ($i == 1) {
+            $tab[] = ['id'            => '90',
+                      'table'         => $this->getTable(),
+                      'field'         => $champ,
+                      'name'          => __('Field'),
+                      'massiveaction' => false];
+         }
+      }
+
+
+      return $tab;
    }
 }

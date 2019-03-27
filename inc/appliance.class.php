@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2018 Appliances plugin team
+ @copyright Copyright (c) 2009-2019 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -86,6 +86,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
      * @return array
     */
     function rawSearchOptions() {
+       global $DB;
 
       $tab = [];
 
@@ -137,7 +138,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                 'table'         => 'glpi_groups',
                 'field'         => 'completename',
                 'name'          => __('Group'),
-                'condition'     => '`is_itemgroup`',
+                'condition'     => ['is_itemgroup' => 1],
                 'datatype'      => 'dropdown'];
 
       $tab[] = ['id'            => '24',
@@ -152,7 +153,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                 'field'         => 'completename',
                 'linkfield'     => 'groups_id_tech',
                 'name'          => __('Group in charge of the hardware'),
-                'condition'     => '`is_assign`',
+                'condition'     => ['is_assign' => 1],
                 'datatype'      => 'dropdown'];
 
       $tab[] = ['id'            => '9',
@@ -208,6 +209,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
                 'table'         => 'glpi_entities',
                 'field'         => 'entities_id',
                 'name'          => __('Entity') . "-" . __('ID')];
+
+      $tab[] = ['id'            => '90',
+                'table'         => 'glpi_plugin_appliances_optvalues',
+                'field'         => 'champ',
+                'name'          => __('Field'),
+                'datatype'      => 'dropdown',
+                'massiveaction' => false];
 
       return $tab;
    }
@@ -340,7 +348,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          Group::dropdown(['name'      => 'groups_id_tech',
                           'value'     => $this->fields['groups_id_tech'],
                           'entity'    => $this->fields['entities_id'],
-                          'condition' => '`is_assign`']);
+                          'condition' => ['is_assign' => 1]]);
       } else {
          echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id_tech"]);
       }
@@ -367,8 +375,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<td>";
       if ($canedit) {
          Group::dropdown(['value'     => $this->fields["groups_id"],
-                         'entity'    => $this->fields["entities_id"],
-                         'condition' => '`is_itemgroup`']);
+                          'entity'    => $this->fields["entities_id"],
+                          'condition' => ['is_itemgroup' => 1]]);
       } else {
          echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id"]);
       }
@@ -392,8 +400,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
       echo "<td>".__('Item to link', 'appliances')."</td><td>";
       if ($canedit
           && !($ID
-               && $dbu->countElementsInTable(["glpi_plugin_appliances_relations",
-                                              "glpi_plugin_appliances_appliances_items"],
+               && $dbu->countElementsInTable(['glpi_plugin_appliances_relations',
+                                              'glpi_plugin_appliances_appliances_items'],
                                               ['glpi_plugin_appliances_relations.plugin_appliances_appliances_items_id'
                                                 => 'glpi_plugin_appliances_appliances_items.id',
                                                'glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id'
@@ -510,21 +518,21 @@ class PluginAppliancesAppliance extends CommonDBTM {
          }
       }
 
-      $where = " WHERE `glpi_plugin_appliances_appliances`.`is_deleted` = '0' ".
-                       $dbu->getEntitiesRestrictRequest("AND", "glpi_plugin_appliances_appliances",
-                                                        '', $p['entity'], true);
+      $sub_query = new \QuerySubQuery(['SELECT DISTINCT' => 'plugin_appliances_appliancetypes_id',
+                                       'FROM'            => 'glpi_plugin_appliances_appliances',
+                                       'WHERE'           => ['glpi_plugin_appliances_appliances.is_deleted' => 0]
+                                                            + getEntitiesRestrictCriteria('glpi_plugin_appliances_appliances',
+                                                                                          '', $p['entity'], true)]);
 
       $p['used'] = array_filter($p['used']);
       if (count($p['used'])) {
-         $where .= " AND `id` NOT IN ('".implode("','",$p['used'])."')";
+         $sub_query['WHERE'][] = ['NOT' => ['id', implode("','",$p['used'])]];
       }
 
-      $query = "SELECT *
-                FROM `glpi_plugin_appliances_appliancetypes`
-                WHERE `id` IN (SELECT DISTINCT `plugin_appliances_appliancetypes_id`
-                               FROM `glpi_plugin_appliances_appliances`
-                               $where)
-                ORDER BY `name`";
+      $query = ['FROM'   => 'glpi_plugin_appliances_appliancetypes',
+                'WHERE'  => ['id' => $sub_query],
+                'ORDER'  => 'name'];
+
       $result = $DB->request($query);
 
       $values = [0 => Dropdown::EMPTY_VALUE];
@@ -700,12 +708,12 @@ class PluginAppliancesAppliance extends CommonDBTM {
          $order = "`name` DESC";
       }
 
-      $where = $dbu->getEntitiesRestrictRequest(' WHERE', 'glpi_plugin_appliances_appliances');
+  //    $where = $dbu->getEntitiesRestrictRequest(' WHERE', 'glpi_plugin_appliances_appliances');
 
       if (isset ($params['count'])) {
-         $query = "SELECT COUNT(DISTINCT `id`) AS count
-                   FROM `glpi_plugin_appliances_appliances` ".
-                   $where;
+         $query = ['SELECT' => ['COUNT' => 'id AS count'],
+                   'FROM'   => 'glpi_plugin_appliances_appliances'
+                   + getEntitiesRestrictCriteria('glpi_plugin_appliances_appliances')];
 
          foreach ($DB->request($query) as $data) {
             $resp = $data;
@@ -1073,9 +1081,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
          foreach ($notepad_tables as $t) {
             // Migrate data
             if ($DB->fieldExists($t, 'notepad')) {
-               $query = "SELECT id, notepad
-                         FROM `$t`
-                         WHERE notepad IS NOT NULL
+                 $query = "SELECT id, notepad
+                           FROM `$t`
+                           WHERE notepad IS NOT NULL
                                AND notepad <> '';";
                foreach ($DB->request($query) as $data) {
                   $iq = "INSERT INTO `glpi_notepads`

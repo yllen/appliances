@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2018 Appliances plugin team
+ @copyright Copyright (c) 2009-2019 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -139,18 +139,22 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       $canread  = $item->can($ID, READ);
       $canedit  = $item->can($ID, UPDATE);
 
-      $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
-                       `glpi_plugin_appliances_appliances`.*
-                FROM `glpi_plugin_appliances_appliances_items`,
-                     `glpi_plugin_appliances_appliances`
-                LEFT JOIN `glpi_entities`
-                     ON (`glpi_entities`.`id` = `glpi_plugin_appliances_appliances`.`entities_id`)
-                WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '".$ID."'
-                      AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '".$itemtype."'
-                      AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
-                           = `glpi_plugin_appliances_appliances`.`id`".
-                      $dbu->getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
-                                                       'entities_id', $item->getEntityID(), true);
+      $query = ['FIELDS'    => ['glpi_plugin_appliances_appliances_items.id AS entID',
+                               'glpi_plugin_appliances_appliances.*'],
+                'FROM'      => 'glpi_plugin_appliances_appliances_items',
+                'LEFT JOIN' => ['glpi_plugin_appliances_appliances'
+                                => ['FKEY' => ['glpi_plugin_appliances_appliances'
+                                                           => 'id',
+                                               'glpi_plugin_appliances_appliances_items'
+                                                           => 'plugins_appliances_appliances_id']],
+                                'glpi_entities'
+                                 => ['FKEY' => ['glpi_entities'   => 'id',
+                                                'glpi_plugin_appliances_appliances'
+                                                                  => 'entities_id']]],
+                'WHERE'     => ['glpi_plugin_appliances_appliances_items.items_id' => $ID,
+                                'glpi_plugin_appliances_appliances_items.itemtype' => $itemtype]
+                               + getEntitiesRestrictCriteria('glpi_plugin_appliances_appliances',
+                                                             'entities_id', $item->getEntityID(), true)];
       $result = $DB->request($query);
 
       $result_app = $DB->request(['SELECT' => 'ID',
@@ -312,18 +316,22 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       $pdf->setColumnsSize(100);
       $pdf->displayTitle("<b>".__('Associated appliances', 'appliances')."</b>");
 
-      $query = "SELECT `glpi_plugin_appliances_appliances_items`.`id` AS entID,
-                       `glpi_plugin_appliances_appliances`.*
-                FROM `glpi_plugin_appliances_appliances_items`,
-                     `glpi_plugin_appliances_appliances`
-                LEFT JOIN `glpi_entities`
-                     ON (`glpi_entities`.`id` = `glpi_plugin_appliances_appliances`.`entities_id`)
-                WHERE `glpi_plugin_appliances_appliances_items`.`items_id` = '$ID'
-                      AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '$itemtype'
-                      AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
-                           = `glpi_plugin_appliances_appliances`.`id`".
-                      $dbu->getEntitiesRestrictRequest(" AND", "glpi_plugin_appliances_appliances",
-                                                       'entities_id', $item->getEntityID(), true);
+      $query = ['FIELDS'    => ['glpi_plugin_appliances_appliances_items.id AS entID',
+                                'glpi_plugin_appliances_appliances.*'],
+                'FROM'      => 'glpi_plugin_appliances_appliances_items',
+                'LEFT JOIN' => ['glpi_plugin_appliances_appliances'
+                                => ['FKEY' => ['glpi_plugin_appliances_appliances'
+                                                        => 'id',
+                                               'glpi_plugin_appliances_appliances_items'
+                                                        => 'plugins_appliances_appliances_id']],
+                               'glpi_entities'
+                                => ['FKEY' => ['glpi_entities'   => 'id',
+                                               'glpi_plugin_appliances_appliances'
+                                                                 => 'entities_id']]],
+                'WHERE'     => ['glpi_plugin_appliances_appliances_items.items_id' => $ID,
+                                'glpi_plugin_appliances_appliances_items.itemtype' => $itemtype]
+                               + getEntitiesRestrictCriteria('glpi_plugin_appliances_appliances',
+                                                             'entities_id', $item->getEntityID(), true)];
       $result = $DB->request($query);
       $number = count($result);
 
@@ -420,23 +428,27 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                   $column = "question";
                }
 
-               $query = "SELECT `".$item->getTable()."`.*,
-                                `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
-                                `glpi_entities`.`id` AS entity
-                         FROM `glpi_plugin_appliances_appliances_items`, `".$item->getTable()."`
-                         LEFT JOIN `glpi_entities`
-                              ON (`glpi_entities`.`id` = `".$item->getTable()."`.`entities_id`)
-                         WHERE `".$item->getTable()."`.`id`
-                                    = `glpi_plugin_appliances_appliances_items`.`items_id`
-                               AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '".$type."'
-                               AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
-                                    = '".$instID."' ".
-                               $dbu->getEntitiesRestrictRequest(" AND ",$item->getTable());
+               $query = ['FIELDS'   => [$item->getTable().'.*',
+                                        'glpi_plugin_appliances_appliances_items.id AS IDD',
+                                        'glpi_entities.id AS entity'],
+                        'FROM'      => 'glpi_plugin_appliances_appliances_items',
+                        'LEFT JOIN' => [$item->getTable()
+                                        => ['FKEY' => [$item->getTable() => 'id',
+                                                       'glpi_plugin_appliances_appliances_items'
+                                                                         => 'items_id'],
+                                                      ['glpi_plugin_appliances_appliances_items.itemtype'
+                                                           => $type]],
+                                        'glpi_entities'
+                                        => ['FKEY' => ['glpi_entities'   => 'id',
+                                                       $item->getTable() => 'entities_id']]],
+                         'WHERE'    => ['glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id'
+                                          => $instID]
+                                       + getEntitiesRestrictCriteria($item->getTable())];
 
                if ($item->maybeTemplate()) {
-                  $query .= " AND `".$item->getTable()."`.`is_template` = '0'";
+                  $query['WHERE'][$item->getTable().'.is_template'] = 0;
                }
-               $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->getTable()."`.$column";
+               $query['ORDER'] = ['glpi_entities.completename', $item->getTable().'.'.$column];
 
                if ($result_linked = $DB->request($query)) {
                   if (count($result_linked)) {
@@ -588,23 +600,28 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             // Ticket and knowbaseitem can't be associated to an appliance
             $column = "name";
 
-            $query = "SELECT `".$item->getTable()."`.*,
-                             `glpi_plugin_appliances_appliances_items`.`id` AS IDD,
-                             `glpi_entities`.`id` AS entity
-                      FROM `glpi_plugin_appliances_appliances_items`, `".$dbu->getTableForItemType($type)."`
-                      LEFT JOIN `glpi_entities`
-                           ON (`glpi_entities`.`id` = `".$item->getTable()."`.`entities_id`)
-                      WHERE `".$item->getTable()."`.`id`
-                                 = `glpi_plugin_appliances_appliances_items`.`items_id`
-                            AND `glpi_plugin_appliances_appliances_items`.`itemtype` = '".$type."'
-                            AND `glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id`
-                                 = '".$instID."' ".
-                            $dbu->getEntitiesRestrictRequest(" AND ", $item->getTable());
+            $query = ['SELECT'    => [$item->getTable().'.*',
+                                      'glpi_plugin_appliances_appliances_items.id AS IDD',
+                                      'glpi_entities.id AS entity'],
+                      'FROM'      => 'glpi_plugin_appliances_appliances_items',
+                      'LEFT JOIN' => [$dbu->getTableForItemType($type)
+                                      =>['FKEY' => [$item->getTable() => 'id',
+                                                    'glpi_plugin_appliances_appliances_items'
+                                                                      => 'items_id'],
+                                                   ['glpi_plugin_appliances_appliances_items.itemtype'
+                                                                      => $type]],
+                                      'glpi_entities'
+                                      => ['FKEY' => ['glpi_entities'   => 'id',
+                                                     $item->getTable() => 'entities_id']]],
+                      'WHERE'     => ['glpi_plugin_appliances_appliances_items.plugin_appliances_appliances_id'
+                                       => $instID]
+                                     + getEntitiesRestrictCriteria($item->getTable())];
 
             if ($item->maybeTemplate()) {
-               $query .= " AND `".$item->getTable()."`.`is_template` = '0'";
+               $query['WHERE'][$item->getTable().'.is_template'] = 0;
             }
-            $query.=" ORDER BY `glpi_entities`.`completename`, `".$item->getTable()."`.$column";
+            $query['ORDER'] = ['glpi_entities.completename', $item->getTable().'.'.$column];
+
 
             if ($result_linked = $DB->request($query)) {
                if (count($result_linked)) {

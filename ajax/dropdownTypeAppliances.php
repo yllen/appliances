@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2018 Appliances plugin team
+ @copyright Copyright (c) 2009-2019 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -59,6 +59,7 @@ if (isset($_POST["appliancetype"])) {
                    'width'     => '50%',
                    'entity'    => $_POST['entity'],
                    'rand'      => $_POST['rand'],
-                   'condition' => "glpi_plugin_appliances_appliances.plugin_appliances_appliancetypes_id='".$_POST["appliancetype"]."'"]);
+                   'condition' => ['glpi_plugin_appliances_appliances.plugin_appliances_appliancetypes_id'
+                                     => $_POST["appliancetype"]]]);
 
 }
