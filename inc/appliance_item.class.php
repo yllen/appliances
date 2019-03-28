@@ -146,7 +146,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                                 => ['FKEY' => ['glpi_plugin_appliances_appliances'
                                                            => 'id',
                                                'glpi_plugin_appliances_appliances_items'
-                                                           => 'plugins_appliances_appliances_id']],
+                                                           => 'plugin_appliances_appliances_id']],
                                 'glpi_entities'
                                  => ['FKEY' => ['glpi_entities'   => 'id',
                                                 'glpi_plugin_appliances_appliances'
@@ -635,13 +635,11 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                      $name = $item->getLink();
 
                      echo "<tr class='tab_bg_1'>";
-                     echo "<td width='10'>";
                      if ($canedit) {
+                        echo "<td width='10'>";
                         Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
-                     } else {
-                        echo "$nbsp;";
+                        echo "</td>";
                      }
-                     echo "</td>";
                      echo "<td class='center'>".$item->getTypeName(1)."</td>";
                      echo "<td class='center' ".
                            (isset($data['deleted']) && $data['deleted']?"class='tab_bg_2_2'":"").">".
