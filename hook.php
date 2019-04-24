@@ -169,7 +169,7 @@ function plugin_appliances_uninstall() {
               'glpi_plugin_appliances_optvalues_items'];
 
    foreach($tables as $table) {
-      $mig->dropTable($table);
+      $migration->dropTable($table);
    }
 
    $itemtypes = ['Document_Item', 'DisplayPreference', 'Savedsearch', 'Log', 'Notepad', 'Item_Ticket',
