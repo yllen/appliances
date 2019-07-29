@@ -146,7 +146,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
                 'field'         => 'name',
                 'linkfield'     => 'users_id_tech',
                 'name'          => __('Technician in charge of the hardware'),
-                'datatype'      => 'dropdown'];
+                'datatype'      => 'dropdown',
+                'right'         => 'own_ticket'];
 
       $tab[] = ['id'            => '49',
                 'table'         => 'glpi_groups',
