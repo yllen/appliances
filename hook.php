@@ -257,7 +257,8 @@ function plugin_appliances_getDatabaseRelations() {
  *
  * @return array
 **/
-function plugin_appliances_getAddSearchOptions($itemtype) {
+
+function plugin_appliances_getAddSearchOptionsNew($itemtype) {
 
    $sopt = [];
    if (Session::haveRight("plugin_appliances", READ)) {
@@ -290,17 +291,6 @@ function plugin_appliances_getAddSearchOptions($itemtype) {
                                                                    'joinparams'
                                                                     => ['jointype' => 'itemtype_item']]]]]]];
       }
-      /* TODO: need fix to link relation table
-      if ($itemtype == 'Ticket') {
-         $sopt[1212]['table']         = 'glpi_plugin_appliances_appliances';
-         $sopt[1212]['field']         = 'name';
-         $sopt[1212]['linkfield']     = 'items_id';
-         $sopt[1212]['datatype']      = 'itemlink';
-         $sopt[1212]['massiveaction'] = false;
-         $sopt[1212]['name']          = __('Appliance', 'appliances')." - ".
-                                        __('Name');
-      }
-      */
    }
    return $sopt;
 
