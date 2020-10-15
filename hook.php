@@ -211,7 +211,7 @@ function plugin_appliances_install() {
 
       // migration appliances_items
       if (countElementsInTable('glpi_appliances_items') > 0) {
-         $migration->displayWarning("you can't migrate because glpi_appliances_items");
+         $migration->displayWarning("you can't migrate because glpi_appliances_items is not empty");
       } else {
          if ($DB->tableExists('glpi_plugin_appliances_appliances_items')
               && (countElementsInTable('glpi_plugin_appliances_appliances_items') > 0)) {
@@ -234,7 +234,7 @@ function plugin_appliances_install() {
 
       // migration types
       if (countElementsInTable('glpi_appliancetypes') > 0) {
-         $migration->displayWarning("you can't migrate because glpi_appliancetypes");
+         $migration->displayWarning("you can't migrate because glpi_appliancetypes is not empty");
       } else {
          if ($DB->tableExists('glpi_plugin_appliances_appliancetypes')) {
             if ($result = $DB->request(['FROM' => 'glpi_plugin_appliances_appliancetypes'])) {
