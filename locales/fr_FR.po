@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Nelly Mahu-Lasson <nini.lasson@orange.fr>, 2016
+# Nelly Mahu-Lasson <nini.lasson@orange.fr>, 2016,2020
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - Plugin Appliance\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-09 18:33+0200\n"
-"PO-Revision-Date: 2017-09-22 23:49+0000\n"
+"POT-Creation-Date: 2020-10-15 15:39+0200\n"
+"PO-Revision-Date: 2020-10-15 13:43+0000\n"
 "Last-Translator: Nelly Mahu-Lasson <nini.lasson@orange.fr>\n"
 "Language-Team: French (France) (http://www.transifex.com/yllen/glpi-project-plugin-appliance/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -18,60 +18,36 @@ msgstr ""
 "Language: fr_FR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: hook.php:83 hook.php:265 hook.php:278 inc/appliance.class.php:54
-#: inc/appliance.class.php:93 inc/appliance_item.class.php:600
-#: inc/menu.class.php:45 inc/profile.class.php:170
+#: setup.php:73
+msgid "Appliances"
+msgstr "Applicatifs"
+
+#: inc/appliance.class.php:90
+msgid "Environment"
+msgstr "Environnement"
+
+#: inc/optvalue.class.php:81 inc/optvalue.class.php:132
+#: inc/optvalue.class.php:272 inc/optvalue_item.class.php:131
+#: inc/optvalue_item.class.php:315
+msgid "User fields"
+msgstr "Champs personnalisables"
+
+#: inc/optvalue.class.php:103
+msgid "Default"
+msgstr "Valeur par défaut"
+
+#: inc/optvalue_item.class.php:68
+msgid "Associated item from plugin"
+msgid_plural "Associated items from plugin"
+msgstr[0] "Elément associé depuis le plugin"
+msgstr[1] "Eléments associés depuis le plugin"
+
+#: inc/optvalue_item.class.php:131 inc/relation.class.php:241
+msgid "Item to link"
+msgstr "Composants à relier"
+
+#: inc/optvalue_item.class.php:169
 msgid "Appliance"
 msgid_plural "Appliances"
 msgstr[0] "Applicatif"
 msgstr[1] "Applicatifs"
-
-#: hook.php:212 inc/appliancetype.class.php:51
-msgid "Type of appliance"
-msgstr "Type d'applicatif"
-
-#: hook.php:213 inc/appliance.class.php:168 inc/appliance.class.php:314
-#: inc/appliance.class.php:429 inc/environment.class.php:49
-msgid "Environment"
-msgstr "Environnement"
-
-#: hook.php:428
-msgid "Associate to appliance"
-msgstr "Associer à l'applicatif"
-
-#: setup.php:119
-msgid "Appliances"
-msgstr "Applicatifs"
-
-#: inc/appliance.class.php:125
-msgid "Associated items"
-msgstr "Elément(s) associé(s)"
-
-#: inc/appliance.class.php:363 inc/appliance_item.class.php:175
-#: inc/appliance_item.class.php:563 inc/relation.class.php:249
-msgid "Item to link"
-msgstr "Composants à relier"
-
-#: inc/appliance_item.class.php:60
-msgid "Appliance item"
-msgid_plural "Appliances items"
-msgstr[0] "Element applicatif"
-msgstr[1] "Eléments applicatif"
-
-#: inc/appliance_item.class.php:167
-msgid "Associate"
-msgstr "Associer"
-
-#: inc/appliance_item.class.php:177 inc/appliance_item.class.php:563
-#: inc/optvalue.class.php:75 inc/optvalue.class.php:126
-#: inc/optvalue_item.class.php:145
-msgid "User fields"
-msgstr "Champs personnalisables"
-
-#: inc/appliance_item.class.php:305
-msgid "Associated appliances"
-msgstr "Applicatif(s) associé(s)"
-
-#: inc/optvalue.class.php:97
-msgid "Default"
-msgstr "Valeur par défaut"

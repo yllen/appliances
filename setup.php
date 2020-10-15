@@ -35,24 +35,8 @@ function plugin_init_appliances() {
 
    $PLUGIN_HOOKS['csrf_compliant']['appliances'] = true;
 
-   // Params : plugin name - string type - number - attributes
-   Plugin::registerClass('PluginAppliancesAppliance', ['linkuser_types'         => true,
-                                                       'linkuser_tech_types'    => true,
-                                                       'linkgroup_types'        => true,
-                                                       'linkgroup_tech_types'   => true,
-                                                       'infocom_types'          => true,
-                                                       'document_types'         => true,
-                                                       'contract_types'         => true,
-                                                       'ticket_types'           => true,
-                                                       'helpdesk_visible_types' => true,
-                                                       'link_types'             => true]);
-
-   Plugin::registerClass('PluginAppliancesProfile', ['addtabon' => 'Profile']);
-   Plugin::registerClass('PluginAppliancesEnvironment');
-   Plugin::registerClass('PluginAppliancesApplianceType');
-   Plugin::registerClass('PluginAppliancesOptvalue');
-   Plugin::registerClass('PluginAppliancesOptvalue_Item');
-   Plugin::registerClass('PluginAppliancesRelation');
+   Plugin::registerClass('PluginAppliancesOptvalue', ['addtabon' => 'Appliance']);
+   Plugin::registerClass('PluginAppliancesOptvalue_Item', ['addtabon' => 'Appliance']);
 
    if (class_exists('PluginAccountsAccount')) {
       PluginAccountsAccount::registerType('PluginAppliancesAppliance');
@@ -70,46 +54,13 @@ function plugin_init_appliances() {
       PluginDomainsDomain::registerType('PluginAppliancesAppliance');
    }
 
-   if (class_exists('PluginWebapplicationsWebapplication')) {
-      PluginWebapplicationsWebapplication::registerType('PluginAppliancesAppliance');
-   }
-
    // Define the type for which we know how to generate PDF, need :
    $PLUGIN_HOOKS['plugin_pdf']['PluginAppliancesAppliance'] = 'PluginAppliancesAppliancePDF';
 
    $PLUGIN_HOOKS['migratetypes']['appliances'] = 'plugin_datainjection_migratetypes_appliances';
 
-   $PLUGIN_HOOKS['change_profile']['appliances']   = ['PluginAppliancesProfile','initProfile'];
-   $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
-   $PLUGIN_HOOKS['assign_to_ticket_dropdown']['appliances'] = true;
-
-   if (class_exists('PluginAppliancesAppliance')) { // only if plugin activated
-      $PLUGIN_HOOKS['item_clone']['appliances'] = ['Profile' => ['PluginAppliancesProfile',
-                                                                 'cloneProfile']];
-      $PLUGIN_HOOKS['plugin_datainjection_populate']['appliances']
-                                       = 'plugin_datainjection_populate_appliances';
-   }
-
-   //if glpi is loaded
-   if (Session::getLoginUserID()) {
-
-      //if environment plugin is not installed
-      $plugin = new Plugin();
-      if (!$plugin->isActivated('environment')
-          && Session::haveRight("plugin_appliances", READ)) {
-
-         $PLUGIN_HOOKS['menu_toadd']['appliances'] = ['assets' => 'PluginAppliancesMenu'];
-      }
-      $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
-   }
-
-   // Import from Data_Injection plugin
-   $PLUGIN_HOOKS['data_injection']['appliances'] = "plugin_appliances_data_injection_variables";
-
    // Import webservice
    $PLUGIN_HOOKS['webservices']['appliances'] = 'plugin_appliances_registerMethods';
-
-   $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
 
    // End init, when all types are registered
    $PLUGIN_HOOKS['post_init']['appliances'] = 'plugin_appliances_postinit';
@@ -120,23 +71,13 @@ function plugin_init_appliances() {
 function plugin_version_appliances() {
 
    return ['name'           => __('Appliances', 'appliances'),
-           'version'        => '2.5.2',
+           'version'        => '3.0.0',
            'author'         => 'Remi Collet, Nelly Mahu-Lasson',
            'license'        => 'GPLv3+',
            'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
-           'minGlpiVersion' => '9.4',
-           'requirements'   => ['glpi' => ['min' => '9.4',
-                                           'max' => '9.5']]];
-}
-
-
-function plugin_appliances_check_prerequisites() {
-
-   if (version_compare(GLPI_VERSION,'9.4','lt') || version_compare(GLPI_VERSION,'9.5','ge')) {
-      echo "This plugin requires GLPI >= 9.4 and GLPI < 9.5";
-      return false;
-   }
-   return true;
+           'minGlpiVersion' => '9.5',
+           'requirements'   => ['glpi' => ['min' => '9.5',
+                                           'max' => '9.5.2']]];
 }
 
 
