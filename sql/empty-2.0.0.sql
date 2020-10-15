@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_appliances` (
   KEY `states_id` (`states_id`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `groups_id_tech` (`groups_id_tech`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_appliances_items` (
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_appliances_items` (
    UNIQUE `unicity` (`plugin_appliances_appliances_id`,`items_id`,`itemtype`),
    KEY `plugin_appliances_appliances_id` (`plugin_appliances_appliances_id`),
    KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_appliancetypes` (
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_appliancetypes` (
    KEY `name` (`name`),
    KEY `entities_id` (`entities_id`),
    UNIQUE (`externalid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_environments` (
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_environments` (
    `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_relations` (
    `id` int(11) NOT NULL auto_increment,
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_relations` (
    PRIMARY KEY (`id`),
    KEY `plugin_appliances_appliances_items_id` (`plugin_appliances_appliances_items_id`),
    KEY `relations_id` (`relations_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_optvalues` (
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_optvalues` (
    `ddefault` varchar(255) default NULL,
    PRIMARY KEY (`id`,`vvalues`),
    KEY `plugin_appliances_appliances_id` (`plugin_appliances_appliances_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_optvalues_items` (
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_appliances_optvalues_items` (
    PRIMARY KEY  (`id`),
    KEY `item` (`itemtype`,`items_id`),
    UNIQUE KEY `unicity` (`plugin_appliances_optvalues_id`,`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_displaypreferences` ( `id` , `itemtype` , `num` , `rank` , `users_id` )
    VALUES (NULL,'PluginAppliancesAppliance','2','2','0'),

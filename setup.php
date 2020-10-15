@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2016 Appliances plugin team
+ @copyright Copyright (c) 2009-2020 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -36,17 +36,18 @@ function plugin_init_appliances() {
    $PLUGIN_HOOKS['csrf_compliant']['appliances'] = true;
 
    // Params : plugin name - string type - number - attributes
-   Plugin::registerClass('PluginAppliancesAppliance', array('linkuser_types'         => true,
-                                                            'linkuser_tech_types'    => true,
-                                                            'linkgroup_types'        => true,
-                                                            'linkgroup_tech_types'   => true,
-                                                            'infocom_types'          => true,
-                                                            'document_types'         => true,
-                                                            'contract_types'         => true,
-                                                            'ticket_types'           => true,
-                                                            'helpdesk_visible_types' => true));
+   Plugin::registerClass('PluginAppliancesAppliance', ['linkuser_types'         => true,
+                                                       'linkuser_tech_types'    => true,
+                                                       'linkgroup_types'        => true,
+                                                       'linkgroup_tech_types'   => true,
+                                                       'infocom_types'          => true,
+                                                       'document_types'         => true,
+                                                       'contract_types'         => true,
+                                                       'ticket_types'           => true,
+                                                       'helpdesk_visible_types' => true,
+                                                       'link_types'             => true]);
 
-   Plugin::registerClass('PluginAppliancesProfile', array('addtabon' => 'Profile'));
+   Plugin::registerClass('PluginAppliancesProfile', ['addtabon' => 'Profile']);
    Plugin::registerClass('PluginAppliancesEnvironment');
    Plugin::registerClass('PluginAppliancesApplianceType');
    Plugin::registerClass('PluginAppliancesOptvalue');
@@ -78,14 +79,13 @@ function plugin_init_appliances() {
 
    $PLUGIN_HOOKS['migratetypes']['appliances'] = 'plugin_datainjection_migratetypes_appliances';
 
-   $PLUGIN_HOOKS['change_profile']['appliances']   = array('PluginAppliancesProfile','initProfile');
+   $PLUGIN_HOOKS['change_profile']['appliances']   = ['PluginAppliancesProfile','initProfile'];
    $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
    $PLUGIN_HOOKS['assign_to_ticket_dropdown']['appliances'] = true;
 
    if (class_exists('PluginAppliancesAppliance')) { // only if plugin activated
-      $PLUGIN_HOOKS['item_clone']['appliances']
-                                       = array('Profile' => array('PluginAppliancesProfile',
-                                                                  'cloneProfile'));
+      $PLUGIN_HOOKS['item_clone']['appliances'] = ['Profile' => ['PluginAppliancesProfile',
+                                                                 'cloneProfile']];
       $PLUGIN_HOOKS['plugin_datainjection_populate']['appliances']
                                        = 'plugin_datainjection_populate_appliances';
    }
@@ -96,9 +96,9 @@ function plugin_init_appliances() {
       //if environment plugin is not installed
       $plugin = new Plugin();
       if (!$plugin->isActivated('environment')
-         && Session::haveRight("plugin_appliances", READ)) {
+          && Session::haveRight("plugin_appliances", READ)) {
 
-         $PLUGIN_HOOKS['menu_toadd']['appliances'] = array('assets' => 'PluginAppliancesMenu');
+         $PLUGIN_HOOKS['menu_toadd']['appliances'] = ['assets' => 'PluginAppliancesMenu'];
       }
       $PLUGIN_HOOKS['use_massive_action']['appliances'] = 1;
    }
@@ -109,6 +109,8 @@ function plugin_init_appliances() {
    // Import webservice
    $PLUGIN_HOOKS['webservices']['appliances'] = 'plugin_appliances_registerMethods';
 
+   $PLUGIN_HOOKS['assign_to_ticket']['appliances'] = true;
+
    // End init, when all types are registered
    $PLUGIN_HOOKS['post_init']['appliances'] = 'plugin_appliances_postinit';
 }
@@ -117,19 +119,21 @@ function plugin_init_appliances() {
 // Get the name and the version of the plugin - Needed
 function plugin_version_appliances() {
 
-   return array('name'           => __('Appliances', 'appliances'),
-                'version'        => '2.2.1',
-                'author'         => 'Remi Collet, Xavier Caillaud, Nelly Mahu-Lasson',
-                'license'        => 'GPLv3+',
-                'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
-                'minGlpiVersion' => '0.90');
+   return ['name'           => __('Appliances', 'appliances'),
+           'version'        => '2.5.2',
+           'author'         => 'Remi Collet, Nelly Mahu-Lasson',
+           'license'        => 'GPLv3+',
+           'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
+           'minGlpiVersion' => '9.4',
+           'requirements'   => ['glpi' => ['min' => '9.4',
+                                           'max' => '9.5']]];
 }
 
 
 function plugin_appliances_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.90','lt') || version_compare(GLPI_VERSION,'9.2','ge')) {
-      echo "This plugin requires GLPI >= 0.90 and GLPI < 9.2";
+   if (version_compare(GLPI_VERSION,'9.4','lt') || version_compare(GLPI_VERSION,'9.5','ge')) {
+      echo "This plugin requires GLPI >= 9.4 and GLPI < 9.5";
       return false;
    }
    return true;

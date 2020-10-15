@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2016 Appliances plugin team
+ @copyright Copyright (c) 2009-2020 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -54,7 +54,7 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
 
 
    function connectedTo() {
-      return array();
+      return [];
    }
 
 
@@ -67,16 +67,16 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
 
       //Remove some options because some fields cannot be imported
       $blacklist = PluginDatainjectionCommonInjectionLib::getBlacklistedOptions(get_parent_class($this));
-      $notimportable = array(5, 9, 31, 91, 92, 93);
+      $notimportable = [5, 9, 31, 91, 92, 93];
       $options['ignore_fields'] = array_merge($blacklist, $notimportable);
 
       $key = array_search(2, $options['ignore_fields']);
       unset($options['ignore_fields'][$key]);
 
-      $options['displaytype']   = array("dropdown"       => array(2, 3, 8, 10, 32, 49),
-                                        "user"           => array(6, 24),
-                                        "multiline_text" => array(4),
-                                        "bool"           => array(7, 11));
+      $options['displaytype'] = ["dropdown"       => [2, 3, 8, 10, 32, 49],
+                                 "user"           => [6, 24],
+                                 "multiline_text" => [4],
+                                 "bool"           => [7, 11]];
 
       $tab = PluginDatainjectionCommonInjectionLib::addToSearchOptions($tab, $options, $this);
 
@@ -91,7 +91,7 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
     * @param $values       array   fields to add into glpi
     * @param $options      array   options used during creation
    **/
-   function deleteObject($values=array(), $options=array()) {
+   function deleteObject($values=[], $options=[]) {
 
       $lib = new PluginDatainjectionCommonInjectionLib($this,$values,$options);
       $lib->deleteObject();
@@ -108,7 +108,7 @@ class PluginAppliancesApplianceInjection extends PluginAppliancesAppliance
     *
     * @return an array of IDs of newly created objects : for example array(Computer=>1, Networkport=>10)
    **/
-   function addOrUpdateObject($values=array(), $options=array()) {
+   function addOrUpdateObject($values=[], $options=[]) {
 
       $lib = new PluginDatainjectionCommonInjectionLib($this,$values,$options);
       $lib->processAddOrUpdate();

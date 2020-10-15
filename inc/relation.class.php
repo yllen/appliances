@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2016 Appliances plugin team
+ @copyright Copyright (c) 2009-2020 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -109,11 +109,11 @@ class PluginAppliancesRelation extends CommonDBTM {
 
    static function dropdownType($myname, $value=0) {
 
-      Dropdown::showFromArray($myname, array (0 => Dropdown::EMPTY_VALUE,
-                                              1 => __('Location'),
-                                              2 => _n('Network', 'Networks', 1),
-                                              3 => _n('Domain', 'Domains', 1)),
-                              array ('value' => $value));
+      Dropdown::showFromArray($myname, [0 => Dropdown::EMPTY_VALUE,
+                                        1 => __('Location'),
+                                        2 => _n('Network', 'Networks', 1),
+                                        3 => _n('Domain', 'Domains', 1)],
+                              ['value' => $value]);
    }
 
 
@@ -137,41 +137,42 @@ class PluginAppliancesRelation extends CommonDBTM {
          return false;
       }
 
+      $dbu = new DbUtils();
+
       // selects all the attached relations
       $itemtype = PluginAppliancesRelation::getItemType($relationtype);
       $title    = PluginAppliancesRelation::getTypeName($relationtype);
 
+      $field    = 'name AS dispname';
       if ($itemtype == 'Location') {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
-                            `completename` AS dispname ";
-      } else {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
-                            `name` AS dispname ";
+         $field = 'completename AS dispname';
       }
-      $sql_loc .= "FROM `".getTableForItemType($itemtype)."` ,
-                        `glpi_plugin_appliances_relations`,
-                        `glpi_plugin_appliances_appliances_items`
-                   WHERE `".getTableForItemType($itemtype)."`.`id`
-                                    = `glpi_plugin_appliances_relations`.`relations_id`
-                         AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
-                                    = `glpi_plugin_appliances_appliances_items`.`id`
-                         AND `glpi_plugin_appliances_appliances_items`.`id` = '".$relID."'";
 
-      $result_loc = $DB->query($sql_loc);
-      $number_loc = $DB->numrows($result_loc);
+      $sql_loc = ['SELECT'    => ['glpi_plugin_appliances_relations.id', $field],
+                  'FROM'      => $dbu->getTableForItemType($itemtype),
+                  'LEFT JOIN' => ['glpi_plugin_appliances_relations'
+                                   => ['FKEY' => [$dbu->getTableForItemType($itemtype) => 'id',
+                                                  'glpi_plugin_appliances_relations'   => 'relations_id']],
+                                   'glpi_plugin_appliances_appliances_items'
+                                   => ['FKEY' => ['glpi_plugin_appliances_relations'        => 'plugin_appliances_appliances_items_id',
+                                                  'glpi_plugin_appliances_appliances_items' => 'id']]],
+                  'WHERE'     => ['glpi_plugin_appliances_appliances_items.id' => $relID]];
+
+      $result_loc = $DB->request($sql_loc);
+      $number_loc = count($result_loc);
 
       if ($canedit) {
          echo "<form method='post' name='relation' action='".
                $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php'>";
          echo "<br><input type='hidden' name='deviceID' value='".$relID."'>";
 
-         $i        = 0;
-         $used     = array();
+         $i    = 0;
+         $used = [];
 
          if ($number_loc >0) {
             echo "<table>";
             while ($i < $number_loc) {
-               $res = $DB->fetch_array($result_loc);
+               $res = $result_loc->next();
                echo "<tr><td class=top>";
                // when the value of the checkbox is changed, the corresponding hidden variable value
                // is also changed by javascript
@@ -188,15 +189,15 @@ class PluginAppliancesRelation extends CommonDBTM {
 
          echo "$title&nbsp;:&nbsp;";
 
-         Dropdown::show($itemtype, array('name'   => "tablekey[" . $relID . "]",
-                                         'entity' => $entity,
-                                         'used'   => $used));
+         Dropdown::show($itemtype, ['name'   => "tablekey[" . $relID . "]",
+                                    'entity' => $entity,
+                                    'used'   => $used]);
          echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value=\""._sx('button', 'Add').
                "\" class='submit'><br>&nbsp;";
          Html::closeForm();
 
       } else if ($number_loc > 0) {
-         while ($res = $DB->fetch_array($result_loc)) {
+         while ($res = $result_loc->next()) {
             echo $res["dispname"]."<br>";
          }
       } else {
@@ -224,29 +225,30 @@ class PluginAppliancesRelation extends CommonDBTM {
       $tablename = PluginAppliancesRelation::getTypeTable($relationtype);
       $title     = PluginAppliancesRelation::getTypeName($relationtype);
 
-      if ($tablename=='glpi_locations') {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
-                            `completename` AS dispname ";
-      } else {
-         $sql_loc = "SELECT `glpi_plugin_appliances_relations`.`id`,
-                            `name` AS dispname ";
+      $field    = 'name AS dispname';
+      if ($tablename == 'Location') {
+         $field = 'completename AS dispname';
       }
-      $sql_loc .= "FROM `".$tablename."` ,
-                        `glpi_plugin_appliances_relations`,
-                        `glpi_plugin_appliances_appliances_items`
-                   WHERE `".$tablename."`.`id` = `glpi_plugin_appliances_relations`.`relations_id`
-                         AND `glpi_plugin_appliances_relations`.`plugin_appliances_appliances_items_id`
-                                 = `glpi_plugin_appliances_appliances_items`.`id`
-                         AND `glpi_plugin_appliances_appliances_items`.`id` = '".$relID."'";
-      $result_loc = $DB->query($sql_loc);
 
-      $opts = array();
-      while ($res = $DB->fetch_array($result_loc)) {
+      $sql_loc = ['SELECT'    => ['glpi_plugin_appliances_relations.id', $field],
+                  'FROM'      => $tablename,
+                  'LEFT JOIN' => ['glpi_plugin_appliances_relations'
+                                   => ['FKEY' => [$tablename                         => 'id',
+                                                  'glpi_plugin_appliances_relations' => 'relations_id']],
+                                   'glpi_plugin_appliances_appliances_items'
+                                   => ['FKEY' => ['glpi_plugin_appliances_relations'        => 'plugin_appliances_appliances_items_id',
+                                                  'glpi_plugin_appliances_appliances_items' => 'id']]],
+                 'WHERE'     => ['glpi_plugin_appliances_appliances_items.id' => $relID]];
+
+      $result_loc = $DB->request($sql_loc);
+
+      $opts = [];
+      while ($res = $result_loc->next()) {
          $opts[] = $res["dispname"];
       }
       $pdf->setColumnsSize(100);
       $pdf->displayLine(sprintf(__('%1$s: %2$s'),
-                                "<b><i>".__('Item to link', 'appliances')."$title </i> </b>",
+                                "<b><i>".__('Item to link', 'appliances')."&nbsp;$title </i> </b>",
                                 implode(', ',$opts)));
    }
 
