@@ -107,16 +107,6 @@ class PluginAppliancesRelation extends CommonDBTM {
    }
 
 
-   static function dropdownType($myname, $value=0) {
-
-      Dropdown::showFromArray($myname, [0 => Dropdown::EMPTY_VALUE,
-                                        1 => __('Location'),
-                                        2 => _n('Network', 'Networks', 1),
-                                        3 => _n('Domain', 'Domains', 1)],
-                              ['value' => $value]);
-   }
-
-
    /**
     * Show the relation for a device/applicatif
     *
@@ -148,22 +138,22 @@ class PluginAppliancesRelation extends CommonDBTM {
          $field = 'completename AS dispname';
       }
 
-      $sql_loc = ['SELECT'    => ['glpi_plugin_appliances_relations.id', $field],
+      $sql_loc = ['SELECT'    => ['glpi_appliancerelations.id', $field],
                   'FROM'      => $dbu->getTableForItemType($itemtype),
-                  'LEFT JOIN' => ['glpi_plugin_appliances_relations'
+                  'LEFT JOIN' => ['glpi_appliancerelations'
                                    => ['FKEY' => [$dbu->getTableForItemType($itemtype) => 'id',
-                                                  'glpi_plugin_appliances_relations'   => 'relations_id']],
-                                   'glpi_plugin_appliances_appliances_items'
-                                   => ['FKEY' => ['glpi_plugin_appliances_relations'        => 'plugin_appliances_appliances_items_id',
-                                                  'glpi_plugin_appliances_appliances_items' => 'id']]],
-                  'WHERE'     => ['glpi_plugin_appliances_appliances_items.id' => $relID]];
+                                                  'glpi_appliancerelations'   => 'relations_id']],
+                                  'glpi_appliances_items'
+                                   => ['FKEY' => ['glpi_appliancerelations'  => 'appliances_items_id',
+                                                  'glpi_appliances_items'    => 'id']]],
+                  'WHERE'     => ['glpi_appliances_items.id' => $relID]];
 
       $result_loc = $DB->request($sql_loc);
       $number_loc = count($result_loc);
 
       if ($canedit) {
          echo "<form method='post' name='relation' action='".
-               $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php'>";
+               $CFG_GLPI["root_doc"]."/plugins/appliances/front/optvalue.form.php'>";
          echo "<br><input type='hidden' name='deviceID' value='".$relID."'>";
 
          $i    = 0;
