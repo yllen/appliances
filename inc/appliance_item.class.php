@@ -657,9 +657,9 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                                PluginAppliancesRelation::showList($appli->fields["relationtype"],
                                                                   $data["IDD"],
                                                                   $item->fields["entities_id"],
-                                                                  false);
+                                                                  $canedit);
                                PluginAppliancesOptvalue_Item::showList($type, $data["id"], $instID,
-                                                                       false);
+                                                                       $canedit);
                         echo "</td>";
                      }
 

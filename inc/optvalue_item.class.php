@@ -88,7 +88,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
             echo "</td></tr>";
 
          }
-         echo "<input type='hidden' name='opt_id$i' value='-1'>";
+         echo "<input type='hidden' name='opt_id$i' value='".$data_opt["id"]."'>";
       } // For
 
       echo "</table>";
@@ -153,6 +153,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
     * @param $input array on input value (form)
    **/
    function updateList($input) {
+      global $DB;
 
       $number_champs = $input["number_champs"];
       for ($i=1 ; $i<=$number_champs ; $i++) {
@@ -180,11 +181,16 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                     && ($input[$vvalue] != $input[$ddefault])) {
             // l'entrée n'existe pas
             // et la valeur saisie est non nulle -> on fait un insert
-            $data = ['plugin_appliances_optvalues_id' => $input[$opt_id],
-                     'itemtype'                       => $input['itemtype'],
-                     'items_id'                       => $input['items_id'],
-                     'vvalue'                         => $input[$vvalue]];
-            $this->add($data);
+            foreach ($DB->request(['SELECT' => 'id',
+                  'FROM'   => 'glpi_plugin_appliances_optvalues',
+                  'WHERE'  => ['ddefault' => $input[$ddefault]]]) as $optid) {
+
+                  $data = ['plugin_appliances_optvalues_id' => $optid['id'],
+                           'itemtype'                       => $input['itemtype'],
+                           'items_id'                       => $input['items_id'],
+                           'vvalue'                         => $input[$vvalue]];
+                  $this->add($data);
+            }
          }
       } // For
    }

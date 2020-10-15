@@ -86,7 +86,6 @@ class PluginAppliancesAppliance extends CommonDBTM {
      * @return array
     */
     function rawSearchOptions() {
-       global $DB;
 
       $tab = [];
 
