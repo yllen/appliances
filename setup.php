@@ -71,13 +71,13 @@ function plugin_init_appliances() {
 function plugin_version_appliances() {
 
    return ['name'           => __('Appliances', 'appliances'),
-           'version'        => '3.0.0',
+           'version'        => '3.1.0',
            'author'         => 'Remi Collet, Nelly Mahu-Lasson',
            'license'        => 'GPLv3+',
            'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
            'minGlpiVersion' => '9.5',
-           'requirements'   => ['glpi' => ['min' => '9.5',
-                                           'max' => '9.5.2']]];
+           'requirements'   => ['glpi' => ['min' => '9.5.0',
+                                           'max' => '9.6.0']]];
 }
 
 

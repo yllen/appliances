@@ -73,7 +73,7 @@ function plugin_appliances_registerMethods() {
 function plugin_appliances_install() {
    global $DB;
 
-   $migration = new Migration(300);
+   $migration = new Migration(310);
 
    if ($DB->tableExists("glpi_plugin_applicatifs_profiles")) {
       if ($DB->fieldExists("glpi_plugin_applicatifs_profiles","create_applicatifs")) { // version <1.3
@@ -119,11 +119,14 @@ function plugin_appliances_install() {
 
 
    // Migration to core
-   $migration->displayWarning("You are about to launch migration of Appliances plugin data into GLPI core tables");
+   $migration->displayWarning(__("You are about to launch migration of Appliances plugin data into GLPI core tables",
+                              'appliances'));
 
    if ($DB->tableExists('glpi_plugin_appliances_appliances')
+       && !$DB->fieldExists('glpi_plugin_appliances_appliances', 'is_helpdesk_visible')
        && (countElementsInTable('glpi_plugin_appliances_appliances', ['is_helpdesk_visible' => 1]) > 0)) {
-      $migration->displayWarning("You can't migrate to core because one of your used fields is missing in core. Wait version 9.5.2");
+      $migration->displayWarning(__("You can't migrate to core because one of your used fields is missing in core. Wait version 9.5.2",
+                                 'appliances'));
       exit;
    }
 
@@ -177,22 +180,29 @@ function plugin_appliances_install() {
          if ($result = $DB->request(['FROM' => 'glpi_plugin_appliances_appliances'])) {
             if (count($result) > 0) {
                foreach ($result as $id => $data) {
+                  $fieldsname = "`id`, `entities_id`, `is_recursive`,  `name`, `is_deleted`,
+                                  `appliancetypes_id`, `comment`, `locations_id`,
+                                  `applianceenvironments_id`, `users_id`, `users_id_tech`,
+                                  `groups_id`, `groups_id_tech`, `date_mod`, `states_id`,
+                                  `serial`, `otherserial`";
+                  $fieldsval  = "'".$data['id']."', '".$data['entities_id']."',
+                                 '".$data['is_recursive']."', '".$data['name']."',
+                                 '".$data['is_deleted']."',
+                                 '".$data['plugin_appliances_appliancetypes_id']."',
+                                 '".$data['comment']."', '".$data['locations_id']."',
+                                 '".$data['plugin_appliances_environments_id']."',
+                                 '".$data['users_id']."', '".$data['users_id_tech']."',
+                                 '".$data['groups_id']."', '".$data['groups_id_tech']."',
+                                 '".$data['date_mod']."', '".$data['states_id']."',
+                                 '".$data['serial']."','".$data['otherserial']."'";
+                  if ($DB->fieldExists('glpi_plugin_appliances_appliances', 'is_helpdesk_visible')) {
+                     $fieldsname .= "`is_helpdesk_visible`";
+                     $fieldsval  .= "'".$data['is_helpdesk_visible']."'";
+                  }
                   $queryap = "INSERT INTO `glpi_appliances`
-                                    (`id`, `entities_id`, `is_recursive`,  `name`, `is_deleted`,
-                                     `appliancetypes_id`, `comment`, `locations_id`,
-                                     `applianceenvironments_id`, `users_id`, `users_id_tech`,
-                                     `groups_id`, `groups_id_tech`, `date_mod`, `states_id`,
-                                     `serial`, `otherserial`)
-                              VALUES ('".$data['id']."', '".$data['entities_id']."',
-                                      '".$data['is_recursive']."', '".$data['name']."',
-                                      '".$data['is_deleted']."',
-                                      '".$data['plugin_appliances_appliancetypes_id']."',
-                                      '".$data['comment']."', '".$data['locations_id']."',
-                                      '".$data['plugin_appliances_environments_id']."',
-                                      '".$data['users_id']."', '".$data['users_id_tech']."',
-                                      '".$data['groups_id']."', '".$data['groups_id_tech']."',
-                                      '".$data['date_mod']."', '".$data['states_id']."',
-                                      '".$data['serial']."','".$data['otherserial']."')";
+                                     (".$fieldsname.")
+                              VALUES (".$fieldsval.")";
+
                   $DB->queryOrDie($queryap, "migration appliances to core");
 
                   if (countElementsInTable('glpi_plugin_appliances_appliances',
@@ -211,7 +221,7 @@ function plugin_appliances_install() {
 
       // migration appliances_items
       if (countElementsInTable('glpi_appliances_items') > 0) {
-         $migration->displayWarning("you can't migrate because glpi_appliances_items");
+         $migration->displayWarning("you can't migrate because glpi_appliances_items is not empty");
       } else {
          if ($DB->tableExists('glpi_plugin_appliances_appliances_items')
               && (countElementsInTable('glpi_plugin_appliances_appliances_items') > 0)) {
@@ -234,7 +244,7 @@ function plugin_appliances_install() {
 
       // migration types
       if (countElementsInTable('glpi_appliancetypes') > 0) {
-         $migration->displayWarning("you can't migrate because glpi_appliancetypes");
+         $migration->displayWarning("you can't migrate because glpi_appliancetypes is not empty");
       } else {
          if ($DB->tableExists('glpi_plugin_appliances_appliancetypes')) {
             if ($result = $DB->request(['FROM' => 'glpi_plugin_appliances_appliancetypes'])) {
@@ -327,7 +337,7 @@ function plugin_appliances_uninstall() {
 
    $dbu = new DbUtils();
 
-   $migration = new Migration(300);
+   $migration = new Migration(310);
 
    $tables = ['glpi_plugin_appliances_optvalues',
               'glpi_plugin_appliances_optvalues_items'];

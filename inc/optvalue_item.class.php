@@ -127,9 +127,8 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
       if (Session::isMultiEntitiesMode()) {
          echo "<th>".__('Entity')."</th>";
       }
-      if (isset($appli->fields["relationtype"])) {
-         echo "<th>".__('Item to link', 'appliances')."<br>".__('User fields', 'appliances')."</th>";
-      }
+
+      echo "<th>".__('User fields', 'appliances')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
       echo "</tr>";
@@ -146,14 +145,15 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
 
             $query = ['SELECT'    => [$item->getTable().'.*',
                                       'glpi_appliances_items.id AS IDD',
+                                      'glpi_appliances_items.itemtype AS type',
                                       'glpi_entities.id AS entity'],
                       'FROM'      => 'glpi_appliances_items',
                       'LEFT JOIN' => [$dbu->getTableForItemType($type)
                                        =>['FKEY' => [$item->getTable()       => 'id',
                                                      'glpi_appliances_items' => 'items_id'],
                                                     ['glpi_appliances_items.itemtype' => $type]],
-                                     'glpi_entities'
-                                      => ['FKEY' => ['glpi_entities'   => 'id',
+                                      'glpi_entities'
+                                       => ['FKEY' => ['glpi_entities'   => 'id',
                                                      $item->getTable() => 'entities_id']]],
                       'WHERE'     => ['glpi_appliances_items.appliances_id' => $instID]
                                      + getEntitiesRestrictCriteria($item->getTable())];
@@ -184,18 +184,10 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                               $data['entity']). "</td>";
                      }
 
-                     if (isset($appli->fields["relationtype"]) && $appli->fields["relationtype"]) {
-                        echo "<td class='center'>".
-                              PluginAppliancesRelation::getTypeName($appli->fields["relationtype"]).
-                              "&nbsp;:&nbsp;";
-                              PluginAppliancesRelation::showList($appli->fields["relationtype"],
-                                                                 $data["IDD"],
-                                                                 $item->fields["entities_id"],
-                                                                 $canedit);
-                              PluginAppliancesOptvalue_Item::showList($type, $data["id"], $instID,
-                                                                      $canedit);
-                        echo "</td>";
-                     }
+                     echo "<td class='center'>";
+                     PluginAppliancesOptvalue_Item::showList($type, $data["id"], $instID,
+                                                             $canedit);
+                     echo "</td>";
 
                      echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
                      echo "<td class='center'>".
@@ -244,6 +236,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
             $data_val = $query_val->next();
             $vvalue     = ($data_val? $data_val['vvalue'] : "");
             if (empty($vvalue) && !empty($data_opt['ddefault'])) {
+
                $vvalue = $data_opt['ddefault'];
             }
             echo "<tr><td>".$data_opt['champ']."&nbsp;</td><td>";
@@ -270,8 +263,12 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
          echo "<input type='hidden' name='number_champs' value='".$number."'>";
          echo "<input type='submit' name='add_opt_val' value='"._sx('button', 'Update')."'
                 class='submit'>";
-         Html::closeForm();
+        Html::closeForm();
       }
+ //     echo "</table>";
+ //     if ($canedit) {
+ //        Html::closeForm();
+ //     }
    }
 
 

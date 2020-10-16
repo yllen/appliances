@@ -40,7 +40,7 @@ if (!isset($_GET["withtemplate"])) {
 toolbox::logError("post", $_POST);
 $appliance = new Appliance();
 $appItem   = new Appliance_Item();
-$relation  = new ApplianceRelation();
+$relation  = new Appliance_Item_Relation();
 
 // delete a relation
 if (isset($_POST["dellieu"])) {
@@ -84,7 +84,7 @@ if (isset($_POST["dellieu"])) {
    //check environment meta-plugin installtion for change header
    $plugin = new Plugin();
    if ($plugin->isActivated("environment")) {
-      Html::header(PluginAppliancesAppliance::getTypeName(2),
+      Html::header(Appliance_Item_Relation::getTypes(true),
                      '',"assets","pluginenvironmentdisplay","appliances");
    }
 
