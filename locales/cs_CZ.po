@@ -18,6 +18,18 @@ msgstr ""
 "Language: cs_CZ\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
+#: hook.php:122
+msgid ""
+"You are about to launch migration of Appliances plugin data into GLPI core "
+"tables"
+msgstr ""
+
+#: hook.php:128
+msgid ""
+"You can't migrate to core because one of your used fields is missing in "
+"core. Wait version 9.5.2"
+msgstr ""
+
 #: setup.php:73
 msgid "Appliances"
 msgstr "Celky"
