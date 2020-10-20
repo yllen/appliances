@@ -196,8 +196,8 @@ function plugin_appliances_install() {
                                  '".$data['date_mod']."', '".$data['states_id']."',
                                  '".$data['serial']."','".$data['otherserial']."'";
                   if ($DB->fieldExists('glpi_plugin_appliances_appliances', 'is_helpdesk_visible')) {
-                     $fieldsname .= "`is_helpdesk_visible`";
-                     $fieldsval  .= "'".$data['is_helpdesk_visible']."'";
+                     $fieldsname .= ", `is_helpdesk_visible`";
+                     $fieldsval  .= ",'".$data['is_helpdesk_visible']."'";
                   }
                   $queryap = "INSERT INTO `glpi_appliances`
                                      (".$fieldsname.")
