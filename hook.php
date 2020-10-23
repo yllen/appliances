@@ -150,7 +150,7 @@ function plugin_appliances_install() {
                                           'users_id' => ['>', 0]]]) AS $pref) {
          $querypref = "INSERT INTO `glpi_displaypreferences`
                               (`num`, `rank`, `users_id`)
-                       VALUES ('".$pref['num']."', '".$pref['rank']."', '".$pref['users_id']."'";
+                       VALUES ('".$pref['num']."', '".$pref['rank']."', '".$pref['users_id']."')";
          $DB->query($querypref);
       }
       // default value
@@ -186,10 +186,10 @@ function plugin_appliances_install() {
                                   `groups_id`, `groups_id_tech`, `date_mod`, `states_id`,
                                   `serial`, `otherserial`";
                   $fieldsval  = "'".$data['id']."', '".$data['entities_id']."',
-                                 '".$data['is_recursive']."', '".$data['name']."',
+                                 '".$data['is_recursive']."', '".addslashes($data['name'])."',
                                  '".$data['is_deleted']."',
                                  '".$data['plugin_appliances_appliancetypes_id']."',
-                                 '".$data['comment']."', '".$data['locations_id']."',
+                                 '".addslashes($data['comment'])."', '".$data['locations_id']."',
                                  '".$data['plugin_appliances_environments_id']."',
                                  '".$data['users_id']."', '".$data['users_id_tech']."',
                                  '".$data['groups_id']."', '".$data['groups_id_tech']."',
@@ -253,8 +253,8 @@ function plugin_appliances_install() {
                      $queryai = "INSERT INTO `glpi_appliancetypes`
                                         (`id`, `entities_id`, `is_recursive`, `name`, `comment`)
                                  VALUES ('".$data['id']."', '".$data['entities_id']."',
-                                         '".$data['is_recursive']."', '".$data['name']."',
-                                         '".$data['comment']."')";
+                                         '".$data['is_recursive']."', '".addslashes($data['name'])."',
+                                         '".addslashes($data['comment'])."')";
                      $DB->queryOrDie($queryai, "migration appliancetypes to core");
 
                      if (countElementsInTable('glpi_plugin_appliances_appliancetypes',
@@ -271,9 +271,15 @@ function plugin_appliances_install() {
          $migration->renameTable('glpi_plugin_appliances_appliancetypes',
                                  'backup_glpi_plugin_appliances_appliancetypes');
       }
+
       // migration relations
-      if (countElementsInTable('glpi_appliancerelations') > 0) {
-         $migration->displayWarning("you can't migrate because glpi_appliancerelations is not empty");
+      if ($DB->tableExists('glpi_appliancerelations')) { // glpi 9.5.0 + 9.5.1
+         $table = 'glpi_appliancerelations';
+      } else if ($DB->tableExists('glpi_appliances_items_relations')) { // glpi 9.5.2
+         $table = 'glpi_appliances_items_relations';
+      }
+      if (countElementsInTable($table) > 0) {
+         $migration->displayWarning("you can't migrate because ".$table." is not empty");
       } else {
          if ($DB->tableExists('glpi_plugin_appliances_relations')
             && (countElementsInTable('glpi_plugin_appliances_relations') > 0)) {
@@ -281,7 +287,7 @@ function plugin_appliances_install() {
             if ($result = $DB->request(['FROM' => 'glpi_plugin_appliances_relations'])) {
                if (count($result)) {
                   foreach ($result as $id => $data) {
-                     $queryrel = "INSERT INTO `glpi_appliancerelations`
+                     $queryrel = "INSERT INTO `".$table."`
                                          (`id`, `appliances_items_id`, `relations_id`)
                                   VALUES ('".$data['id']."',
                                           '".$data['plugin_appliances_appliances_items_id']."',
@@ -307,8 +313,8 @@ function plugin_appliances_install() {
                   foreach ($result as $id => $data) {
                      $queryenv = "INSERT INTO `glpi_applianceenvironments`
                                          (`id`, `name`, `comment`)
-                                  VALUES ('".$data['id']."', '".$data['name']."',
-                                          '".$data['comment']."')";
+                                  VALUES ('".$data['id']."', '".addslashes($data['name'])."',
+                                          '".addslashes($data['comment'])."')";
                      $DB->queryOrDie($queryenv, "migration appliances environments to core");
                   }
                }
