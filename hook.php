@@ -137,7 +137,8 @@ function plugin_appliances_install() {
                              'WHERE'  => ['name' => 'plugin_appliances']]) AS $right) {
          $queryright = "UPDATE `glpi_profilerights`
                         SET `rights` = '".$right['rights']."'
-                        WHERE `profiles_id` = '".$right['profiles_id']."'";
+                        WHERE `profiles_id` = '".$right['profiles_id']."'
+                              AND `name` = 'appliance'";
          $DB->query($queryright);
       }
       $delqueryright = "DELETE FROM `glpi_profilerights`
