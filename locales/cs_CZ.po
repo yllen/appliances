@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - Plugin Appliance\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-09 18:33+0200\n"
-"PO-Revision-Date: 2018-06-07 13:19+0000\n"
-"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
+"POT-Creation-Date: 2020-10-16 16:04+0200\n"
+"PO-Revision-Date: 2020-10-16 14:23+0000\n"
+"Last-Translator: Nelly Mahu-Lasson <nini.lasson@orange.fr>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/yllen/glpi-project-plugin-appliance/language/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,64 +18,43 @@ msgstr ""
 "Language: cs_CZ\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: hook.php:83 hook.php:265 hook.php:278 inc/appliance.class.php:54
-#: inc/appliance.class.php:93 inc/appliance_item.class.php:600
-#: inc/menu.class.php:45 inc/profile.class.php:170
+#: hook.php:122
+msgid ""
+"You are about to launch migration of Appliances plugin data into GLPI core "
+"tables"
+msgstr ""
+
+#: hook.php:128
+msgid ""
+"You can't migrate to core because one of your used fields is missing in "
+"core. Wait version 9.5.2"
+msgstr ""
+
+#: setup.php:73
+msgid "Appliances"
+msgstr "Celky"
+
+#: inc/optvalue.class.php:81 inc/optvalue.class.php:132
+#: inc/optvalue.class.php:272 inc/optvalue_item.class.php:131
+msgid "User fields"
+msgstr "Uživatelské kolonky"
+
+#: inc/optvalue.class.php:103
+msgid "Default"
+msgstr "Výchozí"
+
+#: inc/optvalue_item.class.php:68
+msgid "Associated item from plugin"
+msgid_plural "Associated items from plugin"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: inc/optvalue_item.class.php:169
 msgid "Appliance"
 msgid_plural "Appliances"
 msgstr[0] "Celek"
 msgstr[1] "Celky"
 msgstr[2] "Celků"
 msgstr[3] "Celky"
-
-#: hook.php:212 inc/appliancetype.class.php:51
-msgid "Type of appliance"
-msgstr "Typ celku"
-
-#: hook.php:213 inc/appliance.class.php:168 inc/appliance.class.php:314
-#: inc/appliance.class.php:429 inc/environment.class.php:49
-msgid "Environment"
-msgstr "Prostředí"
-
-#: hook.php:428
-msgid "Associate to appliance"
-msgstr "Přiřadit k celku"
-
-#: setup.php:119
-msgid "Appliances"
-msgstr "Celky"
-
-#: inc/appliance.class.php:125
-msgid "Associated items"
-msgstr "Související položky"
-
-#: inc/appliance.class.php:363 inc/appliance_item.class.php:175
-#: inc/appliance_item.class.php:563 inc/relation.class.php:249
-msgid "Item to link"
-msgstr "Položka kterou připojit"
-
-#: inc/appliance_item.class.php:60
-msgid "Appliance item"
-msgid_plural "Appliances items"
-msgstr[0] "Položka celku"
-msgstr[1] "Položky celku"
-msgstr[2] "Položek celku"
-msgstr[3] "Položky celku"
-
-#: inc/appliance_item.class.php:167
-msgid "Associate"
-msgstr "Přiřadit"
-
-#: inc/appliance_item.class.php:177 inc/appliance_item.class.php:563
-#: inc/optvalue.class.php:75 inc/optvalue.class.php:126
-#: inc/optvalue_item.class.php:145
-msgid "User fields"
-msgstr "Uživatelské kolonky"
-
-#: inc/appliance_item.class.php:305
-msgid "Associated appliances"
-msgstr "Související celky"
-
-#: inc/optvalue.class.php:97
-msgid "Default"
-msgstr "Výchozí"

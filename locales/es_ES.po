@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Le Rohellec Benoit <blerohellec@hotmail.com>, 2017
+# cbc5204086c375034e77848ef6290ebe, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - Plugin Appliance\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-09 18:33+0200\n"
-"PO-Revision-Date: 2017-09-22 23:49+0000\n"
-"Last-Translator: Le Rohellec Benoit <blerohellec@hotmail.com>\n"
+"POT-Creation-Date: 2020-10-16 16:04+0200\n"
+"PO-Revision-Date: 2020-10-16 14:23+0000\n"
+"Last-Translator: Nelly Mahu-Lasson <nini.lasson@orange.fr>\n"
 "Language-Team: Spanish (Spain) (http://www.transifex.com/yllen/glpi-project-plugin-appliance/language/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,60 +18,39 @@ msgstr ""
 "Language: es_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: hook.php:83 hook.php:265 hook.php:278 inc/appliance.class.php:54
-#: inc/appliance.class.php:93 inc/appliance_item.class.php:600
-#: inc/menu.class.php:45 inc/profile.class.php:170
+#: hook.php:122
+msgid ""
+"You are about to launch migration of Appliances plugin data into GLPI core "
+"tables"
+msgstr ""
+
+#: hook.php:128
+msgid ""
+"You can't migrate to core because one of your used fields is missing in "
+"core. Wait version 9.5.2"
+msgstr ""
+
+#: setup.php:73
+msgid "Appliances"
+msgstr "Aplicativos"
+
+#: inc/optvalue.class.php:81 inc/optvalue.class.php:132
+#: inc/optvalue.class.php:272 inc/optvalue_item.class.php:131
+msgid "User fields"
+msgstr "Campos de usuario"
+
+#: inc/optvalue.class.php:103
+msgid "Default"
+msgstr "Defecto"
+
+#: inc/optvalue_item.class.php:68
+msgid "Associated item from plugin"
+msgid_plural "Associated items from plugin"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/optvalue_item.class.php:169
 msgid "Appliance"
 msgid_plural "Appliances"
 msgstr[0] "Aplicativo"
 msgstr[1] "Aplicativos"
-
-#: hook.php:212 inc/appliancetype.class.php:51
-msgid "Type of appliance"
-msgstr "Tipo de aplicativo"
-
-#: hook.php:213 inc/appliance.class.php:168 inc/appliance.class.php:314
-#: inc/appliance.class.php:429 inc/environment.class.php:49
-msgid "Environment"
-msgstr "Entorno"
-
-#: hook.php:428
-msgid "Associate to appliance"
-msgstr "Asociar a un aplicativo"
-
-#: setup.php:119
-msgid "Appliances"
-msgstr "Aplicativos"
-
-#: inc/appliance.class.php:125
-msgid "Associated items"
-msgstr "Elementos asociados"
-
-#: inc/appliance.class.php:363 inc/appliance_item.class.php:175
-#: inc/appliance_item.class.php:563 inc/relation.class.php:249
-msgid "Item to link"
-msgstr "Elemento a vincular"
-
-#: inc/appliance_item.class.php:60
-msgid "Appliance item"
-msgid_plural "Appliances items"
-msgstr[0] ""
-msgstr[1] ""
-
-#: inc/appliance_item.class.php:167
-msgid "Associate"
-msgstr "Asociar"
-
-#: inc/appliance_item.class.php:177 inc/appliance_item.class.php:563
-#: inc/optvalue.class.php:75 inc/optvalue.class.php:126
-#: inc/optvalue_item.class.php:145
-msgid "User fields"
-msgstr "Campos de usuario"
-
-#: inc/appliance_item.class.php:305
-msgid "Associated appliances"
-msgstr "Aplicativo(s) asociado(s)"
-
-#: inc/optvalue.class.php:97
-msgid "Default"
-msgstr "Defecto"

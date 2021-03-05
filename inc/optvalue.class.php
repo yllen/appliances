@@ -21,7 +21,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2020 Appliances plugin team
+ @copyright Copyright (c) 2009-2021 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -38,6 +38,12 @@ if (!defined('GLPI_ROOT')) {
  * Class PluginAppliancesOptvalue
 **/
 class PluginAppliancesOptvalue extends CommonDBTM {
+
+
+
+   static function getTypeName($nb=0) {
+      return __('Fields');
+   }
 
 
    /**
@@ -57,7 +63,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    *
    * @return nothing (display form)
    **/
-   static function showForAppliance (PluginAppliancesAppliance $appli) {
+   static function showForAppliance (Appliance $appli) {
       global $DB, $CFG_GLPI;
 
       if (!$appli->can($appli->fields['id'],READ)) {
@@ -68,14 +74,14 @@ class PluginAppliancesOptvalue extends CommonDBTM {
       $rand = mt_rand();
       if ($canedit) {
          echo "<form method='post' name='optvalues_form$rand' id='optvalues_form$rand' action=\"".
-               $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php\">";
+               $CFG_GLPI["root_doc"]."/plugins/appliances/front/optvalue.form.php\">";
       }
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>".__('User fields', 'appliances')."</th></tr>\n";
 
       $query_app = $DB->request(['FROM' => 'glpi_plugin_appliances_optvalues',
-                                 'WHERE' => ['plugin_appliances_appliances_id' => $appli->fields['id']],
+                                 'WHERE' => ['appliances_id' => $appli->fields['id']],
                                  'ORDER' => 'vvalues']);
       $number_champs = count($query_app);
       $number_champs++;
@@ -101,7 +107,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
 
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-         echo "<input type='hidden' name='plugin_appliances_appliances_id' value='".
+         echo "<input type='hidden' name='id' value='".
                 $appli->fields['id']."'>\n";
          echo "<input type='hidden' name='number_champs' value='".$number_champs."'>\n";
          echo "<input type='submit' name='update_optvalues' value=\""._sx('button', 'Update')."\"
@@ -127,7 +133,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
 
       $query_app = $DB->request(['FIELDS' => ['champ', 'ddefault', 'vvalues'],
                                  'FROM'   => 'glpi_plugin_appliances_optvalues',
-                                 'WHERE'  => ['plugin_appliances_appliances_id' => $appli->getID()],
+                                 'WHERE'  => ['appliances_id' => $appli->getID()],
                                  'ORDER' => 'vvalues']);
 
       $opts = [];
@@ -154,7 +160,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    function updateList($input) {
       global $DB;
 
-     if (!isset($input['number_champs']) || !isset($input['plugin_appliances_appliances_id'])) {
+     if (!isset($input['number_champs']) || !isset($input['id'])) {
          return false;
       }
       $number_champs = $input['number_champs'];
@@ -165,7 +171,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
 
          $query_app = $DB->request(['SELECT' => 'id',
                                     'FROM'   => 'glpi_plugin_appliances_optvalues',
-                                    'WHERE'  => ['plugin_appliances_appliances_id' => $input['plugin_appliances_appliances_id'],
+                                    'WHERE'  => ['appliances_id' => $input['id'],
                                                  'vvalues' => $i]]);
 
 
@@ -182,10 +188,10 @@ class PluginAppliancesOptvalue extends CommonDBTM {
          } else if (!empty($input[$champ])) {
             // l'entrée n'existe pas
             // et la valeur saisie est non nulle -> on fait un insert
-            $data = ['plugin_appliances_appliances_id' => $input['plugin_appliances_appliances_id'],
-                     'champ'                           => $input[$champ],
-                     'ddefault'                        => $input[$ddefault],
-                     'vvalues'                         => $i];
+            $data = ['appliances_id'  => $input['id'],
+                     'champ'          => $input[$champ],
+                     'ddefault'       => $input[$ddefault],
+                     'vvalues'        => $i];
             $this->add($data);
          }
     //  }
@@ -198,11 +204,11 @@ class PluginAppliancesOptvalue extends CommonDBTM {
     *
     * @return integer
     **/
-    static function countForAppliance(PluginAppliancesAppliance $item) {
+    static function countForAppliance(Appliance $item) {
 
       $dbu = new DbUtils();
       return $dbu->countElementsInTable('glpi_plugin_appliances_optvalues',
-                                        ['plugin_appliances_appliances_id' => $item->getID()]);
+                                        ['appliances_id' => $item->getID()]);
    }
 
 
@@ -213,7 +219,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
     **/
     function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if ($item->getType() == 'PluginAppliancesAppliance') {
+      if ($item->getType() == 'Appliance') {
          $nb = '';
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = self::countForAppliance($item);
@@ -231,7 +237,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
     **/
     static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='PluginAppliancesAppliance') {
+      if ($item->getType()=='Appliance') {
          self::showForAppliance($item);
       }
       return true;
