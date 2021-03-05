@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - Plugin Appliance\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-15 15:39+0200\n"
-"PO-Revision-Date: 2020-10-15 13:39+0000\n"
+"POT-Creation-Date: 2020-10-16 16:04+0200\n"
+"PO-Revision-Date: 2020-10-16 14:23+0000\n"
 "Last-Translator: Nelly Mahu-Lasson <nini.lasson@orange.fr>\n"
 "Language-Team: English (United Kingdom) (http://www.transifex.com/yllen/glpi-project-plugin-appliance/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
@@ -21,25 +21,20 @@ msgstr ""
 msgid ""
 "You are about to launch migration of Appliances plugin data into GLPI core "
 "tables"
-msgstr "Vous êtes en train de lancer la migration des données du plugin Applicatif dans les tables du coeur"
+msgstr ""
 
 #: hook.php:128
 msgid ""
 "You can't migrate to core because one of your used fields is missing in "
 "core. Wait version 9.5.2"
-msgstr "Vous ne pouvez pas migrer vers le coeur car un de vos champs utilisés est manquant dans le coeur. Attendre la version 9.5.2"
+msgstr ""
 
 #: setup.php:73
 msgid "Appliances"
 msgstr "Appliances"
 
-#: inc/appliance.class.php:90
-msgid "Environment"
-msgstr "Environment"
-
 #: inc/optvalue.class.php:81 inc/optvalue.class.php:132
 #: inc/optvalue.class.php:272 inc/optvalue_item.class.php:131
-#: inc/optvalue_item.class.php:315
 msgid "User fields"
 msgstr "User fields"
 
@@ -52,10 +47,6 @@ msgid "Associated item from plugin"
 msgid_plural "Associated items from plugin"
 msgstr[0] ""
 msgstr[1] ""
-
-#: inc/optvalue_item.class.php:131 inc/relation.class.php:241
-msgid "Item to link"
-msgstr "Item to link"
 
 #: inc/optvalue_item.class.php:169
 msgid "Appliance"
