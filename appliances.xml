@@ -3,7 +3,7 @@
    <name>Appliances Inventory</name>
    <key>appliances</key>
    <state>stable</state>
-   <logo>https://forge.glpi-project.org/svn/appliances/appliances.png</logo>
+   <logo>https://raw.githusercontent.com/yllen/appliances/appliances.png</logo>
    <description>
       <short>
          <fr><![CDATA[Gestion d'applicatifs. Ce plugin vous permet de créer des applicatifs (ensemble d’élements constituant un applicatif).]]></fr>
@@ -14,8 +14,8 @@
          <en><![CDATA[This plugin enables you to create appliance (several elements constituting a unit).<br />-Appliances creation (composed by various inventory item)<br />-Direct management from items<br />-Integrated with Helpdesk<br />NB : This plugin can be integrated in environment plugin and be used with archires plugin.]]></en>
       </long>
    </description>
-   <homepage>https://forge.glpi-project.org/projects/appliances</homepage>
-   <download>https://forge.glpi-project.org/projects/appliances/files</download>
+   <homepage>https://github.com/yllen/appliances</homepage>
+   <download>https://github.com/yllen/appliances/releases</download>
    <authors>
       <author>Xavier Caillaud</author>
       <author>Remi Collet</author>
