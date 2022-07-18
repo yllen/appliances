@@ -546,15 +546,15 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       if (isset($params['id2name'])) {
          $resp['appliancetypes_name']
-            = Html::clean(Dropdown::getDropdownName('glpi_appliancetypes',
-                                                    $resp['appliancetypes_id']));
+            = Toolbox::stripTags(Dropdown::getDropdownName('glpi_appliancetypes',
+                                                           $resp['appliancetypes_id']));
          $resp['environments_name']
-            = Html::clean(Dropdown::getDropdownName('glpi_appliances_environments',
-                                                    $resp['environments_id']));
+            = Toolbox::stripTags(Dropdown::getDropdownName('glpi_appliances_environments',
+                                                           $resp['environments_id']));
          $resp['users_name']
-            = Html::clean(Dropdown::getDropdownName('glpi_users', $resp['users_id']));
+            = Toolbox::stripTags(Dropdown::getDropdownName('glpi_users', $resp['users_id']));
          $resp['groups_name']
-            = Html::clean(Dropdown::getDropdownName('glpi_groups', $resp['groups_id']));
+            = Toolbox::stripTags(Dropdown::getDropdownName('glpi_groups', $resp['groups_id']));
       }
       return $resp;
    }

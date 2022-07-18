@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: appliance.form.php 217 2015-02-17 10:25:15Z tsmr $
  -------------------------------------------------------------------------
  LICENSE
 
@@ -21,7 +20,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2021 Appliances plugin team
+ @copyright Copyright (c) 2021-2022 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances

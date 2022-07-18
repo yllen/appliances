@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: appliance_item.class.php 298 2020-10-15 14:25:57Z yllen $
  -------------------------------------------------------------------------
    LICENSE
 
@@ -21,7 +20,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2021 Appliances plugin team
+ @copyright Copyright (c) 2009-2022 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -193,7 +192,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       echo "</tr>";
       $used = [];
 
-      while ($data = $result->next()) {
+      foreach ($result as $data) {
          $appliancesID = $data["id"];
          $used[]       = $appliancesID;
 
@@ -281,13 +280,14 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             // needed to use the button "additem"
             echo "<form method='post' action=\"".$CFG_GLPI["root_doc"].
                   "/plugins/appliances/front/appliance.form.php\">";
-            echo "<input type='hidden' name='item' value='".$ID."'>".
-                 "<input type='hidden' name='itemtype' value='$itemtype'>";
+            echo Html::hidden('item', ['value' => $ID]);
+            echo Html::hidden('itemtype', ['value' => $itemtype]);
             Dropdown::show('PluginAppliancesAppliance', ['name'   => "conID",
                                                          'entity' => $entities,
                                                          'used'   => $used]);
 
-            echo "<input type='submit' name='additem' value='".__('Add')."' class='submit'>";
+            echo Html::submit(_sx('button', 'Add'), ['name'  => 'additem',
+                                                     'class' => 'btn btn-primary']);
             Html::closeForm();
 
             echo "</td>";
@@ -346,24 +346,24 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
             $pdf->displayTitle('<b><i>'.__('Name'), __('Group'),__('Type').'</i></b>');
          }
 
-         while ($data = $result->next()) {
+         foreach ($result as $data) {
             $appliancesID = $data["id"];
             if (Session::isMultiEntitiesMode()) {
                $pdf->setColumnsSize(30,30,20,20);
                $pdf->displayLine($data["name"],
-                                 Html::clean(Dropdown::getDropdownName("glpi_entities",
-                                                                       $data['entities_id'])),
-                                 Html::clean(Dropdown::getDropdownName("glpi_groups",
-                                                                       $data["groups_id"])),
-                                 Html::clean(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
-                                                                       $data["plugin_appliances_appliancetypes_id"])));
+                                 Toolbox::stripTags(Dropdown::getDropdownName("glpi_entities",
+                                                                              $data['entities_id'])),
+                                 Toolbox::stripTags(Dropdown::getDropdownName("glpi_groups",
+                                                                              $data["groups_id"])),
+                                 Toolbox::stripTags(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
+                                                                              $data["plugin_appliances_appliancetypes_id"])));
             } else {
                $pdf->setColumnsSize(50,25,25);
                $pdf->displayLine($data["name"],
-                                 Html::clean(Dropdown::getDropdownName("glpi_groups",
-                                                                       $data["groups_id"])),
-                                 Html::clean(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
-                                                                       $data["plugin_appliances_appliancetypes_id"])));
+                                 Toolbox::stripTags(Dropdown::getDropdownName("glpi_groups",
+                                                                              $data["groups_id"])),
+                                 Toolbox::stripTags(Dropdown::getDropdownName("glpi_plugin_appliances_appliancetypes",
+                                                                              $data["plugin_appliances_appliancetypes_id"])));
             }
             PluginAppliancesRelation::showList_PDF($pdf, $data["relationtype"], $data["entID"]);
             PluginAppliancesOptvalue_Item::showList_PDF($pdf, $ID, $appliancesID);
@@ -511,7 +511,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                 $CFG_GLPI["root_doc"]."/plugins/appliances/front/appliance.form.php\">";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='center tab_bg_2' width='20%'>";
-         echo "<input type='hidden' name='conID' value='$ID'>\n";
+         echo Html::hidden('conID', ['value' => $ID]);
          Dropdown::showSelectItemFromItemtypes(['items_id_name'   => 'item',
                                                 'itemtypes'       => $appli->getTypes(true),
                                                 'entity_restrict' => ($appli->fields['is_recursive']
@@ -521,7 +521,8 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
                                                 'checkright'      => true]);
          echo "</td>";
          echo "<td class='center' class='tab_bg_2'>";
-         echo "<input type='submit' name='additem' value='".__('Add')."' class='submit'>";
+         echo Html::submit(_sx('button', 'Add'), ['name'  => 'additem',
+                                                  'class' => 'btn btn-primary']);
          echo "</td></tr></table>";
          Html::closeForm();
          echo "</div>";
@@ -567,7 +568,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
          $massiveactionparams = ['num_displayed'    => $number,
                                  'container'        => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
-         echo "<input type='hidden' name='conID' value='$instID'>\n";
+         echo Html::hidden('conID', ['value' => $instID]);
       }
 
       echo "<table class='tab_cadre_fixehov'>";

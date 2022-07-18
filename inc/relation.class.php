@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: relation.class.php 301 2020-10-15 16:21:43Z yllen $
  -------------------------------------------------------------------------
   LICENSE
 
@@ -21,7 +20,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2021 Appliances plugin team
+ @copyright Copyright (c) 2009-2022 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -154,27 +153,25 @@ class PluginAppliancesRelation extends CommonDBTM {
       if ($canedit) {
          echo "<form method='post' name='relation' action='".
                $CFG_GLPI["root_doc"]."/plugins/appliances/front/optvalue.form.php'>";
-         echo "<br><input type='hidden' name='deviceID' value='".$relID."'>";
+         echo "<br>";
+         echo Html::hidden('deviceID', ['value' => $relID]);
 
-         $i    = 0;
          $used = [];
 
-         if ($number_loc >0) {
+         if ($number_loc > 0) {
             echo "<table>";
-            while ($i < $number_loc) {
-               $res = $result_loc->next();
+            foreach ($result_loc as $res) {
                echo "<tr><td class=top>";
                // when the value of the checkbox is changed, the corresponding hidden variable value
                // is also changed by javascript
                echo "<input type='checkbox' name='itemrelation[".$res["id"]. "]' value='1'></td><td>";
                echo $res["dispname"];
                echo "</td></tr>";
-               $i++;
             }
             echo "</table>";
-            echo "<input type='submit' name='dellieu' value='"._sx('button', 'Delete permanently')."'
-                   class='submit'>".
-                  "<br><br>";
+            echo Html::submit(_sx('button', 'Delete permanently'), ['name'  => 'dellieu',
+                                                                    'class' => 'btn btn-primary']);
+            echo "<br><br>";
          }
 
          echo "$title&nbsp;:&nbsp;";
@@ -182,12 +179,13 @@ class PluginAppliancesRelation extends CommonDBTM {
          Dropdown::show($itemtype, ['name'   => "tablekey[" . $relID . "]",
                                     'entity' => $entity,
                                     'used'   => $used]);
-         echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='addlieu' value=\""._sx('button', 'Add').
-               "\" class='submit'><br>&nbsp;";
+         echo "&nbsp;&nbsp;&nbsp;";
+         echo Html::submit(_sx('button', 'Add'), ['name' => 'addlieu',
+                                                  'class' => 'btn btn-primary']);
          Html::closeForm();
 
       } else if ($number_loc > 0) {
-         while ($res = $result_loc->next()) {
+         foreach ($result_loc as $res) {
             echo $res["dispname"]."<br>";
          }
       } else {
@@ -233,7 +231,7 @@ class PluginAppliancesRelation extends CommonDBTM {
       $result_loc = $DB->request($sql_loc);
 
       $opts = [];
-      while ($res = $result_loc->next()) {
+      foreach ($result_loc as $res) {
          $opts[] = $res["dispname"];
       }
       $pdf->setColumnsSize(100);

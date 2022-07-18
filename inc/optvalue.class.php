@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
   LICENSE
 
@@ -21,7 +20,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2021 Appliances plugin team
+ @copyright Copyright (c) 2009-2022 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -85,14 +84,16 @@ class PluginAppliancesOptvalue extends CommonDBTM {
                                  'ORDER' => 'vvalues']);
       $number_champs = count($query_app);
       $number_champs++;
+
       for ($i=1 ; $i <= $number_champs ; $i++) {
-         if ($data = $query_app->next()) {
+         if ($data = $query_app->current()) {
             $champ    = $data["champ"];
             $ddefault = $data["ddefault"];
          } else {
             $champ    = '';
             $ddefault = '';
          }
+
          echo "<tr class='top tab_bg_1'>";
 
          if ($i == 1) {
@@ -100,18 +101,17 @@ class PluginAppliancesOptvalue extends CommonDBTM {
          }
          echo "<td><input type='text' name='champ$i' value=\"".$champ."\" size='35'></td>\n";
          if ($i == 1) {
-            echo "<td rowspan='".$number_champs."'>".__('Default', 'appliances')."</td>";
+         echo "<td rowspan='".$number_champs."'>".__('Default', 'appliances')."</td>";
          }
          echo "<td><input type='text' name='ddefault$i' value=\"".$ddefault."\" size='35'></td></tr>\n";
+         $query_app->next();
       }
-
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-         echo "<input type='hidden' name='id' value='".
-                $appli->fields['id']."'>\n";
-         echo "<input type='hidden' name='number_champs' value='".$number_champs."'>\n";
-         echo "<input type='submit' name='update_optvalues' value=\""._sx('button', 'Update')."\"
-                class='submit'>";
+         echo Html::hidden('id', ['value' => $appli->fields['id']]);
+         echo Html::hidden('number_champs', ['value' => $number_champs]);
+         echo Html::submit(_sx('button', 'Update'), ['name' => 'update_optvalues',
+                                                     'class' => 'btn btn-primary']);
          echo "</td></tr>\n</table></div>";
          Html::closeForm();
       } else {
@@ -137,7 +137,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
                                  'ORDER' => 'vvalues']);
 
       $opts = [];
-      while ($data = $query_app->next()) {
+      foreach ($query_app as $data) {
          $opts[] = '<b>'.$data["champ"].'</b>'.($data["ddefault"] ? '='.$data["ddefault"] : '');
       }
       if (count($opts)) {
@@ -159,11 +159,13 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    **/
    function updateList($input) {
       global $DB;
-
+toolbox::logdebug("input", $input);
      if (!isset($input['number_champs']) || !isset($input['id'])) {
          return false;
       }
       $number_champs = $input['number_champs'];
+
+   //   $i = 1;
 
       for ($i=1 ; $i<=$number_champs ; $i++) {
          $champ    = "champ$i";
@@ -173,18 +175,20 @@ class PluginAppliancesOptvalue extends CommonDBTM {
                                     'FROM'   => 'glpi_plugin_appliances_optvalues',
                                     'WHERE'  => ['appliances_id' => $input['id'],
                                                  'vvalues' => $i]]);
-
-
-         if ($data = $query_app->next()) {
+    //  foreach ($query_app as $data) {
+         if ($data = $query_app->current()) {
+toolbox::logdebug("dans current");
             // l'entrée existe déjà, il faut faire un update ou un delete
             if (empty($input[$champ])) {
                $this->delete($data);
             } else {
                $data['champ']    = $input[$champ];
                $data['ddefault'] = $input[$ddefault];
+               toolbox::logdebug("data", $data);
                $this->update($data);
             }
 
+     //    }
          } else if (!empty($input[$champ])) {
             // l'entrée n'existe pas
             // et la valeur saisie est non nulle -> on fait un insert
@@ -195,6 +199,8 @@ class PluginAppliancesOptvalue extends CommonDBTM {
             $this->add($data);
          }
     //  }
+   //      $i++;
+         $query_app->next();
       } // for
    }
 
@@ -275,24 +281,21 @@ class PluginAppliancesOptvalue extends CommonDBTM {
                                  'ORDER' => 'vvalues']);
       $number_champs = count($query_app);
       $number_champs++;
-      for ($i=1 ; $i <= $number_champs ; $i++) {
-         if ($data = $query_app->next()) {
-            $champ    = $data["champ"];
-            $ddefault = $data["ddefault"];
-         } else {
-            $champ    = '';
-            $ddefault = '';
-         }
 
-         if ($i == 1) {
-            $tab[] = ['id'            => '90',
-                      'table'         => $this->getTable(),
-                      'field'         => $champ,
-                      'name'          => __('Field'),
-                      'massiveaction' => false];
-         }
+      $champ    = '';
+      $ddefault = '';
+      foreach ($query_app as $data) {
+         $champ    = $data["champ"];
+         $ddefault = $data["ddefault"];
       }
 
+      if ($i == 1) {
+         $tab[] = ['id'            => '90',
+                   'table'         => $this->getTable(),
+                   'field'         => $champ,
+                   'name'          => __('Field'),
+                   'massiveaction' => false];
+      }
 
       return $tab;
    }

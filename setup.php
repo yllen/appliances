@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  LICENSE
 
@@ -21,7 +20,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2021 Appliances plugin team
+ @copyright Copyright (c) 2009-2022 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -71,13 +70,13 @@ function plugin_init_appliances() {
 function plugin_version_appliances() {
 
    return ['name'           => __('Appliances', 'appliances'),
-           'version'        => '3.1.1',
+           'version'        => '3.2.0svn',
            'author'         => 'Remi Collet, Nelly Mahu-Lasson',
            'license'        => 'GPLv3+',
            'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
-           'minGlpiVersion' => '9.5',
-           'requirements'   => ['glpi' => ['min' => '9.5.0',
-                                           'max' => '9.6.0']]];
+           'minGlpiVersion' => '10.0.0',
+           'requirements'   => ['glpi' => ['min' => '10.0.0',
+                                           'max' => '10.1.0']]];
 }
 
 

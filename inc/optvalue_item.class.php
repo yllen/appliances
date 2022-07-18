@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
   LICENSE
 
@@ -21,7 +20,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2021 Appliances plugin team
+ @copyright Copyright (c) 2009-2022 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -223,47 +222,44 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
       if ($canedit) {
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
                "/plugins/appliances/front/optvalue.form.php'>";
-         echo "<input type='hidden' name='number_champs' value='".$number."'>";
+         echo Html::hidden('number_champs', ['value' => $number]);
       }
       echo "<table>";
 
-      for ($i=1 ; $i<=$number ; $i++) {
-         if ($data_opt = $result_app_opt->next()) {
-            $query_val = $DB->request(['SELECT' => 'vvalue',
-                                       'FROM'   => 'glpi_plugin_appliances_optvalues_items',
-                                       'WHERE'  => ['plugin_appliances_optvalues_id' => $data_opt["id"],
-                                                    'items_id'                       => $items_id]]);
-            $data_val = $query_val->next();
-            $vvalue     = ($data_val? $data_val['vvalue'] : "");
-            if (empty($vvalue) && !empty($data_opt['ddefault'])) {
-
-               $vvalue = $data_opt['ddefault'];
-            }
-            echo "<tr><td>".$data_opt['champ']."&nbsp;</td><td>";
-            if ($canedit) {
-               echo "<input type='hidden' name='opt_id$i' value='".$data_opt["id"]."'>";
-               echo "<input type='hidden' name='ddefault$i' value='".$data_opt["ddefault"]."'>";
-               echo "<input type='text' name='vvalue$i' value='".$vvalue."'>";
-            } else {
-               echo $vvalue;
-            }
-            echo "</td></tr>";
-
+      $i=1;
+      foreach ($result_app_opt as $data_opt) {
+         $query_val = $DB->request(['SELECT' => 'vvalue',
+                                    'FROM'   => 'glpi_plugin_appliances_optvalues_items',
+                                    'WHERE'  => ['plugin_appliances_optvalues_id' => $data_opt["id"],
+                                                 'items_id'                       => $items_id]]);
+         $data_val = $query_val->current();
+         $vvalue = ($data_val? $data_val['vvalue'] : "");
+         if (empty($vvalue) && !empty($data_opt['ddefault'])) {
+            $vvalue = $data_opt['ddefault'];
          }
-
+         echo "<tr><td>".$data_opt['champ']."&nbsp;</td><td>";
+         if ($canedit) {
+            echo "<input type='text' name='vvalue$i' value='".$vvalue."'>";
+            echo Html::hidden('opt_id$i', ['value' => $data_opt["id"]]);
+            echo Html::hidden('ddefault$i', ['value' => $data_opt["ddefault"]]);
+         } else {
+            echo $vvalue;
+         }
+         echo "</td></tr>";
          echo "<input type='hidden' name='opt_id$i' value='".$data_opt["id"]."'>";
-      } // For
+         $i++;
+      }
 
       echo "</table>";
 
       if ($canedit) {
-         echo "<input type='hidden' name='itemtype' value='".$itemtype."'>";
-         echo "<input type='hidden' name='items_id' value='".$items_id."'>";
-         echo "<input type='hidden' name='appliances_id' value='".$appliances_id."'>";
-         echo "<input type='hidden' name='number_champs' value='".$number."'>";
+         echo Html::hidden('itemtype', ['value' => $itemtype]);
+         echo Html::hidden('items_id', ['value' => $items_id]);
+         echo Html::hidden('appliances_id', ['value' => $appliances_id]);
+         echo Html::hidden('number_champs', ['value' => $number]);
          if ($number) {
-            echo "<input type='submit' name='add_opt_val' value='"._sx('button', 'Update')."'
-                   class='submit'>";
+            echo Html::submit(_sx('button', 'Update'), ['name' => 'add_opt_val',
+                                                        'class' => 'btn btn-primary']);
          }
         Html::closeForm();
       }
@@ -290,7 +286,9 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                                                  'itemtype'                       => $input['itemtype'],
                                                  'items_id'                       => $input['items_id']]]);
 
-         if ($data = $query_app->next()) {
+         $find = false;
+         foreach ($query_app as $data) {
+            $find = true;
             // l'entrée existe déjà, il faut faire un update ou un delete
             if (empty($input[$vvalue])
                 || ($input[$vvalue] == $input[$ddefault])) {
@@ -300,8 +298,9 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                $this->update($data);
             }
 
-         } else if (!empty($input[$vvalue])
-                    && ($input[$vvalue] != $input[$ddefault])) {
+         }
+          if (!empty($input[$vvalue])
+              && ($input[$vvalue] != $input[$ddefault])) {
             // l'entrée n'existe pas
             // et la valeur saisie est non nulle -> on fait un insert
             foreach ($DB->request(['SELECT' => 'id',
@@ -314,7 +313,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                $this->add($data);
             }
          }
-      } // For
+      }
    }
 
 }
