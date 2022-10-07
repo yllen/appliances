@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-16 16:04+0200\n"
+"POT-Creation-Date: 2022-10-07 15:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,38 +18,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: hook.php:122
+#: hook.php:121
 msgid ""
 "You are about to launch migration of Appliances plugin data into GLPI core "
 "tables"
 msgstr ""
 
-#: hook.php:128
+#: hook.php:127
 msgid ""
 "You can't migrate to core because one of your used fields is missing in "
 "core. Wait version 9.5.2"
 msgstr ""
 
-#: setup.php:73
+#: setup.php:54
 msgid "Appliances"
 msgstr ""
 
-#: inc/optvalue.class.php:81 inc/optvalue.class.php:132
-#: inc/optvalue.class.php:272 inc/optvalue_item.class.php:131
+#: inc/appliance_item.class.php:57
+msgid "Associated appliances"
+msgstr ""
+
+#: inc/optvalue.class.php:80 inc/optvalue.class.php:132
+#: inc/optvalue_item.class.php:130 inc/optvalue_item.class.php:304
 msgid "User fields"
 msgstr ""
 
-#: inc/optvalue.class.php:103
+#: inc/optvalue.class.php:104
 msgid "Default"
 msgstr ""
 
-#: inc/optvalue_item.class.php:68
+#: inc/optvalue_item.class.php:67
 msgid "Associated item from plugin"
 msgid_plural "Associated items from plugin"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/optvalue_item.class.php:169
+#: inc/optvalue_item.class.php:168
 msgid "Appliance"
 msgid_plural "Appliances"
 msgstr[0] ""
