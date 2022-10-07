@@ -125,7 +125,7 @@ class PluginAppliancesOptvalue extends CommonDBTM {
     * @param $pdf         Instance of plugin PDF
     * @param $appli       PluginAppliancesAppliance
     **/
-    static function pdfForAppliance(PluginPdfSimplePDF $pdf, PluginAppliancesAppliance $appli) {
+    static function pdfForAppliance(PluginPdfSimplePDF $pdf, $appli) {
       global $DB;
 
       $pdf->setColumnsSize(100);
@@ -138,10 +138,10 @@ class PluginAppliancesOptvalue extends CommonDBTM {
 
       $opts = [];
       foreach ($query_app as $data) {
-         $opts[] = '<b>'.$data["champ"].'</b>'.($data["ddefault"] ? '='.$data["ddefault"] : '');
+         $opts[] = '<b>'.$data["champ"].'</b>'.($data["ddefault"] ? ' = '.$data["ddefault"] : '');
       }
       if (count($opts)) {
-         $pdf->displayLine(implode(',  ',$opts));
+         $pdf->displayLine(implode(',<br />',$opts));
       } else {
          $pdf->displayLine(__('No item found'));
       }
@@ -159,13 +159,11 @@ class PluginAppliancesOptvalue extends CommonDBTM {
    **/
    function updateList($input) {
       global $DB;
-toolbox::logdebug("input", $input);
+
      if (!isset($input['number_champs']) || !isset($input['id'])) {
          return false;
       }
       $number_champs = $input['number_champs'];
-
-   //   $i = 1;
 
       for ($i=1 ; $i<=$number_champs ; $i++) {
          $champ    = "champ$i";
@@ -175,20 +173,16 @@ toolbox::logdebug("input", $input);
                                     'FROM'   => 'glpi_plugin_appliances_optvalues',
                                     'WHERE'  => ['appliances_id' => $input['id'],
                                                  'vvalues' => $i]]);
-    //  foreach ($query_app as $data) {
+
          if ($data = $query_app->current()) {
-toolbox::logdebug("dans current");
             // l'entrée existe déjà, il faut faire un update ou un delete
             if (empty($input[$champ])) {
                $this->delete($data);
             } else {
                $data['champ']    = $input[$champ];
                $data['ddefault'] = $input[$ddefault];
-               toolbox::logdebug("data", $data);
                $this->update($data);
             }
-
-     //    }
          } else if (!empty($input[$champ])) {
             // l'entrée n'existe pas
             // et la valeur saisie est non nulle -> on fait un insert
@@ -198,10 +192,7 @@ toolbox::logdebug("dans current");
                      'vvalues'        => $i];
             $this->add($data);
          }
-    //  }
-   //      $i++;
-         $query_app->next();
-      } // for
+      }
    }
 
 
@@ -269,34 +260,4 @@ toolbox::logdebug("dans current");
       return true;
    }
 
-
-   function rawSearchOptionsToAdd() {
-
-      $tab = [];
-
-      $tab[] = ['id'            => 'common',
-                'name'          => __('User fields', 'appliances')];
-
-      $query_app = $DB->request(['FROM' => 'glpi_plugin_appliances_optvalues',
-                                 'ORDER' => 'vvalues']);
-      $number_champs = count($query_app);
-      $number_champs++;
-
-      $champ    = '';
-      $ddefault = '';
-      foreach ($query_app as $data) {
-         $champ    = $data["champ"];
-         $ddefault = $data["ddefault"];
-      }
-
-      if ($i == 1) {
-         $tab[] = ['id'            => '90',
-                   'table'         => $this->getTable(),
-                   'field'         => $champ,
-                   'name'          => __('Field'),
-                   'massiveaction' => false];
-      }
-
-      return $tab;
-   }
 }

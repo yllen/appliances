@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
   LICENSE
 
@@ -21,7 +20,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2021 Appliances plugin team
+ @copyright Copyright (c) 2009-2022 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -29,8 +28,8 @@
  --------------------------------------------------------------------------
  */
 
-define("PLUGIN_APPLIANCES_RELATION_LOCATION", 1);
-
+//define("PLUGIN_APPLIANCES_RELATION_LOCATION", 1);
+/*
 function plugin_appliances_postinit() {
    global $PLUGIN_HOOKS;
 
@@ -41,7 +40,7 @@ function plugin_appliances_postinit() {
                                     = ['PluginAppliancesAppliance','cleanForItem'];
    }
 }
-
+*/
 
 function plugin_appliances_registerMethods() {
    global $WEBSERVICES_METHOD;

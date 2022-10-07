@@ -184,7 +184,7 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                      }
 
                      echo "<td class='center'>";
-                     PluginAppliancesOptvalue_Item::showList($type, $data["id"], $instID,
+                     self::showList($type, $data["id"], $instID,
                                                              $canedit);
                      echo "</td>";
 
@@ -240,13 +240,12 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
          echo "<tr><td>".$data_opt['champ']."&nbsp;</td><td>";
          if ($canedit) {
             echo "<input type='text' name='vvalue$i' value='".$vvalue."'>";
-            echo Html::hidden('opt_id$i', ['value' => $data_opt["id"]]);
-            echo Html::hidden('ddefault$i', ['value' => $data_opt["ddefault"]]);
+            echo Html::hidden('opt_id'.$i, ['value' => $data_opt["id"]]);
+            echo Html::hidden('ddefault'.$i, ['value' => $data_opt["ddefault"]]);
          } else {
             echo $vvalue;
          }
          echo "</td></tr>";
-         echo "<input type='hidden' name='opt_id$i' value='".$data_opt["id"]."'>";
          $i++;
       }
 
@@ -263,6 +262,47 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
          }
         Html::closeForm();
       }
+   }
+
+
+   /**
+    * Show for PDF the optional value for a device / applicatif
+    *
+    * @param $pdf            object for the output
+    * @param $ID             of the item
+    * @param $appliancesID   ID of the applicatif
+    **/
+   static function showList_PDF($pdf, $ID, $appliancesID) {
+      global $DB;
+
+      $result_app_opt = $DB->request(['FIELDS' => ['id', 'champ', 'ddefault', 'vvalues'],
+                                      'FROM'   => 'glpi_plugin_appliances_optvalues',
+                                      'WHERE'  => ['appliances_id' => $appliancesID],
+                                      'ORDER'  => 'vvalues']);
+      $number_champs = count($result_app_opt);
+
+      if (!$number_champs) {
+         return;
+      }
+
+      $opts = [];
+      foreach ($result_app_opt as $data_opt) {
+         $query_val = $DB->request(['SELECT' => 'vvalue',
+                                    'FROM'   => 'glpi_plugin_appliances_optvalues_items',
+                                    'WHERE'  => ['plugin_appliances_optvalues_id' => $data_opt["id"],
+                                                 'items_id'                       => $ID]]);
+         $data_val = $query_val->current();
+         $vvalue = ($data_val ? $data_val['vvalue'] : "");
+         if (empty($vvalue) && !empty($data_opt['ddefault'])) {
+            $vvalue = $data_opt['ddefault'];
+         }
+         $opts[] = $data_opt['champ'].($vvalue?" = ".$vvalue:'');
+      }
+
+      $pdf->setColumnsSize(100);
+      $pdf->displayLine(sprintf(__('%1$s: %2$s'),
+                                "<b><i>".__('User fields', 'appliances')."</i></b>",
+                                implode(',<br /> ',$opts)));
    }
 
 
@@ -286,33 +326,30 @@ class PluginAppliancesOptvalue_Item extends CommonDBTM {
                                                  'itemtype'                       => $input['itemtype'],
                                                  'items_id'                       => $input['items_id']]]);
 
-         $find = false;
-         foreach ($query_app as $data) {
-            $find = true;
-            // l'entrée existe déjà, il faut faire un update ou un delete
-            if (empty($input[$vvalue])
-                || ($input[$vvalue] == $input[$ddefault])) {
-               $this->delete($data);
-            } else {
-               $data['vvalue'] = $input[$vvalue];
-               $this->update($data);
+         if ($data = $query_app->current()) {
+            toolbox::logdebug("data", $data);
+               // l'entrée existe déjà, il faut faire un update ou un delete
+               if (empty($input[$vvalue])
+                         || ($input[$vvalue] == $input[$ddefault])) {
+                  $this->delete($data);
+               } else {
+                  $data['vvalue'] = $input[$vvalue];
+                  $this->update($data);
+               }
+          } else if (!empty($input[$vvalue])
+                       && ($input[$vvalue] != $input[$ddefault])) {
+               // l'entrée n'existe pas
+               // et la valeur saisie est non nulle -> on fait un insert
+               foreach ($DB->request(['SELECT' => 'id',
+                                      'FROM'   => 'glpi_plugin_appliances_optvalues',
+                                      'WHERE'  => ['ddefault' => $input[$ddefault]]]) as $optid) {
+                  $data = ['plugin_appliances_optvalues_id' => $optid['id'],
+                           'itemtype'                       => $input['itemtype'],
+                           'items_id'                       => $input['items_id'],
+                           'vvalue'                         => $input[$vvalue]];
+                  $this->add($data);
+               }
             }
-
-         }
-          if (!empty($input[$vvalue])
-              && ($input[$vvalue] != $input[$ddefault])) {
-            // l'entrée n'existe pas
-            // et la valeur saisie est non nulle -> on fait un insert
-            foreach ($DB->request(['SELECT' => 'id',
-                                   'FROM'   => 'glpi_plugin_appliances_optvalues',
-                                   'WHERE'  => ['ddefault' => $input[$ddefault]]]) as $optid) {
-               $data = ['plugin_appliances_optvalues_id' => $optid['id'],
-                        'itemtype'                       => $input['itemtype'],
-                        'items_id'                       => $input['items_id'],
-                        'vvalue'                         => $input[$vvalue]];
-               $this->add($data);
-            }
-         }
       }
    }
 

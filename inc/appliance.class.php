@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
   LICENSE
 
@@ -21,7 +20,7 @@
 
  @package   appliances
  @author    Xavier CAILLAUD, Remi Collet, Nelly Mahu-Lasson
- @copyright Copyright (c) 2009-2021 Appliances plugin team
+ @copyright Copyright (c) 2009-2022 Appliances plugin team
  @license   AGPL License 3.0 or (at your option) any later version
             http://www.gnu.org/licenses/agpl-3.0-standalone.html
  @link      https://forge.glpi-project.org/projects/appliances
@@ -39,76 +38,6 @@ if (!defined('GLPI_ROOT')) {
 **/
 class PluginAppliancesAppliance extends CommonDBTM {
 
-   static $types = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                    'Printer', 'Software'];
-
-
-    /**
-     * Actions done when item is deleted from the database
-    **/
-    function cleanDBonPurge() {
-
-      $temp = new PluginAppliancesOptvalue();
-      $temp->deleteByCriteria(['appliances_id' => $this->fields['id']]);
-   }
-
-
-   /**
-    * For other plugins, add a type to the linkable types
-    *
-    * @since version 1.8.0
-    *
-    * @param $type string class name
-   **/
-   static function registerType($type) {
-
-      if (!in_array($type, self::$types)) {
-         self::$types[] = $type;
-      }
-   }
-
-
-   /**
-    * Type than could be linked to a Appliance
-    *
-    * @param $all boolean, all type, or only allowed ones (false by default)
-    *
-    * @return array of types
-   **/
-   static function getTypes($all=false) {
-
-      if ($all) {
-         return self::$types;
-      }
-
-      // Only allowed types
-      $types = self::$types;
-
-      $dbu   = new DbUtils();
-      foreach ($types as $key => $type) {
-         if (!($item = $dbu->getItemForItemtype($type))) {
-            continue;
-         }
-
-         if (!$item->canView()) {
-            unset($types[$key]);
-         }
-      }
-      return $types;
-   }
-
-
-   /**
-    * Hook called After an item is uninstall or purge
-    *
-    * @param $item      string      CommonDBTM object
-   **/
-   static function cleanForItem(CommonDBTM $item) {
-
-      $temp = new Appliance_Item();
-      $temp->deleteByCriteria(['itemtype' => $item->getType(),
-                               'items_id' => $item->getField('id')]);
-   }
 
 
    /**
@@ -222,7 +151,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                       FROM `glpi_appliances`
                       LEFT JOIN `glpi_appliancetypes`
                         ON `glpi_appliancetypes`.`id` =`glpi_appliances`.`appliancetypes_id`
-                      LEFT JOIN `glpi_pplianceenvironments`
+                      LEFT JOIN `glpi_applianceenvironments`
                         ON `glpi_applianceenvironments`.`id` =`glpi_appliances`.`environments_id`
                       ORDER BY ".$order."
                       LIMIT ".$start.", ".$limit;
@@ -361,14 +290,14 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
 
       if (isset($params['plugin_appliances_appliancetypes_name'])) {
-         $type   = new PluginAppliancesApplianceType();
+         $type   = new ApplianceType();
          $input2 = [];
          $input2['entities_id']  = (isset($input['entities_id'])? $input['entities_id']
                                                                 : $appliance->fields['entities_id']);
          $input2['is_recursive'] = (isset($input['is_recursive'])? $input['is_recursive']
                                                                  : $appliance->fields['entities_id']);
          $input2['name']         = addslashes($params['plugin_appliances_appliancetypes_name']);
-         $input['plugin_appliances_appliancetypes_id'] = $type->import($input2);
+         $input['appliancetypes_id'] = $type->import($input2);
 
       } else if (isset($params['plugin_appliances_appliancetypes_id'])) {
          $input['appliancetypes_id'] = intval($params['plugin_appliances_appliancetypes_id']);

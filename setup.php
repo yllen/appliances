@@ -34,29 +34,11 @@ function plugin_init_appliances() {
 
    $PLUGIN_HOOKS['csrf_compliant']['appliances'] = true;
 
-   Plugin::registerClass('PluginAppliancesOptvalue', ['addtabon' => 'Appliance']);
+   Plugin::registerClass('PluginAppliancesOptvalue',      ['addtabon' => 'Appliance']);
    Plugin::registerClass('PluginAppliancesOptvalue_Item', ['addtabon' => 'Appliance']);
-
-   if (class_exists('PluginAccountsAccount')) {
-      PluginAccountsAccount::registerType('PluginAppliancesAppliance');
-   }
-
-   if (class_exists('PluginCertificatesCertificate')) {
-      PluginCertificatesCertificate::registerType('PluginAppliancesAppliance');
-   }
-
-   if (class_exists('PluginDatabasesDatabase')) {
-      PluginDatabasesDatabase::registerType('PluginAppliancesAppliance');
-   }
-
-   if (class_exists('PluginDomainsDomain')) {
-      PluginDomainsDomain::registerType('PluginAppliancesAppliance');
-   }
 
    // Define the type for which we know how to generate PDF, need :
    $PLUGIN_HOOKS['plugin_pdf']['PluginAppliancesAppliance'] = 'PluginAppliancesAppliancePDF';
-
-   $PLUGIN_HOOKS['migratetypes']['appliances'] = 'plugin_datainjection_migratetypes_appliances';
 
    // Import webservice
    $PLUGIN_HOOKS['webservices']['appliances'] = 'plugin_appliances_registerMethods';
@@ -70,7 +52,7 @@ function plugin_init_appliances() {
 function plugin_version_appliances() {
 
    return ['name'           => __('Appliances', 'appliances'),
-           'version'        => '3.2.0svn',
+           'version'        => '3.2.0',
            'author'         => 'Remi Collet, Nelly Mahu-Lasson',
            'license'        => 'GPLv3+',
            'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
@@ -85,8 +67,3 @@ function plugin_appliances_check_config() {
 }
 
 
-function plugin_datainjection_migratetypes_appliances($types) {
-
-   $types[1200] = 'PluginAppliancesAppliance';
-   return $types;
-}

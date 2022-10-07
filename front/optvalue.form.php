@@ -38,31 +38,8 @@ if (!isset($_GET["withtemplate"])) {
 }
 toolbox::logError("post", $_POST);
 $appliance = new Appliance();
-$appItem   = new Appliance_Item();
-$relation  = new Appliance_Item_Relation();
 
-// delete a relation
-if (isset($_POST["dellieu"])) {
-   if (isset($_POST['itemrelation'])) {
-      foreach($_POST["itemrelation"] as $key => $val) {
-         $relation->delete(['id' => $key]);
-      }
-   }
-   Html::back();
-
-// add a relation
-} else if (isset($_POST["addlieu"])) {
-   if ($_POST['tablekey'] >0) {
-      foreach($_POST["tablekey"] as $key => $val) {
-         if ($val > 0) {
-            $relation->add(['appliances_items_id'   => $key,
-                            'relations_id'          => $val]);
-         }
-      }
-   }
-   Html::back();
-
-} else if (isset($_POST['update_optvalues'])) {
+if (isset($_POST['update_optvalues'])) {
    $appliance->check($_POST['id'], UPDATE);
    $Optvalue = new PluginAppliancesOptvalue();
    $Optvalue->updateList($_POST);
@@ -77,15 +54,4 @@ if (isset($_POST["dellieu"])) {
    $OptvalueItem->updateList($_POST);
    Html::back();
 
-} else {
-   $appliance->checkGlobal(READ);
-
-   //check environment meta-plugin installtion for change header
-   $plugin = new Plugin();
-   if ($plugin->isActivated("environment")) {
-      Html::header(Appliance_Item_Relation::getTypes(true),
-                     '',"assets","pluginenvironmentdisplay","appliances");
-   }
-
-   Html::footer();
 }
