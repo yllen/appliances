@@ -55,7 +55,7 @@ function plugin_version_appliances() {
            'version'        => '3.2.0',
            'author'         => 'Remi Collet, Nelly Mahu-Lasson',
            'license'        => 'GPLv3+',
-           'homepage'       => 'https://forge.glpi-project.org/projects/appliances',
+           'homepage'       => 'https://github.com/yllen/appliances',
            'minGlpiVersion' => '10.0.0',
            'requirements'   => ['glpi' => ['min' => '10.0.0',
                                            'max' => '10.1.0']]];
